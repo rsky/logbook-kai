@@ -1,19 +1,5 @@
 package logbook.internal.gui;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.MessageFormat;
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.Notifications;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
@@ -21,31 +7,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
 import logbook.Messages;
-import logbook.bean.AppCondition;
-import logbook.bean.AppConfig;
-import logbook.bean.Basic;
-import logbook.bean.BattleLog;
+import logbook.bean.*;
 import logbook.bean.BattleTypes.CombinedType;
 import logbook.bean.BattleTypes.IFormation;
 import logbook.bean.BattleTypes.IMidnightBattle;
-import logbook.bean.DeckPort;
-import logbook.bean.DeckPortCollection;
-import logbook.bean.Ndock;
-import logbook.bean.NdockCollection;
-import logbook.bean.Ship;
-import logbook.bean.ShipCollection;
-import logbook.bean.ShipMst;
-import logbook.bean.SlotItemCollection;
 import logbook.internal.Audios;
 import logbook.internal.CheckUpdate;
 import logbook.internal.Ships;
@@ -55,6 +26,17 @@ import logbook.plugin.gui.MainCommandMenu;
 import logbook.plugin.gui.MainExtMenu;
 import logbook.plugin.gui.Plugin;
 import logbook.proxy.ProxyServer;
+import logbook.pushbullet.Pusher;
+import logbook.pushbullet.bean.PushbulletConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.Notifications;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.MessageFormat;
+import java.time.Duration;
+import java.util.*;
 
 /**
  * UIコントローラー
@@ -517,6 +499,9 @@ public class MainController extends WindowController {
     private void checkNotifyMission() {
         Map<Integer, DeckPort> ports = DeckPortCollection.get()
                 .getDeckPortMap();
+
+        boolean usePushbullet = PushbulletConfig.get().isNotifyMissionCompleted();
+
         for (DeckPort port : ports.values()) {
             // 0=未出撃, 1=遠征中, 2=遠征帰還, 3=遠征中止
             int state = port.getMission().get(0).intValue();
@@ -533,6 +518,11 @@ public class MainController extends WindowController {
                 if (this.requireNotify(now, timeStamp, AppConfig.get().isUseRemind())) {
                     this.timeStampMission.put(port.getId(), System.currentTimeMillis());
                     this.pushNotifyMission(port);
+
+                    // Pushbullet
+                    if (usePushbullet && timeStamp == 0L) {
+                        this.pushbulletNotifyMission(port);
+                    }
                 }
             }
         }
@@ -554,11 +544,24 @@ public class MainController extends WindowController {
     }
 
     /**
+     * Pushbulletで遠征通知
+     *
+     * @param port 艦隊
+     */
+    private void pushbulletNotifyMission(DeckPort port) {
+        String title = String.format("遠征完了 #%d", port.getId());
+        String message = Messages.getString("mission.complete", port.getName()); //$NON-NLS-1$
+        this.pushbulletNotify(title, message);
+    }
+
+    /**
      * 入渠ドックの通知をチェックします
      */
     private void checkNotifyNdock() {
         Map<Integer, Ndock> ndockMap = NdockCollection.get()
                 .getNdockMap();
+
+        boolean usePushbullet = PushbulletConfig.get().isNotifyNdockCompleted();
 
         for (Ndock ndock : ndockMap.values()) {
             // 完了時間
@@ -575,6 +578,11 @@ public class MainController extends WindowController {
                 if (this.requireNotify(now, timeStamp, false)) {
                     this.timeStampNdock.put(ndock.getId(), System.currentTimeMillis());
                     this.pushNotifyNdock(ndock);
+
+                    // Pushbullet
+                    if (usePushbullet) {
+                        this.pushbulletNotifyNdock(ndock);
+                    }
                 }
             }
         }
@@ -602,6 +610,24 @@ public class MainController extends WindowController {
         if (AppConfig.get().isUseSound()) {
             this.soundNotify(Paths.get(AppConfig.get().getNdockSoundDir()));
         }
+    }
+
+    /**
+     * Pushbulletで入渠ドックの通知
+     *
+     * @param ndock 入渠ドック
+     */
+    private void pushbulletNotifyNdock(Ndock ndock) {
+        String title = String.format("修復完了 #%d", ndock.getId());
+        Ship ship = ShipCollection.get()
+                .getShipMap()
+                .get(ndock.getShipId());
+        String name = Ships.shipMst(ship)
+                .map(ShipMst::getName)
+                .orElse("");
+        String message = Messages.getString("ship.ndock", name, ship.getLv()); //$NON-NLS-1$
+
+        this.pushbulletNotify(title, message);
     }
 
     /**
@@ -661,6 +687,19 @@ public class MainController extends WindowController {
             } catch (Exception e) {
                 LoggerHolder.LOG.warn("サウンド通知に失敗しました", e);
             }
+        }
+    }
+
+    /**
+     * Pushbullet通知
+     *
+     * @param title String
+     * @param message String
+     */
+    private void pushbulletNotify(String title, String message) {
+        String accessToken = PushbulletConfig.get().getAccessToken();
+        if (accessToken != null) {
+            new Pusher(accessToken).pushToSelectedTargets(title, message);
         }
     }
 

@@ -17,3 +17,7 @@ hs_err_pid*
 /dest/
 /config/
 /logs/
+
+# JetBrains
+*.iml
+/.idea/

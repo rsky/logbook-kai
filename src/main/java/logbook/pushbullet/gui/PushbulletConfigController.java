@@ -1,6 +1,7 @@
 package logbook.pushbullet.gui;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -80,6 +81,27 @@ public class PushbulletConfigController extends WindowController {
         return channel;
     }
 
+    private <E> void setUpListener(ObservableList<E> list, ListView<E> listView) {
+        final double ROW_HEIGHT = 25.0;
+        list.addListener((ListChangeListener<E>) c -> {
+            final int size = list.size();
+            switch (size) {
+                case 0:
+                    listView.setMinHeight(0.0);
+                    listView.setPrefHeight(0.0);
+                    break;
+                case 1:
+                    listView.setMinHeight(ROW_HEIGHT + 2.0);
+                    listView.setPrefHeight(ROW_HEIGHT + 2.0);
+                    break;
+                default:
+                    listView.setMinHeight(ROW_HEIGHT + 2.0);
+                    listView.setPrefHeight(ROW_HEIGHT * size + 4.0);
+                    break;
+            }
+        });
+    }
+
     /**
      * 初期化
      */
@@ -90,10 +112,10 @@ public class PushbulletConfigController extends WindowController {
         notifyMissionCompleted.setSelected(config.isNotifyMissionCompleted());
         notifyNdockCompleted.setSelected(config.isNotifyNdockCompleted());
 
+        setUpListener(devices, deviceListView);
         DeviceCollection.get()
                 .stream()
                 .forEach(this::addDevice);
-
         deviceListView.setItems(devices);
         deviceListView.setCellFactory(listView -> {
             CheckBoxListCell<Device> cell = new CheckBoxListCell<>();
@@ -101,10 +123,10 @@ public class PushbulletConfigController extends WindowController {
             return cell;
         });
 
+        setUpListener(channels, channelListView);
         ChannelCollection.get()
                 .stream()
                 .forEach(this::addChannel);
-
         channelListView.setItems(channels);
         channelListView.setCellFactory(listView -> {
             CheckBoxListCell<Channel> cell = new CheckBoxListCell<>();

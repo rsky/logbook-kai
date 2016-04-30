@@ -5,6 +5,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
+import logbook.bean.AppConfig;
+import logbook.bean.WindowLocation;
 import logbook.internal.gui.WindowController;
 import logbook.plugin.PluginContainer;
 import logbook.plugin.gui.MainExtMenu;
@@ -29,6 +31,19 @@ public class PushbulletConfigMenu implements MainExtMenu {
 
                 stage.initOwner(((MenuItem) e.getSource()).getParentPopup().getOwnerWindow());
                 stage.setTitle("Pushbulletの設定");
+                stage.setOnCloseRequest(event -> {
+                    if (!event.isConsumed()) {
+                        AppConfig.get()
+                                .getWindowLocationMap()
+                                .put(controller.getClass().getCanonicalName(), controller.getWindowLocation());
+                    }
+                });
+                WindowLocation location = AppConfig.get()
+                        .getWindowLocationMap()
+                        .get(controller.getClass().getCanonicalName());
+                if (location != null) {
+                    controller.setWindowLocation(location);
+                }
                 stage.show();
             } catch (Exception ex) {
                 LoggerHolder.LOG.error("設定の初期化に失敗しました", ex);

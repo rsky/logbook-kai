@@ -81,8 +81,8 @@ public class PushbulletConfigController extends WindowController {
         return channel;
     }
 
-    private <E> void setUpListener(ObservableList<E> list, ListView<E> listView) {
-        final double ROW_HEIGHT = 25.0;
+    private <E> void setUpListChangeListener(ObservableList<E> list, ListView<E> listView) {
+        final double CELL_HEIGHT = 25.0;
         list.addListener((ListChangeListener<E>) c -> {
             final int size = list.size();
             switch (size) {
@@ -91,12 +91,12 @@ public class PushbulletConfigController extends WindowController {
                     listView.setPrefHeight(0.0);
                     break;
                 case 1:
-                    listView.setMinHeight(ROW_HEIGHT + 2.0);
-                    listView.setPrefHeight(ROW_HEIGHT + 2.0);
+                    listView.setMinHeight(CELL_HEIGHT + 2.0);
+                    listView.setPrefHeight(CELL_HEIGHT + 2.0);
                     break;
                 default:
-                    listView.setMinHeight(ROW_HEIGHT + 2.0);
-                    listView.setPrefHeight(ROW_HEIGHT * size + 4.0);
+                    listView.setMinHeight(CELL_HEIGHT + 2.0);
+                    listView.setPrefHeight(CELL_HEIGHT * size + 4.0);
                     break;
             }
         });
@@ -112,7 +112,7 @@ public class PushbulletConfigController extends WindowController {
         notifyMissionCompleted.setSelected(config.isNotifyMissionCompleted());
         notifyNdockCompleted.setSelected(config.isNotifyNdockCompleted());
 
-        setUpListener(devices, deviceListView);
+        setUpListChangeListener(devices, deviceListView);
         DeviceCollection.get()
                 .stream()
                 .forEach(this::addDevice);
@@ -123,7 +123,7 @@ public class PushbulletConfigController extends WindowController {
             return cell;
         });
 
-        setUpListener(channels, channelListView);
+        setUpListChangeListener(channels, channelListView);
         ChannelCollection.get()
                 .stream()
                 .forEach(this::addChannel);
@@ -146,7 +146,7 @@ public class PushbulletConfigController extends WindowController {
         if (accessToken.isEmpty()) {
             return;
         }
-        PushbulletService service = ServiceFactory.getService(accessToken);
+        PushbulletService service = ServiceFactory.create(accessToken);
 
         devices.clear();
         service.getDevices()

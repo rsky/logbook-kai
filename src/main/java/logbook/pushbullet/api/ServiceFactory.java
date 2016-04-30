@@ -6,13 +6,13 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceFactory {
-    public static final String BASE_URL = "https://api.pushbullet.com/v2/";
+    private static final String BASE_URL = "https://api.pushbullet.com/v2/";
 
-    public static PushbulletService getService(String accessToken) {
-        return getClient(accessToken).create(PushbulletService.class);
+    public static PushbulletService create(String accessToken) {
+        return buildRetrofit(accessToken).create(PushbulletService.class);
     }
 
-    public static Retrofit getClient(String accessToken) {
+    private static Retrofit buildRetrofit(String accessToken) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(chain -> chain.proceed(chain.request()
                         .newBuilder()

@@ -38,7 +38,7 @@ public class PushParameter {
         return param;
     }
 
-    public static class PushType {
-        public static final String NOTE = "note";
+    private static class PushType {
+        private static final String NOTE = "note";
     }
 }

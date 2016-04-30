@@ -65,7 +65,7 @@ public class Device implements Serializable {
     /**
      * 端末が有効かどうかを設定します
      *
-     * @param active
+     * @param active boolean
      */
     public void setActive(boolean active) {
         this.active = active;

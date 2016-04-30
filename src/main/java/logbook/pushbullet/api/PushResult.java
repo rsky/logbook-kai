@@ -9,7 +9,7 @@ public class PushResult {
         return pushes;
     }
 
-    private class SimplePushResult {
-        private String ident;
+    class SimplePushResult {
+        public String iden;
     }
 }

@@ -50,6 +50,6 @@ public class DeviceCollection implements Serializable {
     }
 
     public Stream<Device> stream() {
-        return deviceMap.values().stream();
+        return getDeviceMap().values().stream();
     }
 }

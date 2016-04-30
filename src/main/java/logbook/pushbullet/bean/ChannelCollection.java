@@ -51,6 +51,6 @@ public class ChannelCollection implements Serializable {
     }
 
     public Stream<Channel> stream() {
-        return channelMap.values().stream();
+        return getChannelMap().values().stream();
     }
 }

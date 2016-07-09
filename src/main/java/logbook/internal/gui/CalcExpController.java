@@ -148,7 +148,7 @@ public class CalcExpController extends WindowController {
         // イベントリスナー
         this.shipList.getSelectionModel()
                 .selectedItemProperty()
-                .addListener(this::changeShip);
+                .addListener((ov, o, n) -> this.changeShip(ov, o, n));
         this.nowLv.getValueFactory()
                 .valueProperty()
                 .addListener(this::changeNowLv);
@@ -163,7 +163,7 @@ public class CalcExpController extends WindowController {
                 .addListener((ov, o, n) -> this.update());
         this.shortageShip.getSelectionModel()
                 .selectedItemProperty()
-                .addListener(this::changeShip);
+                .addListener((ov, o, n) -> this.changeShip(ov, o, n));
 
         // 旗艦ID
         Integer flagShipId = DeckPortCollection.get()
@@ -238,7 +238,7 @@ public class CalcExpController extends WindowController {
             Ship ship = value.getShip();
             this.changeShip(ship);
             // Table の同じものを選択
-            for (ShortageShipItem ss : this.item.filtered(ss -> ss.shipProperty().get().equals(ship))) {
+            for (ShortageShipItem ss : this.item.filtered(ss1 -> ss1.shipProperty().get().equals(ship))) {
                 ShortageShipItem selected = shortageShip.getSelectionModel().getSelectedItem();
                 if (selected != null && selected.equals(ss)) continue;
                 this.shortageShip.getSelectionModel().select(ss);

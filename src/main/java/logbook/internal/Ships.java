@@ -204,8 +204,8 @@ public class Ships {
         // 副砲(~5inch): 0.2
         HPLV_ITEM_COEFFICIENT.put("12.7cm連装高角砲", 0.2D);
         HPLV_ITEM_COEFFICIENT.put("8cm高角砲", 0.2D);
-        HPLV_ITEM_COEFFICIENT.put("8cm高角砲改＋増設機銃", 0.2D);
-        HPLV_ITEM_COEFFICIENT.put("10cm連装高角砲改＋増設機銃", 0.2D);
+        HPLV_ITEM_COEFFICIENT.put("8cm高角砲改+増設機銃", 0.2D);
+        HPLV_ITEM_COEFFICIENT.put("10cm連装高角砲改+増設機銃", 0.2D);
         // 副砲(6inch~): 0.3
         HPLV_ITEM_COEFFICIENT.put("15.5cm三連装副砲", 0.3D);
         HPLV_ITEM_COEFFICIENT.put("15.5cm三連装副砲改", 0.3D);
@@ -214,8 +214,8 @@ public class Ships {
         // 副砲(~5inch): 0.2
         YPLV_ITEM_COEFFICIENT.put("12.7cm連装高角砲", 0.2D);
         YPLV_ITEM_COEFFICIENT.put("8cm高角砲", 0.2D);
-        YPLV_ITEM_COEFFICIENT.put("8cm高角砲改＋増設機銃", 0.2D);
-        YPLV_ITEM_COEFFICIENT.put("10cm連装高角砲改＋増設機銃", 0.2D);
+        YPLV_ITEM_COEFFICIENT.put("8cm高角砲改+増設機銃", 0.2D);
+        YPLV_ITEM_COEFFICIENT.put("10cm連装高角砲改+増設機銃", 0.2D);
         // 副砲(6inch~): 0.3
         YPLV_ITEM_COEFFICIENT.put("15.5cm三連装副砲", 0.3D);
         YPLV_ITEM_COEFFICIENT.put("15.5cm三連装副砲改", 0.3D);

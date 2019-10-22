@@ -68,8 +68,18 @@ public class Ships {
     private static final Map<SlotItemType, Double> AA_COEFFICIENT = new EnumMap<>(SlotItemType.class);
     /** 対空改修係数 */
     private static final Map<SlotItemType, Double> AALV_COEFFICIENT = new EnumMap<>(SlotItemType.class);
-    /** アイテム別火力改修係数 */
-    private static final Map<String, Double> FPLV_COEFFICIENT = new HashMap<>();
+    /** 砲戦火力改修係数 */
+    private static final Map<SlotItemType, Double> HPLV_COEFFICIENT = new EnumMap<>(SlotItemType.class);
+    /** 雷撃火力改修係数 */
+    private static final Map<SlotItemType, Double> RPLV_COEFFICIENT = new EnumMap<>(SlotItemType.class);
+    /** 対潜火力改修係数 */
+    private static final Map<SlotItemType, Double> TPLV_COEFFICIENT = new EnumMap<>(SlotItemType.class);
+    /** 夜戦火力改修係数 */
+    private static final Map<SlotItemType, Double> YPLV_COEFFICIENT = new EnumMap<>(SlotItemType.class);
+    /** アイテム別砲戦火力改修係数 */
+    private static final Map<String, Double> HPLV_ITEM_COEFFICIENT = new HashMap<>();
+    /** アイテム別夜戦火力改修係数 */
+    private static final Map<String, Double> YPLV_ITEM_COEFFICIENT = new HashMap<>();
 
     static {
         // 索敵係数
@@ -144,15 +154,71 @@ public class Ships {
         AALV_COEFFICIENT.put(SlotItemType.副砲, 2D);
         AALV_COEFFICIENT.put(SlotItemType.高射装置, 2D);
 
-        // アイテム別火力改修係数
+        // 砲戦火力改修係数
+        // 大口径主砲: 1.5
+        HPLV_COEFFICIENT.put(SlotItemType.大口径主砲, 1.5D);
+        HPLV_COEFFICIENT.put(SlotItemType.大口径主砲II, 1.5D);
+        // 一般: 1.0
+        HPLV_COEFFICIENT.put(SlotItemType.小口径主砲, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.中口径主砲, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.副砲, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.対艦強化弾, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.対空強化弾, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.対空機銃, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.高射装置, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.探照灯, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.対地装備, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.上陸用舟艇, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.特殊潜航艇, 1.0D);
+        // ソナー・爆雷投射機: 0.75
+        HPLV_COEFFICIENT.put(SlotItemType.ソナー, 0.75D);
+        HPLV_COEFFICIENT.put(SlotItemType.爆雷, 0.75D);
+
+        // 雷撃火力改修係数
+        RPLV_COEFFICIENT.put(SlotItemType.魚雷, 1.2D);
+        RPLV_COEFFICIENT.put(SlotItemType.対空機銃, 1.2D);
+
+        // 対潜火力改修係数
+        TPLV_COEFFICIENT.put(SlotItemType.ソナー, 1.0D);
+        TPLV_COEFFICIENT.put(SlotItemType.爆雷, 1.0D);
+
+        // 夜戦火力改修係数
+        YPLV_COEFFICIENT.put(SlotItemType.小口径主砲, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.中口径主砲, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.大口径主砲, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.大口径主砲II, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.副砲, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.魚雷, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.対艦強化弾, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.対空強化弾, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.高射装置, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.探照灯, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.対地装備, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.上陸用舟艇, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.特殊潜航艇, 1.0D);
+
+        // アイテム別砲戦火力改修係数
+        // 爆雷: 0
+        HPLV_ITEM_COEFFICIENT.put("九五式爆雷", 0D);
+        HPLV_ITEM_COEFFICIENT.put("二式爆雷", 0D);
         // 副砲(~5inch): 0.2
-        FPLV_COEFFICIENT.put("12.7cm連装高角砲", 0.2);
-        FPLV_COEFFICIENT.put("8cm高角砲", 0.2);
-        FPLV_COEFFICIENT.put("8cm高角砲改＋増設機銃", 0.2);
-        FPLV_COEFFICIENT.put("10cm連装高角砲改＋増設機銃", 0.2);
+        HPLV_ITEM_COEFFICIENT.put("12.7cm連装高角砲", 0.2D);
+        HPLV_ITEM_COEFFICIENT.put("8cm高角砲", 0.2D);
+        HPLV_ITEM_COEFFICIENT.put("8cm高角砲改＋増設機銃", 0.2D);
+        HPLV_ITEM_COEFFICIENT.put("10cm連装高角砲改＋増設機銃", 0.2D);
         // 副砲(6inch~): 0.3
-        FPLV_COEFFICIENT.put("15.5cm三連装副砲", 0.3);
-        FPLV_COEFFICIENT.put("15.5cm三連装副砲改", 0.3);
+        HPLV_ITEM_COEFFICIENT.put("15.5cm三連装副砲", 0.3D);
+        HPLV_ITEM_COEFFICIENT.put("15.5cm三連装副砲改", 0.3D);
+
+        // アイテム別夜戦火力改修係数
+        // 副砲(~5inch): 0.2
+        YPLV_ITEM_COEFFICIENT.put("12.7cm連装高角砲", 0.2D);
+        YPLV_ITEM_COEFFICIENT.put("8cm高角砲", 0.2D);
+        YPLV_ITEM_COEFFICIENT.put("8cm高角砲改＋増設機銃", 0.2D);
+        YPLV_ITEM_COEFFICIENT.put("10cm連装高角砲改＋増設機銃", 0.2D);
+        // 副砲(6inch~): 0.3
+        YPLV_ITEM_COEFFICIENT.put("15.5cm三連装副砲", 0.3D);
+        YPLV_ITEM_COEFFICIENT.put("15.5cm三連装副砲改", 0.3D);
     }
 
     private Ships() {
@@ -557,29 +623,14 @@ public class Ships {
      * @return 砲撃戦火力加算(改修効果)
      */
     public static double hPowerAdditional(SlotitemMst itemMst, SlotItem item) {
-        // 参考 https://wikiwiki.jp/kancolle/%E6%94%B9%E4%BF%AE%E5%B7%A5%E5%BB%A0#h2_content_1_3
-        Double coefficient = FPLV_COEFFICIENT.get(itemMst.getName());
+        Double itemCoefficient = HPLV_ITEM_COEFFICIENT.get(itemMst.getName());
+        if (itemCoefficient != null) {
+            return itemCoefficient * item.getLevel();
+        }
+        Double coefficient = HPLV_COEFFICIENT.get(itemMst.asSlotItemType());
         if (coefficient != null) {
-            // 改修値に比例して改修効果が伸びる装備の場合
-            return coefficient * item.getLevel();
-        }
-        if (itemMst.is(SlotItemType.大口径主砲, SlotItemType.大口径主砲II)) {
-            return Optional.ofNullable(item.getLevel())
-                    .map(level -> 1.5D * Math.sqrt(level))
-                    .orElse(0D);
-        }
-        if (itemMst.is(SlotItemType.小口径主砲, SlotItemType.中口径主砲, SlotItemType.副砲,
-                SlotItemType.対艦強化弾, SlotItemType.対空強化弾, SlotItemType.対空機銃, SlotItemType.高射装置,
-                SlotItemType.探照灯, SlotItemType.対地装備, SlotItemType.上陸用舟艇, SlotItemType.特殊潜航艇)) {
-            return Optional.ofNullable(item.getLevel())
-                    .map(level -> 1.0D * Math.sqrt(level))
-                    .orElse(0D);
-        }
-        if (itemMst.is(SlotItemType.ソナー) ||
-                // 九五式爆雷と二式爆雷を除く
-                (itemMst.is(SlotItemType.爆雷) && !itemMst.getName().endsWith("爆雷"))) {
-            return Optional.ofNullable(item.getLevel())
-                    .map(level -> 0.75D * Math.sqrt(level))
+            return coefficient * Optional.ofNullable(item.getLevel())
+                    .map(Math::sqrt)
                     .orElse(0D);
         }
         return 0D;
@@ -593,9 +644,10 @@ public class Ships {
      * @return 砲撃戦火力加算(改修効果)
      */
     public static double rPowerAdditional(SlotitemMst itemMst, SlotItem item) {
-        if (itemMst.is(SlotItemType.対空機銃, SlotItemType.魚雷)) {
-            return Optional.ofNullable(item.getLevel())
-                    .map(level -> 1.2D * Math.sqrt(level))
+        Double coefficient = RPLV_COEFFICIENT.get(itemMst.asSlotItemType());
+        if (coefficient != null) {
+            return coefficient * Optional.ofNullable(item.getLevel())
+                    .map(Math::sqrt)
                     .orElse(0D);
         }
         return 0D;
@@ -609,9 +661,10 @@ public class Ships {
      * @return 対潜火力加算(改修効果)
      */
     public static double tPowerAdditional(SlotitemMst itemMst, SlotItem item) {
-        if (itemMst.is(SlotItemType.ソナー, SlotItemType.爆雷)) {
-            return Optional.ofNullable(item.getLevel())
-                    .map(level -> 1.0D * Math.sqrt(level))
+        Double coefficient = TPLV_COEFFICIENT.get(itemMst.asSlotItemType());
+        if (coefficient != null) {
+            return coefficient * Optional.ofNullable(item.getLevel())
+                    .map(Math::sqrt)
                     .orElse(0D);
         }
         return 0D;
@@ -625,18 +678,15 @@ public class Ships {
      * @return 夜戦火力加算(改修効果)
      */
     public static double yPowerAdditional(SlotitemMst itemMst, SlotItem item) {
-        Double coefficient = FPLV_COEFFICIENT.get(itemMst.getName());
-        if (coefficient != null) {
-            // 改修値に比例して改修効果が伸びる装備の場合
-            return coefficient * item.getLevel();
+        // 改修値に比例して改修効果が伸びる装備
+        Double itemCoefficient = YPLV_ITEM_COEFFICIENT.get(itemMst.getName());
+        if (itemCoefficient != null) {
+            return itemCoefficient * item.getLevel();
         }
-        if (itemMst.is(
-                SlotItemType.小口径主砲, SlotItemType.中口径主砲, SlotItemType.大口径主砲, SlotItemType.大口径主砲II,
-                SlotItemType.副砲, SlotItemType.魚雷, SlotItemType.対艦強化弾, SlotItemType.対空強化弾,
-                SlotItemType.ソナー, SlotItemType.爆雷, SlotItemType.高射装置,
-                SlotItemType.探照灯, SlotItemType.対地装備, SlotItemType.上陸用舟艇, SlotItemType.特殊潜航艇)) {
-            return Optional.ofNullable(item.getLevel())
-                    .map(level -> 1.0D * Math.sqrt(level))
+        Double coefficient = YPLV_COEFFICIENT.get(itemMst.asSlotItemType());
+        if (coefficient != null) {
+            return coefficient * Optional.ofNullable(item.getLevel())
+                    .map(Math::sqrt)
                     .orElse(0D);
         }
         return 0D;

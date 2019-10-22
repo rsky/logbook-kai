@@ -2,8 +2,8 @@
 {
     "operator": "AND",
     "conditions": [
-        {"type": "艦隊", "count_type": "火力", "value": 500},
-        {"type": "艦隊", "count_type": "対潜", "value": 280},
+        {"type": "艦隊", "count_type": "火力", "value": 500, "additional": true},
+        {"type": "艦隊", "count_type": "対潜", "value": 280, "additional": true},
         {
             "operator": "AND",
             "conditions": [

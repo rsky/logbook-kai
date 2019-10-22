@@ -169,7 +169,7 @@ public class Ships {
         HPLV_COEFFICIENT.put(SlotItemType.探照灯, 1.0D);
         HPLV_COEFFICIENT.put(SlotItemType.対地装備, 1.0D);
         HPLV_COEFFICIENT.put(SlotItemType.上陸用舟艇, 1.0D);
-        HPLV_COEFFICIENT.put(SlotItemType.特殊潜航艇, 1.0D);
+        HPLV_COEFFICIENT.put(SlotItemType.特型内火艇, 1.0D);
         // ソナー・爆雷投射機: 0.75
         HPLV_COEFFICIENT.put(SlotItemType.ソナー, 0.75D);
         HPLV_COEFFICIENT.put(SlotItemType.爆雷, 0.75D);
@@ -195,7 +195,7 @@ public class Ships {
         YPLV_COEFFICIENT.put(SlotItemType.探照灯, 1.0D);
         YPLV_COEFFICIENT.put(SlotItemType.対地装備, 1.0D);
         YPLV_COEFFICIENT.put(SlotItemType.上陸用舟艇, 1.0D);
-        YPLV_COEFFICIENT.put(SlotItemType.特殊潜航艇, 1.0D);
+        YPLV_COEFFICIENT.put(SlotItemType.特型内火艇, 1.0D);
 
         // アイテム別砲戦火力改修係数
         // 爆雷: 0

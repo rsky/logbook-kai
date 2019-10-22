@@ -550,18 +550,16 @@ public class Ships {
                     .map(level -> 1.5D * Math.sqrt(level))
                     .orElse(0D);
         }
-        if (itemMst.is(SlotItemType.小口径主砲, SlotItemType.中口径主砲,
-                SlotItemType.副砲,
-                SlotItemType.対艦強化弾, SlotItemType.対空強化弾,
-                SlotItemType.対空機銃, SlotItemType.高射装置,
-                SlotItemType.探照灯,
-                SlotItemType.上陸用舟艇, SlotItemType.特殊潜航艇)) {
+        if (itemMst.is(SlotItemType.小口径主砲, SlotItemType.中口径主砲, SlotItemType.副砲,
+                SlotItemType.対艦強化弾, SlotItemType.対空強化弾, SlotItemType.対空機銃, SlotItemType.高射装置,
+                SlotItemType.探照灯, SlotItemType.対地装備, SlotItemType.上陸用舟艇, SlotItemType.特殊潜航艇)) {
             return Optional.ofNullable(item.getLevel())
                     .map(level -> 1.0D * Math.sqrt(level))
                     .orElse(0D);
         }
         if (itemMst.is(SlotItemType.ソナー) ||
-                itemMst.is(SlotItemType.爆雷) && itemMst.getName().contains("爆雷投射機")) {
+                // 九五式爆雷と二式爆雷を除く
+                (itemMst.is(SlotItemType.爆雷) && !itemMst.getName().endsWith("爆雷"))) {
             return Optional.ofNullable(item.getLevel())
                     .map(level -> 0.75D * Math.sqrt(level))
                     .orElse(0D);
@@ -610,13 +608,10 @@ public class Ships {
      */
     public static double yPowerAdditional(SlotitemMst itemMst, SlotItem item) {
         if (itemMst.is(
-                SlotItemType.小口径主砲, SlotItemType.中口径主砲,
-                SlotItemType.大口径主砲, SlotItemType.大口径主砲II,
-                SlotItemType.副砲, SlotItemType.魚雷,
-                SlotItemType.対艦強化弾, SlotItemType.対空強化弾,
-                SlotItemType.ソナー, SlotItemType.爆雷,
-                SlotItemType.高射装置, SlotItemType.探照灯,
-                SlotItemType.上陸用舟艇, SlotItemType.特殊潜航艇)) {
+                SlotItemType.小口径主砲, SlotItemType.中口径主砲, SlotItemType.大口径主砲, SlotItemType.大口径主砲II,
+                SlotItemType.副砲, SlotItemType.魚雷, SlotItemType.対艦強化弾, SlotItemType.対空強化弾,
+                SlotItemType.ソナー, SlotItemType.爆雷, SlotItemType.高射装置,
+                SlotItemType.探照灯, SlotItemType.対地装備, SlotItemType.上陸用舟艇, SlotItemType.特殊潜航艇)) {
             return Optional.ofNullable(item.getLevel())
                     .map(level -> 1.0D * Math.sqrt(level))
                     .orElse(0D);

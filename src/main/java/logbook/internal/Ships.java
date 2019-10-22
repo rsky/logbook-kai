@@ -489,6 +489,142 @@ public class Ships {
     }
 
     /**
+     * 砲撃戦火力加算(改修効果)の合計
+     *
+     * @param ship 艦娘
+     * @return 砲撃戦火力加算(改修効果)の合計
+     */
+    public static double sumHPowerAdditional(Ship ship) {
+        return getSlotitemMstAndSlotItem(ship)
+                .mapToDouble(pair -> hPowerAdditional(pair.getKey(), pair.getValue()))
+                .sum();
+    }
+
+    /**
+     * 雷撃戦火力加算(改修効果)の合計
+     *
+     * @param ship 艦娘
+     * @return 砲撃戦火力加算(改修効果)の合計
+     */
+    public static double sumRPowerAdditional(Ship ship) {
+        return getSlotitemMstAndSlotItem(ship)
+                .mapToDouble(pair -> rPowerAdditional(pair.getKey(), pair.getValue()))
+                .sum();
+    }
+
+    /**
+     * 対潜火力加算(改修効果)の合計
+     *
+     * @param ship 艦娘
+     * @return 対潜火力加算(改修効果)の合計
+     */
+    public static double sumTPowerAdditional(Ship ship) {
+        return getSlotitemMstAndSlotItem(ship)
+                .mapToDouble(pair -> tPowerAdditional(pair.getKey(), pair.getValue()))
+                .sum();
+    }
+
+    /**
+     * 夜戦火力加算(改修効果)の合計
+     *
+     * @param ship 艦娘
+     * @return 夜戦火力加算(改修効果)の合計
+     */
+    public static double sumYPowerAdditional(Ship ship) {
+        return getSlotitemMstAndSlotItem(ship)
+                .mapToDouble(pair -> yPowerAdditional(pair.getKey(), pair.getValue()))
+                .sum();
+    }
+
+    /**
+     * 砲撃戦火力加算(改修効果)
+     *
+     * @param itemMst 装備定義
+     * @param item 装備
+     * @return 砲撃戦火力加算(改修効果)
+     */
+    public static double hPowerAdditional(SlotitemMst itemMst, SlotItem item) {
+        // 参考 https://wikiwiki.jp/kancolle/%E6%94%B9%E4%BF%AE%E5%B7%A5%E5%BB%A0#h2_content_1_3
+        if (itemMst.is(SlotItemType.大口径主砲, SlotItemType.大口径主砲II)) {
+            return Optional.ofNullable(item.getLevel())
+                    .map(level -> 1.5D * Math.sqrt(level))
+                    .orElse(0D);
+        }
+        if (itemMst.is(SlotItemType.小口径主砲, SlotItemType.中口径主砲,
+                SlotItemType.副砲,
+                SlotItemType.対艦強化弾, SlotItemType.対空強化弾,
+                SlotItemType.対空機銃, SlotItemType.高射装置,
+                SlotItemType.探照灯,
+                SlotItemType.上陸用舟艇, SlotItemType.特殊潜航艇)) {
+            return Optional.ofNullable(item.getLevel())
+                    .map(level -> 1.0D * Math.sqrt(level))
+                    .orElse(0D);
+        }
+        if (itemMst.is(SlotItemType.ソナー) ||
+                itemMst.is(SlotItemType.爆雷) && itemMst.getName().contains("爆雷投射機")) {
+            return Optional.ofNullable(item.getLevel())
+                    .map(level -> 0.75D * Math.sqrt(level))
+                    .orElse(0D);
+        }
+        return 0D;
+    }
+
+    /**
+     * 雷撃戦火力加算(改修効果)
+     *
+     * @param itemMst 装備定義
+     * @param item 装備
+     * @return 砲撃戦火力加算(改修効果)
+     */
+    public static double rPowerAdditional(SlotitemMst itemMst, SlotItem item) {
+        if (itemMst.is(SlotItemType.対空機銃, SlotItemType.魚雷)) {
+            return Optional.ofNullable(item.getLevel())
+                    .map(level -> 1.2D * Math.sqrt(level))
+                    .orElse(0D);
+        }
+        return 0D;
+    }
+
+    /**
+     * 対潜火力加算(改修効果)
+     *
+     * @param itemMst 装備定義
+     * @param item 装備
+     * @return 対潜火力加算(改修効果)
+     */
+    public static double tPowerAdditional(SlotitemMst itemMst, SlotItem item) {
+        if (itemMst.is(SlotItemType.ソナー, SlotItemType.爆雷)) {
+            return Optional.ofNullable(item.getLevel())
+                    .map(level -> 1.0D * Math.sqrt(level))
+                    .orElse(0D);
+        }
+        return 0D;
+    }
+
+    /**
+     * 夜戦火力加算(改修効果)
+     *
+     * @param itemMst 装備定義
+     * @param item 装備
+     * @return 夜戦火力加算(改修効果)
+     */
+    public static double yPowerAdditional(SlotitemMst itemMst, SlotItem item) {
+        if (itemMst.is(
+                SlotItemType.小口径主砲, SlotItemType.中口径主砲,
+                SlotItemType.大口径主砲, SlotItemType.大口径主砲II,
+                SlotItemType.副砲, SlotItemType.魚雷,
+                SlotItemType.対艦強化弾, SlotItemType.対空強化弾,
+                SlotItemType.ソナー, SlotItemType.爆雷,
+                SlotItemType.高射装置, SlotItemType.探照灯,
+                SlotItemType.上陸用舟艇, SlotItemType.特殊潜航艇)) {
+            return Optional.ofNullable(item.getLevel())
+                    .map(level -> 1.0D * Math.sqrt(level))
+                    .orElse(0D);
+        }
+        return 0D;
+    }
+
+    /**
      * 制空値(熟練度による上昇を考慮)
      *
      * @param ship 艦娘
@@ -974,6 +1110,33 @@ public class Ships {
                 .filter(Objects::nonNull)
                 .map(SlotItem::getSlotitemId)
                 .map(itemMstMap::get)
+                .filter(Objects::nonNull);
+    }
+
+    /**
+     * 装備定義と装備のリストを取得します
+     *
+     * @param chara キャラクター
+     * @return 装備定義と装備のリスト
+     */
+    private static Stream<Pair<SlotitemMst, SlotItem>> getSlotitemMstAndSlotItem(Chara chara) {
+        Map<Integer, SlotItem> itemMap = SlotItemCollection.get()
+                .getSlotitemMap();
+        Map<Integer, SlotitemMst> itemMstMap = SlotitemMstCollection.get()
+                .getSlotitemMap();
+        Stream<Integer> stream = chara.getSlot().stream();
+        if (chara.isShip()) {
+            stream = Stream.concat(stream, Stream.of(chara.asShip().getSlotEx()));
+        }
+        return stream.map(itemMap::get)
+                .filter(Objects::nonNull)
+                .map(item -> {
+                    SlotitemMst itemMst = itemMstMap.get(item.getSlotitemId());
+                    if (itemMst == null) {
+                        return null;
+                    }
+                    return Tuple.of(itemMst, item);
+                })
                 .filter(Objects::nonNull);
     }
 

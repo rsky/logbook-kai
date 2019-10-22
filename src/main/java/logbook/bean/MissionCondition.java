@@ -49,6 +49,9 @@ public class MissionCondition implements Predicate<List<Ship>> {
     @JsonProperty("operator")
     private String operator;
 
+    @JsonProperty("additional")
+    private Boolean additional;
+
     private Boolean result;
 
     private String current;
@@ -156,9 +159,15 @@ public class MissionCondition implements Predicate<List<Ship>> {
         }
         if ("火力".equals(this.countType)) {
             current = this.fleetStatus(ships, ship -> ship.getKaryoku().get(0));
+            if (this.additional) {
+                current += this.fleetStatus(ships, ship -> (int) Math.floor(Ships.sumHPowerAdditional(ship)));
+            }
         }
         if ("対潜".equals(this.countType)) {
             current = this.fleetStatus(ships, ship -> ship.getTaisen().get(0));
+            if (this.additional) {
+                current += this.fleetStatus(ships, ship -> (int) Math.floor(Ships.sumTPowerAdditional(ship)));
+            }
         }
         if ("対空".equals(this.countType)) {
             current = this.fleetStatus(ships, ship -> ship.getTaiku().get(0));

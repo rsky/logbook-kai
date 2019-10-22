@@ -171,10 +171,11 @@ public class MissionCondition implements Predicate<List<Ship>> {
         if ("対潜".equals(this.countType)) {
             current = this.fleetStatus(ships, ship -> ship.getTaisen().get(0));
             if (this.additional != null && this.additional) {
+                // 改修強化値に1.5の逆数の補正をかける
                 additional = (int) ships.stream()
                         .filter(Objects::nonNull)
                         .mapToDouble(Ships::sumTPowerAdditional)
-                        .map(Math::floor)
+                        .map(value -> Math.floor(value * 2 / 3))
                         .sum();
             }
         }

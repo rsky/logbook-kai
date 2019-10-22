@@ -3,6 +3,7 @@ package logbook.internal;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -67,6 +68,8 @@ public class Ships {
     private static final Map<SlotItemType, Double> AA_COEFFICIENT = new EnumMap<>(SlotItemType.class);
     /** 対空改修係数 */
     private static final Map<SlotItemType, Double> AALV_COEFFICIENT = new EnumMap<>(SlotItemType.class);
+    /** アイテム別火力改修係数 */
+    private static final Map<String, Double> FPLV_COEFFICIENT = new HashMap<>();
 
     static {
         // 索敵係数
@@ -140,6 +143,16 @@ public class Ships {
         AALV_COEFFICIENT.put(SlotItemType.小口径主砲, 2D);
         AALV_COEFFICIENT.put(SlotItemType.副砲, 2D);
         AALV_COEFFICIENT.put(SlotItemType.高射装置, 2D);
+
+        // アイテム別火力改修係数
+        // 副砲(~5inch): 0.2
+        FPLV_COEFFICIENT.put("12.7cm連装高角砲", 0.2);
+        FPLV_COEFFICIENT.put("8cm高角砲", 0.2);
+        FPLV_COEFFICIENT.put("8cm高角砲改＋増設機銃", 0.2);
+        FPLV_COEFFICIENT.put("10cm連装高角砲改＋増設機銃", 0.2);
+        // 副砲(6inch~): 0.3
+        FPLV_COEFFICIENT.put("15.5cm三連装副砲", 0.3);
+        FPLV_COEFFICIENT.put("15.5cm三連装副砲改", 0.3);
     }
 
     private Ships() {
@@ -545,6 +558,11 @@ public class Ships {
      */
     public static double hPowerAdditional(SlotitemMst itemMst, SlotItem item) {
         // 参考 https://wikiwiki.jp/kancolle/%E6%94%B9%E4%BF%AE%E5%B7%A5%E5%BB%A0#h2_content_1_3
+        Double coefficient = FPLV_COEFFICIENT.get(itemMst.getName());
+        if (coefficient != null) {
+            // 改修値に比例して改修効果が伸びる装備の場合
+            return coefficient * item.getLevel();
+        }
         if (itemMst.is(SlotItemType.大口径主砲, SlotItemType.大口径主砲II)) {
             return Optional.ofNullable(item.getLevel())
                     .map(level -> 1.5D * Math.sqrt(level))
@@ -607,6 +625,11 @@ public class Ships {
      * @return 夜戦火力加算(改修効果)
      */
     public static double yPowerAdditional(SlotitemMst itemMst, SlotItem item) {
+        Double coefficient = FPLV_COEFFICIENT.get(itemMst.getName());
+        if (coefficient != null) {
+            // 改修値に比例して改修効果が伸びる装備の場合
+            return coefficient * item.getLevel();
+        }
         if (itemMst.is(
                 SlotItemType.小口径主砲, SlotItemType.中口径主砲, SlotItemType.大口径主砲, SlotItemType.大口径主砲II,
                 SlotItemType.副砲, SlotItemType.魚雷, SlotItemType.対艦強化弾, SlotItemType.対空強化弾,

@@ -154,19 +154,28 @@ public class MissionCondition implements Predicate<List<Ship>> {
      */
     private boolean testFleet(List<Ship> ships) {
         long current = 0;
+        int additional = -1;
         if ("レベル".equals(this.countType)) {
             current = this.fleetStatus(ships, Ship::getLv);
         }
         if ("火力".equals(this.countType)) {
             current = this.fleetStatus(ships, ship -> ship.getKaryoku().get(0));
             if (this.additional != null && this.additional) {
-                current += this.fleetStatus(ships, ship -> (int) Math.floor(Ships.sumHPowerAdditional(ship)));
+                additional = (int) ships.stream()
+                        .filter(Objects::nonNull)
+                        .mapToDouble(Ships::sumHPowerAdditional)
+                        .map(Math::floor)
+                        .sum();
             }
         }
         if ("対潜".equals(this.countType)) {
             current = this.fleetStatus(ships, ship -> ship.getTaisen().get(0));
             if (this.additional != null && this.additional) {
-                current += this.fleetStatus(ships, ship -> (int) Math.floor(Ships.sumTPowerAdditional(ship)));
+                additional = (int) ships.stream()
+                        .filter(Objects::nonNull)
+                        .mapToDouble(Ships::sumTPowerAdditional)
+                        .map(Math::floor)
+                        .sum();
             }
         }
         if ("対空".equals(this.countType)) {
@@ -190,8 +199,12 @@ public class MissionCondition implements Predicate<List<Ship>> {
                     .filter(this.item::equals)
                     .count();
         }
-        this.current = String.valueOf(current);
-        return current >= this.value;
+        if (additional >= 0) {
+            this.current = String.format("%d+%d=%d", current, additional, current + additional);
+        } else {
+            this.current = String.valueOf(current);
+        }
+        return current + additional >= this.value;
     }
 
     /**

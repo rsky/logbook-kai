@@ -47,6 +47,7 @@ import logbook.bean.NdockCollection;
 import logbook.bean.Ship;
 import logbook.bean.ShipCollection;
 import logbook.bean.ShipMst;
+import logbook.bean.SlotItem;
 import logbook.bean.SlotItemCollection;
 import logbook.internal.Audios;
 import logbook.internal.BouyomiChanUtils;

@@ -253,9 +253,23 @@ public class MainController extends WindowController {
      */
     private void button() {
         // 装備
-        Integer slotitem = SlotItemCollection.get()
-                .getSlotitemMap()
-                .size();
+        Map<Integer, SlotItem> itemMap = SlotItemCollection.get()
+                .getSlotitemMap();
+        Integer slotitem = itemMap.size();
+        // 消耗品をカウントから外す
+        // もっとスマートな方法があるはずだが、暫定
+        for (Map.Entry<Integer, SlotItem> item: itemMap.entrySet()) {
+            switch (item.getValue().getSlotitemId()) {
+                case 42: // 応急修理要員
+                case 43: // 応急修理女神
+                case 145: // 戦闘糧食
+                case 146: // 洋上補給
+                case 150: // 秋刀魚の缶詰
+                case 241: // 戦闘糧食(特別なおにぎり)
+                    slotitem -= 1;
+                    break;
+            }
+        }
         Integer maxSlotitem = Basic.get()
                 .getMaxSlotitem();
         this.item.setText(MessageFormat.format(this.itemFormat, slotitem, maxSlotitem));

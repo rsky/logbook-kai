@@ -24,3 +24,10 @@ hs_err_pid*
 /launch.bat
 /README.url
 /*.csv
+
+# Editors
+.idea/
+.vscode/
+
+# Mac
+.DS_Store

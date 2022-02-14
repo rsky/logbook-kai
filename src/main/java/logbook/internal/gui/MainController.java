@@ -1,5 +1,24 @@
 package logbook.internal.gui;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
+import logbook.Messages;
+import logbook.bean.*;
+import logbook.internal.*;
+import logbook.internal.BouyomiChanUtils.Type;
+import logbook.internal.proxy.ProxyHolder;
+import logbook.plugin.PluginServices;
+import logbook.plugin.lifecycle.StartUp;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -9,55 +28,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TitledPane;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import javafx.scene.media.AudioClip;
-import logbook.Messages;
-import logbook.bean.AppBouyomiConfig;
-import logbook.bean.AppCondition;
-import logbook.bean.AppConfig;
-import logbook.bean.AppExpRecords;
-import logbook.bean.AppQuest;
-import logbook.bean.AppQuestCollection;
-import logbook.bean.Basic;
-import logbook.bean.DeckPort;
-import logbook.bean.DeckPortCollection;
-import logbook.bean.Mission;
-import logbook.bean.MissionCollection;
-import logbook.bean.Ndock;
-import logbook.bean.NdockCollection;
-import logbook.bean.Ship;
-import logbook.bean.ShipCollection;
-import logbook.bean.ShipMst;
-import logbook.bean.SlotItem;
-import logbook.bean.SlotItemCollection;
-import logbook.internal.Audios;
-import logbook.internal.BouyomiChanUtils;
-import logbook.internal.BouyomiChanUtils.Type;
-import logbook.internal.LoggerHolder;
-import logbook.internal.Ships;
-import logbook.internal.Tuple;
-import logbook.internal.proxy.ProxyHolder;
-import logbook.plugin.PluginServices;
-import logbook.plugin.lifecycle.StartUp;
+import java.util.*;
 
 /**
  * UIコントローラー
@@ -254,23 +225,17 @@ public class MainController extends WindowController {
      */
     private void button() {
         // 装備
-        Map<Integer, SlotItem> itemMap = SlotItemCollection.get()
-                .getSlotitemMap();
-        Integer slotitem = itemMap.size();
-        // 消耗品をカウントから外す
-        // もっとスマートな方法があるはずだが、暫定
-        for (Map.Entry<Integer, SlotItem> item: itemMap.entrySet()) {
-            switch (item.getValue().getSlotitemId()) {
-                case 42: // 応急修理要員
-                case 43: // 応急修理女神
-                case 145: // 戦闘糧食
-                case 146: // 洋上補給
-                case 150: // 秋刀魚の缶詰
-                case 241: // 戦闘糧食(特別なおにぎり)
-                    slotitem -= 1;
-                    break;
-            }
-        }
+        Map<Integer, SlotitemMst> itemMstMap = SlotitemMstCollection.get().getSlotitemMap();
+        Integer slotitem = (int) SlotItemCollection.get()
+                .getSlotitemMap()
+                .values()
+                .stream()
+                // 消耗品を除外する
+                .filter(item -> !itemMstMap.get(item.getSlotitemId()).is(
+                        SlotItemType.応急修理要員,
+                        SlotItemType.戦闘糧食,
+                        SlotItemType.補給物資
+                )).count();
         Integer maxSlotitem = Basic.get()
                 .getMaxSlotitem();
         this.item.setText(MessageFormat.format(this.itemFormat, slotitem, maxSlotitem));

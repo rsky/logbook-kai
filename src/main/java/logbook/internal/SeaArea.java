@@ -39,6 +39,13 @@ public enum SeaArea {
     }
 
     /**
+     * 名前を更新します
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
      * 海域(イベント海域のお札)を取得します。
      * @return 海域(イベント海域のお札)
      */

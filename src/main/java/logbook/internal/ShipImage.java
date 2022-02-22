@@ -137,7 +137,7 @@ class ShipImage {
     private static final Layer RED_FACE = new Layer(214, 18, Paths.get("common", COMMON_MISC_118));
 
     /** 出撃札 */
-    private static final String JOIN_BANNER = "common_event/common_event_{0}.png";
+    private static final String JOIN_BANNER = "sally_strategymap/sally_strategymap_{0}.png";
 
     /** 装備アイコンのサイズ */
     private static final int ITEM_ICON_SIZE = 32;
@@ -271,7 +271,7 @@ class ShipImage {
                 Ship ship = chara.asShip();
                 Integer sallyArea = ship.getSallyArea();
                 if (sallyArea != null && sallyArea.intValue() != 0) {
-                    Path p = Paths.get("common", JOIN_BANNER.replace("{0}", Integer.toString(sallyArea*2 + 2)));
+                    Path p = Paths.get("sally", JOIN_BANNER.replace("{0}", Integer.toString(sallyArea + 17)));
                     layers.add(new Layer(50, -3, p));
                 }
             }

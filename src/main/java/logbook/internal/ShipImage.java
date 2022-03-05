@@ -139,6 +139,9 @@ class ShipImage {
     /** 出撃札 */
     private static final String JOIN_BANNER = "sally_strategymap/sally_strategymap_{0}.png";
 
+    /** 出撃札（後段作戦） */
+    private static final String JOIN_BANNER_2 = "sally_strategymap_second/sally_strategymap_second_{0}.png";
+
     /** 装備アイコンのサイズ */
     private static final int ITEM_ICON_SIZE = 32;
 
@@ -270,8 +273,17 @@ class ShipImage {
             if (isShip) {
                 Ship ship = chara.asShip();
                 Integer sallyArea = ship.getSallyArea();
-                if (sallyArea != null && sallyArea.intValue() != 0) {
-                    Path p = Paths.get("sally", JOIN_BANNER.replace("{0}", Integer.toString(sallyArea + 17)));
+                if (sallyArea != null && sallyArea != 0) {
+                    String bannerFormat;
+                    int imageNumber;
+                    if (sallyArea <= 4) {
+                        bannerFormat = JOIN_BANNER;
+                        imageNumber = sallyArea + 17;
+                    } else {
+                        bannerFormat = JOIN_BANNER_2;
+                        imageNumber = sallyArea + 16;
+                    }
+                    Path p = Paths.get("sally", bannerFormat.replace("{0}", Integer.toString(imageNumber)));
                     layers.add(new Layer(50, -3, p));
                 }
             }
@@ -377,7 +389,7 @@ class ShipImage {
 
     /**
      * 経験値ゲージ
-     * @param chara キャラクター
+     * @param ship キャラクター
      * @param canvas Canvas
      * @param gc GraphicsContext
      */

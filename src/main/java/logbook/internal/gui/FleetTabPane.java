@@ -235,6 +235,16 @@ public class FleetTabPane extends ScrollPane {
     }
 
     /**
+     * デッキビルダー形式のデータをクリップボードにコピーする
+     *
+     * @param event ActionEvent
+     */
+    @FXML
+    void deckBuilderCopy(ActionEvent event) {
+        DeckBuilder.deckPortCopy(this.port.getId());
+    }
+
+    /**
      * 画面を更新します
      *
      * @param port 艦隊

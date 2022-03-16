@@ -1,12 +1,6 @@
 package logbook.internal.gui;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,12 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.scene.control.TableView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import logbook.bean.Basic;
-import logbook.bean.DeckPortCollection;
-import logbook.bean.Ship;
-import logbook.bean.ShipCollection;
-import logbook.bean.SlotItem;
-import logbook.bean.SlotItemCollection;
+import logbook.bean.*;
 import logbook.bean.Mapinfo.AirBase;
 import logbook.bean.Mapinfo.PlaneInfo;
 import lombok.Data;
@@ -56,6 +45,29 @@ public class DeckBuilder {
                 .stream()
                 .map(ShipItem::getShip)
                 .collect(Collectors.toList()), null);
+    }
+
+    /**
+     * 選択された艦隊をクリップボードにコピーする。
+     *
+     * @param deckId 艦隊ID
+     */
+    public static void deckPortCopy(int deckId) {
+        Collection<Ship> ships = new ArrayList<>();
+        Map<Integer, Ship> shipMap = ShipCollection.get().getShipMap();
+        boolean combined = AppCondition.get().isCombinedFlag();
+        DeckPortCollection.get().getDeckPortMap().values().forEach(port -> {
+            // 連合艦隊の第1艦隊が指定された場合は第2艦隊も含める
+            if (port.getId() == deckId || (deckId == 1 && combined && port.getId() == 2)) {
+                port.getShip()
+                        .stream()
+                        .map(shipMap::get)
+                        .filter(Objects::nonNull)
+                        .forEach(ships::add);
+            }
+        });
+        // 制空権シミュレータのデッキビルダー読み込み向けに対象の艦隊を第1艦隊("f1")扱いとする
+        copyToClipboard(ships, null, 1 - deckId);
     }
     
     /**
@@ -93,6 +105,10 @@ public class DeckBuilder {
     }
 
     private static void copyToClipboard(Collection<Ship> ships, List<Airbase> airbase) {
+        copyToClipboard(ships, airbase, 0);
+    }
+
+    private static void copyToClipboard(Collection<Ship> ships, List<Airbase> airbase, int portIdAdjust) {
         Set<Integer> targets = ships.stream().map(Ship::getId).collect(Collectors.toSet());
         Map<Integer, Ship> shipsMap = ShipCollection.get().getShipMap();
         Map<String, Object> data = new TreeMap<>();
@@ -110,7 +126,7 @@ public class DeckBuilder {
                         .ifPresent(kanmusu -> fleet.put("s" + index, kanmusu));
                 }
             });
-            data.put("f" + port.getId(), fleet);
+            data.put("f" + (port.getId() + portIdAdjust), fleet);
         });
         Optional.ofNullable(airbase).ifPresent(list -> {
             for (int a = 0; a < airbase.size(); a++) {

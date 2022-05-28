@@ -276,9 +276,9 @@ class ShipImage {
                 if (sallyArea != null && sallyArea != 0) {
                     String bannerFormat;
                     int imageNumber;
-                    if (sallyArea <= 4) {
+                    if (sallyArea <= 99) {
                         bannerFormat = JOIN_BANNER;
-                        imageNumber = sallyArea + 17;
+                        imageNumber = sallyArea + 22;
                     } else {
                         bannerFormat = JOIN_BANNER_2;
                         imageNumber = sallyArea + 16;

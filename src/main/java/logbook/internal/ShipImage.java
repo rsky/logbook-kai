@@ -276,12 +276,12 @@ class ShipImage {
                 if (sallyArea != null && sallyArea != 0) {
                     String bannerFormat;
                     int imageNumber;
-                    if (sallyArea <= 99) {
+                    if (sallyArea <= 5) {
                         bannerFormat = JOIN_BANNER;
                         imageNumber = sallyArea + 22;
                     } else {
                         bannerFormat = JOIN_BANNER_2;
-                        imageNumber = sallyArea + 16;
+                        imageNumber = sallyArea + 14;
                     }
                     Path p = Paths.get("sally", bannerFormat.replace("{0}", Integer.toString(imageNumber)));
                     layers.add(new Layer(50, -3, p));

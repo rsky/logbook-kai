@@ -282,9 +282,9 @@ class ShipImage {
                     } else {
                         bannerFormat = JOIN_BANNER_2;
                         if (sallyArea == 10) {
-                            imageNumber = 20;
+                            imageNumber = 25;
                         } else {
-                            imageNumber = sallyArea + 15;
+                            imageNumber = sallyArea + 21;
                         }
                     }
                     Path p = Paths.get("sally", bannerFormat.replace("{0}", Integer.toString(imageNumber)));

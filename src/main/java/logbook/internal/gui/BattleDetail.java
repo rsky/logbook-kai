@@ -21,6 +21,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
@@ -166,6 +167,16 @@ public class BattleDetail extends WindowController {
     /** 提督経験値 */
     @FXML
     private Label exp;
+
+    /** ドロップ */
+    @FXML
+    private Label getShip;
+
+    @FXML
+    private HBox getShipBox1;
+
+    @FXML
+    private HBox getShipBox2;
 
     /** 演習かどうか */
     private boolean isPractice;
@@ -500,6 +511,34 @@ public class BattleDetail extends WindowController {
             this.shipExp.setText("?");
             this.exp.setText("?");
         }
+
+        // ドロップ
+        if (this.isPractice) {
+            // 演習では非表示にして段をずらすことで行が無いように見せかける
+            this.getShipBox1.setVisible(false);
+            this.getShipBox2.setVisible(false);
+            GridPane.setRowIndex(this.getShipBox1, 5);
+            GridPane.setRowIndex(this.getShipBox2, 5);
+        } else {
+            this.getShipBox1.setVisible(true);
+            this.getShipBox2.setVisible(true);
+            GridPane.setRowIndex(this.getShipBox1, 6);
+            GridPane.setRowIndex(this.getShipBox2, 6);
+            if (this.result != null) {
+                BattleResult.GetShip getShip = this.result.getGetShip();
+                if (getShip != null) {
+                    this.getShip.setText(getShip.getShipType() + " " + getShip.getShipName());
+                    this.getShip.setStyle("-fx-font-weight: bold");
+                } else {
+                    this.getShip.setText("なし");
+                    this.getShip.setStyle("-fx-font-weight: normal");
+                }
+            } else {
+                this.getShip.setText("?");
+                this.getShip.setStyle("-fx-font-weight: normal");
+            }
+        }
+
         ((BattleDetailPhase) phases.get(phases.size() - 1)).setExpanded(true);
     }
 

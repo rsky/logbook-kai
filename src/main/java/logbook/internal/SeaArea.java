@@ -8,10 +8,10 @@ import java.util.stream.Stream;
  */
 public enum SeaArea {
 
-    識別札1("第一特務艦隊", 1),
-    識別札2("地中海艦隊", 2),
-    識別札3("第二特務艦隊", 3),
-    識別札4("Force H", 4),
+    識別札1("識別札1", 1),
+    識別札2("識別札2", 2),
+    識別札3("識別札3", 3),
+    識別札4("識別札4", 4),
     識別札5("識別札5", 5),
     識別札6("識別札6", 6),
     識別札7("識別札7", 7),
@@ -36,6 +36,13 @@ public enum SeaArea {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * 名前を更新します
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

@@ -186,6 +186,16 @@
                                           <Label fx:id="shipExp" />
                                        </children>
                                     </HBox>
+                                    <HBox fx:id="getShipBox1" alignment="CENTER_LEFT" GridPane.rowIndex="6">
+                                       <children>
+                                          <Label text="ドロップ:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox fx:id="getShipBox2" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.columnSpan="7" GridPane.rowIndex="6">
+                                       <children>
+                                          <Label fx:id="getShip" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </GridPane>
                            </children>

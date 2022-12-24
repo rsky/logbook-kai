@@ -1,11 +1,6 @@
 package logbook.internal.gui;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,14 +13,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-import logbook.bean.AppConfig;
-import logbook.bean.AppShipTableConfig;
-import logbook.bean.DeckPort;
-import logbook.bean.DeckPortCollection;
-import logbook.bean.Ship;
-import logbook.bean.ShipCollection;
-import logbook.bean.ShipLabelCollection;
-import logbook.bean.ShipMst;
+import logbook.bean.*;
 import logbook.internal.LoggerHolder;
 import logbook.internal.SeaArea;
 import logbook.internal.Ships;
@@ -60,6 +48,14 @@ public class ShipController extends WindowController {
                     if (node instanceof StatisticsPane) {
                         ((StatisticsPane) node).update();
                     }
+                }
+            });
+
+            SeaAreaNameConfig seaAreaNameConfig = SeaAreaNameConfig.get();
+            Stream.of(SeaArea.values()).forEach(seaArea -> {
+                String name = seaAreaNameConfig.getAreaName(seaArea.getArea());
+                if (name != null && name.length() > 0) {
+                    seaArea.setName(name);
                 }
             });
 

@@ -2,7 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.ImageView?>
@@ -18,7 +20,15 @@
          <children>
             <VBox fx:id="infobox">
                <children>
-                  <Label fx:id="message" styleClass="message" />
+                  <Label fx:id="message" styleClass="message">
+                     <contextMenu>
+                        <ContextMenu>
+                           <items>
+                              <MenuItem mnemonicParsing="false" onAction="#deckBuilderCopy" text="デッキビルダー形式のデータをクリップボードにコピー" />
+                           </items>
+                        </ContextMenu>
+                     </contextMenu>
+                  </Label>
                   <VBox fx:id="ships" styleClass="ships" />
                   <Separator />
                   <HBox>

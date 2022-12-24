@@ -41,6 +41,7 @@ import javafx.util.Duration;
 import logbook.bean.AppBouyomiConfig;
 import logbook.bean.AppBouyomiConfig.AppBouyomiText;
 import logbook.bean.AppConfig;
+import logbook.bean.SeaAreaNameConfig;
 import logbook.bean.WindowLocation;
 import logbook.internal.BouyomiChanUtils;
 import logbook.internal.BouyomiChanUtils.BouyomiDefaultSettings;
@@ -379,6 +380,36 @@ public class ConfigController extends WindowController {
     @FXML
     private GridPane bouyomiTexts;
 
+    @FXML
+    private TextField seaAreaName1;
+
+    @FXML
+    private TextField seaAreaName2;
+
+    @FXML
+    private TextField seaAreaName3;
+
+    @FXML
+    private TextField seaAreaName4;
+
+    @FXML
+    private TextField seaAreaName5;
+
+    @FXML
+    private TextField seaAreaName6;
+
+    @FXML
+    private TextField seaAreaName7;
+
+    @FXML
+    private TextField seaAreaName8;
+
+    @FXML
+    private TextField seaAreaName9;
+
+    @FXML
+    private TextField seaAreaName10;
+
     private ObservableList<DetailPlugin> plugins = FXCollections.observableArrayList();
 
     private EnumMap<BouyomiChanUtils.Type, Supplier<Boolean>> enableBouyomiTextMap = new EnumMap<>(
@@ -496,6 +527,8 @@ public class ConfigController extends WindowController {
                 (ob, o, n) -> Tools.Controls.showNotify(null, "確認", "この位置に表示されます。", Duration.seconds(5), Pos.valueOf(n.getValue())));
 
         this.bouyomiChanInit();
+
+        this.seaAreaNameInit();
     }
 
     /**
@@ -601,6 +634,8 @@ public class ConfigController extends WindowController {
         conf.setUsePlugin(this.usePlugin.isSelected());
 
         this.bouyomiChanStore();
+
+        this.seaAreaNameStore();
 
         ThreadManager.getExecutorService()
                 .execute(Config.getDefault()::store);
@@ -837,6 +872,34 @@ public class ConfigController extends WindowController {
 
             textMap.put(type.toString(), bouyomiText);
         }
+    }
+
+    private void seaAreaNameInit() {
+        SeaAreaNameConfig config = SeaAreaNameConfig.get();
+        this.seaAreaName1.setText(config.getArea1());
+        this.seaAreaName2.setText(config.getArea2());
+        this.seaAreaName3.setText(config.getArea3());
+        this.seaAreaName4.setText(config.getArea4());
+        this.seaAreaName5.setText(config.getArea5());
+        this.seaAreaName6.setText(config.getArea6());
+        this.seaAreaName7.setText(config.getArea7());
+        this.seaAreaName8.setText(config.getArea8());
+        this.seaAreaName9.setText(config.getArea9());
+        this.seaAreaName10.setText(config.getArea10());
+    }
+
+    private void seaAreaNameStore() {
+        SeaAreaNameConfig config = SeaAreaNameConfig.get();
+        config.setArea1(this.seaAreaName1.getText());
+        config.setArea2(this.seaAreaName2.getText());
+        config.setArea3(this.seaAreaName3.getText());
+        config.setArea4(this.seaAreaName4.getText());
+        config.setArea5(this.seaAreaName5.getText());
+        config.setArea6(this.seaAreaName6.getText());
+        config.setArea7(this.seaAreaName7.getText());
+        config.setArea8(this.seaAreaName8.getText());
+        config.setArea9(this.seaAreaName9.getText());
+        config.setArea10(this.seaAreaName10.getText());
     }
 
     private int toInt(String v) {

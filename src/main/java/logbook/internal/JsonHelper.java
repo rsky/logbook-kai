@@ -56,6 +56,27 @@ public final class JsonHelper {
     }
 
     /**
+     * JsonValueをIntegerに変換します
+     * ただし値がJsonString "N/A" の場合は-1に変換します
+     *
+     * @see JsonNumber#intValue()
+     * @see BigDecimal#intValue()
+     * @param val Integerに変換するJsonValue
+     * @return Integer
+     */
+    public static Integer toIntegerMaybeNotAvailable(JsonValue val) {
+        if (val instanceof JsonNumber) {
+            return ((JsonNumber) val).intValue();
+        }
+        if (val instanceof JsonString) {
+            if (((JsonString) val).getString().equals("N/A")) {
+                return -1;
+            }
+        }
+        return new BigDecimal(toString(val)).intValue();
+    }
+
+    /**
      * JsonValueをDoubleに変換します
      *
      * @see JsonNumber#doubleValue()
@@ -167,6 +188,18 @@ public final class JsonHelper {
      */
     public static List<Integer> toIntegerList(JsonArray val) {
         return toList(val, JsonHelper::toInteger);
+    }
+
+    /**
+     * JsonArrayをIntegerのListに変換します<br>
+     * JsonArrayの内容はJsonNumberもしくはJsonString "N/A"である必要があります<br>
+     * "N/A"は-1に変換します
+     *
+     * @param val 変換するJsonArray
+     * @return IntegerのList
+     */
+    public static List<Integer> toIntegerListMaybeNotAvailable(JsonArray val) {
+        return toList(val, JsonHelper::toIntegerMaybeNotAvailable);
     }
 
     /**
@@ -614,6 +647,18 @@ public final class JsonHelper {
          */
         public <T extends JsonArray> Bind setIntegerList(String key, Consumer<List<Integer>> consumer) {
             return this.set(key, consumer, JsonHelper::toIntegerList);
+        }
+
+        /**
+         * keyで取得したJsonValueをList<Integer>に変換したものをconsumerへ設定します<br>
+         *
+         * @param <T> JsonObject#get(Object) の戻り値の型
+         * @param key JsonObjectから取得するキー
+         * @param consumer List<Integer>を消費するConsumer
+         * @return {@link Bind}
+         */
+        public <T extends JsonArray> Bind setIntegerListMaybeNotAvailable(String key, Consumer<List<Integer>> consumer) {
+            return this.set(key, consumer, JsonHelper::toIntegerListMaybeNotAvailable);
         }
 
         /**

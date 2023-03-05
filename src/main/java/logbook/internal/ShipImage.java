@@ -255,8 +255,13 @@ class ShipImage {
                     layers.add(BADLY_DAMAGE_BADGE);
                     layers.add(BADLY_DAMAGE_BACKGROUND);
                 } else if (Ships.isLost(chara)) {
-                    layers.add(LOST_BADGE);
-                    gc.applyEffect(new ColorAdjust(0, -1, 0, 0));
+                    if (chara.getMaxhp() > 0) {
+                        layers.add(LOST_BADGE);
+                        gc.applyEffect(new ColorAdjust(0, -1, 0, 0));
+                    } else {
+                        // FIXME: 対潜空襲マスの敵空母・暫定対応
+                        gc.applyEffect(new ColorAdjust(0, -0.3, -0.3, 0));
+                    }
                 }
             }
             // 疲労

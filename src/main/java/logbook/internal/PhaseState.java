@@ -751,6 +751,11 @@ public class PhaseState {
         }
         for (int i = 0, s = b.getEMaxhps().size(); i < s; i++) {
             if (b.getEMaxhps().get(i) == -1) {
+                // FIXME: 対潜空襲マスの敵空母・暫定対応
+                if (this.afterEnemy.get(i) != null) {
+                    this.afterEnemy.get(i).setMaxhp(-1);
+                    this.afterEnemy.get(i).setNowhp(-1);
+                }
                 continue;
             }
             if (this.afterEnemy.get(i) != null) {

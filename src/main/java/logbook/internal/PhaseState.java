@@ -754,14 +754,8 @@ public class PhaseState {
                 continue;
             }
             if (this.afterEnemy.get(i) != null) {
-                if (EnemyHp.isNotAvailable(b.getEMaxhps().get(i))) {
-                    // HPが"N/A"の潜水空襲マス敵空母・暫定対応
-                    this.afterEnemy.get(i).setMaxhp(-1);
-                    this.afterEnemy.get(i).setNowhp(-1);
-                } else {
-                    this.afterEnemy.get(i).setMaxhp(b.getEMaxhps().get(i));
-                    this.afterEnemy.get(i).setNowhp(b.getENowhps().get(i));
-                }
+                this.afterEnemy.get(i).setMaxhp(b.getEMaxhps().get(i));
+                this.afterEnemy.get(i).setNowhp(b.getENowhps().get(i));
             }
         }
         if (b.isICombinedBattle()) {

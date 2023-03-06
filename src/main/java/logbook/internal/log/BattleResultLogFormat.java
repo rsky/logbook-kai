@@ -24,6 +24,7 @@ import logbook.bean.SlotitemMst;
 import logbook.bean.SlotitemMstCollection;
 import logbook.bean.UseitemMst;
 import logbook.bean.UseitemMstCollection;
+import logbook.internal.EnemyHp;
 import logbook.internal.Ships;
 
 /**
@@ -195,7 +196,11 @@ public class BattleResultLogFormat extends LogFormatBase<BattleLog> {
                         name = shipMst.getName() + "(" + flagship + ")";
                     }
                     format.敵艦[i] = name;
-                    format.敵艦HP[i] = battle.getENowhps().get(i) + "/" + battle.getEMaxhps().get(i);
+                    if (EnemyHp.isNotAvailable(battle.getEMaxhps().get(i))) {
+                        format.敵艦HP[i] = EnemyHp.NOT_AVAILABLE;
+                    } else {
+                        format.敵艦HP[i] = battle.getENowhps().get(i) + "/" + battle.getEMaxhps().get(i);
+                    }
                 }
             }
         }

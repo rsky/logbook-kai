@@ -301,6 +301,16 @@ public class Ships {
     }
 
     /**
+     * 敵がこちらから攻撃不可か判定します
+     *
+     * @param chara キャラクター
+     * @return 攻撃不可状態の場合true
+     */
+    public static boolean isNotAvailable(Chara chara) {
+        return EnemyHp.isNotAvailable(chara);
+    }
+
+    /**
      * 艦娘がキラキラ2段階目(コンディション値 53以上)か判定します
      *
      * @param ship 艦娘

@@ -751,16 +751,17 @@ public class PhaseState {
         }
         for (int i = 0, s = b.getEMaxhps().size(); i < s; i++) {
             if (b.getEMaxhps().get(i) == -1) {
-                // FIXME: 対潜空襲マスの敵空母・暫定対応
-                if (this.afterEnemy.get(i) != null) {
-                    this.afterEnemy.get(i).setMaxhp(-1);
-                    this.afterEnemy.get(i).setNowhp(-1);
-                }
                 continue;
             }
             if (this.afterEnemy.get(i) != null) {
-                this.afterEnemy.get(i).setMaxhp(b.getEMaxhps().get(i));
-                this.afterEnemy.get(i).setNowhp(b.getENowhps().get(i));
+                if (EnemyHp.isNotAvailable(b.getEMaxhps().get(i))) {
+                    // HPが"N/A"の潜水空襲マス敵空母・暫定対応
+                    this.afterEnemy.get(i).setMaxhp(-1);
+                    this.afterEnemy.get(i).setNowhp(-1);
+                } else {
+                    this.afterEnemy.get(i).setMaxhp(b.getEMaxhps().get(i));
+                    this.afterEnemy.get(i).setNowhp(b.getENowhps().get(i));
+                }
             }
         }
         if (b.isICombinedBattle()) {

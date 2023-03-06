@@ -245,6 +245,9 @@ class ShipImage {
                 } else if (isEscape) {
                     layers.add(ESCAPE_BADGE);
                     gc.applyEffect(new ColorAdjust(0, -1, 0, 0));
+                } else if (Ships.isNotAvailable(chara)) {
+                    // HPが"N/A"の潜水空襲マス敵空母・暫定対応
+                    gc.applyEffect(new ColorAdjust(0, -0.25, -0.25, 0));
                 } else if (Ships.isSlightDamage(chara)) {
                     layers.add(SLIGHT_DAMAGE_BADGE);
                     layers.add(SLIGHT_DAMAGE_BACKGROUND);
@@ -255,13 +258,8 @@ class ShipImage {
                     layers.add(BADLY_DAMAGE_BADGE);
                     layers.add(BADLY_DAMAGE_BACKGROUND);
                 } else if (Ships.isLost(chara)) {
-                    if (chara.getMaxhp() > 0) {
-                        layers.add(LOST_BADGE);
-                        gc.applyEffect(new ColorAdjust(0, -1, 0, 0));
-                    } else {
-                        // FIXME: 対潜空襲マスの敵空母・暫定対応
-                        gc.applyEffect(new ColorAdjust(0, -0.3, -0.3, 0));
-                    }
+                    layers.add(LOST_BADGE);
+                    gc.applyEffect(new ColorAdjust(0, -1, 0, 0));
                 }
             }
             // 疲労

@@ -13,8 +13,10 @@ public class EnemyHp {
 
     /**
      * "N/A"を内部的に識別するための値
+     * HPに入ってくる可能性がまずないであろう値
+     * "N/A" -> "\x4e\x2f\x41" -> 0x4e2f41 -> 5123905 -> -1x
      */
-    public static final int NOT_AVAILABLE_VALUE = -128;
+    public static final int NOT_AVAILABLE_VALUE = -5123905;
 
     public static boolean isNotAvailable(int hp) {
         return hp == NOT_AVAILABLE_VALUE;

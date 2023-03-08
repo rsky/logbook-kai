@@ -68,7 +68,7 @@ public class BattleDetailPhaseShip extends HBox {
         this.img.setImage(Ships.shipWithItemWithoutStateBannerImage(this.chara, this.itemMap, this.escape));
         this.name.setText(Ships.toName(this.chara));
         if (EnemyHp.isNotAvailable(this.chara)) {
-            this.hp.setText(EnemyHp.NOT_AVAILABLE);
+            this.hp.setText("<" + EnemyHp.NOT_AVAILABLE + ">");
         } else {
             this.hp.setText(this.chara.getNowhp() + "/" + this.chara.getMaxhp());
         }

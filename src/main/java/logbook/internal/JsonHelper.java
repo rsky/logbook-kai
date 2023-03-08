@@ -56,6 +56,22 @@ public final class JsonHelper {
     }
 
     /**
+     * 敵HPのJsonValueをIntegerに変換します
+     *
+     * @see JsonHelper#toInteger(JsonValue)
+     * @param val Integerに変換するJsonValue
+     * @return Integer
+     */
+    public static Integer toIntegerEnemyHp(JsonValue val) {
+        if (val instanceof JsonString) {
+            if (((JsonString) val).getString().equals(EnemyHp.NOT_AVAILABLE)) {
+                return EnemyHp.NOT_AVAILABLE_VALUE;
+            }
+        }
+        return toInteger(val);
+    }
+
+    /**
      * JsonValueをDoubleに変換します
      *
      * @see JsonNumber#doubleValue()
@@ -167,6 +183,17 @@ public final class JsonHelper {
      */
     public static List<Integer> toIntegerList(JsonArray val) {
         return toList(val, JsonHelper::toInteger);
+    }
+
+    /**
+     * 敵HPのJsonArrayをIntegerのListに変換します<br>
+     * JsonArrayの内容はJsonNumberもしくはJsonString "N/A"である必要があります<br>
+     *
+     * @param val 変換するJsonArray
+     * @return IntegerのList
+     */
+    public static List<Integer> toIntegerListEnemyHp(JsonArray val) {
+        return toList(val, JsonHelper::toIntegerEnemyHp);
     }
 
     /**
@@ -614,6 +641,19 @@ public final class JsonHelper {
          */
         public <T extends JsonArray> Bind setIntegerList(String key, Consumer<List<Integer>> consumer) {
             return this.set(key, consumer, JsonHelper::toIntegerList);
+        }
+
+        /**
+         * keyで取得したJsonValueをList<Integer>に変換したものをconsumerへ設定します<br>
+         * keyのJsonObjectは敵HPのような、Numberと"N/A"が混雑する配列を想定しています
+         *
+         * @param <T> JsonObject#get(Object) の戻り値の型
+         * @param key JsonObjectから取得するキー
+         * @param consumer List<Integer>を消費するConsumer
+         * @return {@link Bind}
+         */
+        public <T extends JsonArray> Bind setIntegerListEnemyHp(String key, Consumer<List<Integer>> consumer) {
+            return this.set(key, consumer, JsonHelper::toIntegerListEnemyHp);
         }
 
         /**

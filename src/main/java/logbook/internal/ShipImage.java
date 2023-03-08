@@ -245,6 +245,9 @@ class ShipImage {
                 } else if (isEscape) {
                     layers.add(ESCAPE_BADGE);
                     gc.applyEffect(new ColorAdjust(0, -1, 0, 0));
+                } else if (Ships.isNotAvailable(chara)) {
+                    // HPが"N/A"の潜水空襲マス敵空母・暫定対応
+                    gc.applyEffect(new ColorAdjust(0, -0.25, -0.25, 0));
                 } else if (Ships.isSlightDamage(chara)) {
                     layers.add(SLIGHT_DAMAGE_BADGE);
                     layers.add(SLIGHT_DAMAGE_BACKGROUND);
@@ -276,9 +279,9 @@ class ShipImage {
                 if (sallyArea != null && sallyArea != 0) {
                     String bannerFormat;
                     int imageNumber;
-                    if (sallyArea <= 4) {
+                    if (sallyArea <= 5) {
                         bannerFormat = JOIN_BANNER;
-                        imageNumber = sallyArea + 19;
+                        imageNumber = sallyArea + 23;
                     } else {
                         bannerFormat = JOIN_BANNER_2;
                         if (sallyArea == 10) {

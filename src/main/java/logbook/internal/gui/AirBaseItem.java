@@ -599,8 +599,13 @@ public class AirBaseItem implements Comparable<AirBaseItem> {
         abitem.setSeiku(AirBases.airSuperiority(item, onslot, false));
         abitem.setInterceptSeiku(AirBases.airSuperiority(item, onslot, true));
         abitem.setDistance(distance);
-        abitem.setDistanceTaiteichan(distance + AirBases.distanceAdditional(distance, 20));
-        abitem.setDistanceCatalina(distance + AirBases.distanceAdditional(distance, 10));
+        if (slotitem.is(SlotItemType.オートジャイロ) || slotitem.is(SlotItemType.対潜哨戒機)) {
+            abitem.setDistanceTaiteichan(distance);
+            abitem.setDistanceCatalina(distance);
+        } else {
+            abitem.setDistanceTaiteichan(distance + AirBases.distanceAdditional(distance, 20));
+            abitem.setDistanceCatalina(distance + AirBases.distanceAdditional(distance, 10));
+        }
         abitem.setCost(Optional.ofNullable(slotitem.getCost()).map(c -> c * onslot).orElse(0));
         abitem.setTyku(slotitem.getTyku());
         if (slotitem.is(SlotItemType.局地戦闘機)) {

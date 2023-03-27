@@ -591,9 +591,7 @@ public class Ships {
             if (itemMst == null)
                 continue;
 
-            // 制空状態に関係するのは対空値を持つ艦戦、艦攻、艦爆、水爆、水戦のみ
-            if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.艦上攻撃機, SlotItemType.艦上爆撃機, SlotItemType.水上爆撃機,
-                    SlotItemType.水上戦闘機, SlotItemType.噴式戦闘爆撃機)) {
+            if (supportsAirSuperiority(itemMst)) {
                 // 対空値
                 double tyku = itemMst.getTyku();
                 tyku += airSuperiorityTykuAdditional(itemMst, item);
@@ -609,6 +607,38 @@ public class Ships {
     }
 
     /**
+     * 制空状態に関係する装備か
+     *
+     * @param itemMst 装備定義
+     * @return 制空状態に関係するならtrue
+     */
+    private static boolean supportsAirSuperiority(SlotitemMst itemMst) {
+        // 制空状態に関係するのは対空値を持つ艦戦、艦攻、艦爆、水爆、水戦、噴式機のみ
+        if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.艦上攻撃機, SlotItemType.艦上爆撃機, SlotItemType.水上爆撃機,
+                SlotItemType.水上戦闘機, SlotItemType.噴式戦闘爆撃機)) {
+            return true;
+        }
+
+        return supportsAirSuperiorityMpa(itemMst);
+    }
+
+    /**
+     * 制空状態に関係する対潜哨戒機か
+     * MPA = Maritime Patrol Aircraft
+     *
+     * @param itemMst 装備定義
+     * @return 制空状態に関係するならtrue
+     */
+    private static boolean supportsAirSuperiorityMpa(SlotitemMst itemMst) {
+        // 対空値を持つ対潜哨戒機は制空状態に関係する
+        if (itemMst.is(SlotItemType.対潜哨戒機) && itemMst.getTyku() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * 制空加算(改修効果)
      *
      * @param itemMst 装備定義
@@ -616,6 +646,7 @@ public class Ships {
      * @return 加算される制空値
      */
     public static double airSuperiorityTykuAdditional(SlotitemMst itemMst, SlotItem item) {
+        // TODO: 対潜哨戒機仕様の隼の改修が反映されるかどうか
         if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.水上戦闘機, SlotItemType.局地戦闘機)) {
             return Optional.ofNullable(item.getLevel())
                     .map(level -> 0.2D * level)
@@ -644,7 +675,8 @@ public class Ships {
             // 熟練ボーナス
             double bonus = Math.sqrt(skillLevel(item.getAlv()) / 10D);
             // 制空ボーナス
-            if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.水上戦闘機, SlotItemType.局地戦闘機)) {
+            if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.水上戦闘機, SlotItemType.局地戦闘機)
+                    || supportsAirSuperiorityMpa(itemMst)) {
                 bonus += skillBonus1(item.getAlv());
             } else if (itemMst.is(SlotItemType.水上爆撃機)) {
                 bonus += skillBonus2(item.getAlv());

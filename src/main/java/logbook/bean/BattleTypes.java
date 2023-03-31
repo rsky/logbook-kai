@@ -1675,7 +1675,19 @@ public class BattleTypes {
         主砲主砲CI("主砲主砲CI"),
         夜襲CI("夜襲CI"),
         主砲魚雷電探CI("主砲魚雷電探CI"),
-        魚雷見張員電探CI("魚雷見張員電探CI"),
+        魚雷見張員電探CI("魚雷見張員電探CI"), // 水雷戦隊 熟練見張員を使用するCIの場合はapi_si_listを見ないと正確なタイプが分からない
+        CI_9("夜戦CI(9種)"), // 調査のため仮置 (魚水魚, ド水魚, 潜水艦魚雷CI, 夜間瑞雲 で調査)
+        CI_10("夜戦CI(10種)"),
+        CI_11("夜戦CI(11種)"),
+        CI_12("夜戦CI(12種)"),
+        CI_13("夜戦CI(13種)"),
+        CI_14("夜戦CI(14種)"),
+        CI_15("夜戦CI(15種)"),
+        CI_16("夜戦CI(16種)"),
+        CI_17("夜戦CI(17種)"),
+        CI_18("夜戦CI(18種)"),
+        CI_19("夜戦CI(19種)"),
+        CI_20("夜戦CI(20種)"),
         NelsonTouch("NelsonTouch"),
         胸熱CI("一斉射かッ…胸が熱いな！"),
         陸奥タッチ("長門、いい？ いくわよ！ 主砲一斉射ッ！"),
@@ -1718,6 +1730,30 @@ public class BattleTypes {
                 return 主砲魚雷電探CI;
             case 8:
                 return 魚雷見張員電探CI;
+            case 9:
+                return CI_9;    // 調査のため仮置
+            case 10:
+                return CI_10;
+            case 11:
+                return CI_11;
+            case 12:
+                return CI_12;
+            case 13:
+                return CI_13;
+            case 14:
+                return CI_14;
+            case 15:
+                return CI_15;
+            case 16:
+                return CI_16;
+            case 17:
+                return CI_17;
+            case 18:
+                return CI_18;
+            case 19:
+                return CI_19;
+            case 20:
+                return CI_20;
             case 100:
                 return NelsonTouch;
             case 101:

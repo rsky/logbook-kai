@@ -1592,7 +1592,12 @@ public class BattleTypes {
         胸熱CI("一斉射かッ…胸が熱いな！"),
         陸奥タッチ("長門、いい？ いくわよ！ 主砲一斉射ッ！"),
         ColoradoTouch("特殊攻撃(Colorado)"),
-        僚艦夜戦突撃("僚艦夜戦突撃");   // 夜戦専用だが念のため
+        僚艦夜戦突撃("僚艦夜戦突撃"),   // 夜戦専用だが念のため
+        瑞雲立体攻撃("瑞雲立体攻撃"),
+        海空立体攻撃("海空立体攻撃"),
+        潜水艦隊攻撃("潜水艦隊攻撃"),
+        大和改二特殊砲撃_3隻("大和改二特殊砲撃(3隻)"),
+        大和改二特殊砲撃_2隻("大和改二特殊砲撃(2隻)");
 
         private String name;
 
@@ -1633,6 +1638,16 @@ public class BattleTypes {
                 return ColoradoTouch;
             case 104:
                 return 僚艦夜戦突撃;
+            case 200:
+                return 瑞雲立体攻撃;
+            case 201:
+                return 海空立体攻撃;
+            case 300:
+                return 潜水艦隊攻撃;
+            case 400:
+                return 大和改二特殊砲撃_3隻;
+            case 401:
+                return 大和改二特殊砲撃_2隻;
             default:
                 return 通常攻撃;
             }
@@ -1665,7 +1680,12 @@ public class BattleTypes {
         胸熱CI("一斉射かッ…胸が熱いな！"),
         陸奥タッチ("長門、いい？ いくわよ！ 主砲一斉射ッ！"),
         ColoradoTouch("特殊攻撃(Colorado)"),
-        僚艦夜戦突撃("僚艦夜戦突撃");
+        僚艦夜戦突撃("僚艦夜戦突撃"),
+        瑞雲立体攻撃("瑞雲立体攻撃"),   // 夜戦では発動しないが念のため
+        海空立体攻撃("海空立体攻撃"),   // 夜戦では発動しないが念のため
+        潜水艦隊攻撃("潜水艦隊攻撃"),
+        大和改二特殊砲撃_3隻("大和改二特殊砲撃(3隻)"),
+        大和改二特殊砲撃_2隻("大和改二特殊砲撃(2隻)");
 
         private String name;
 
@@ -1708,6 +1728,16 @@ public class BattleTypes {
                 return ColoradoTouch;
             case 104:
                 return 僚艦夜戦突撃;
+            case 200:
+                return 瑞雲立体攻撃;
+            case 201:
+                return 海空立体攻撃;
+            case 300:
+                return 潜水艦隊攻撃;
+            case 400:
+                return 大和改二特殊砲撃_3隻;
+            case 401:
+                return 大和改二特殊砲撃_2隻;
             default:
                 return 通常攻撃;
             }

@@ -27,7 +27,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import jdk.nashorn.api.scripting.JSObject;
+import org.openjdk.nashorn.api.scripting.JSObject;
 import logbook.bean.BattleLog;
 import logbook.bean.BattleLogScriptCollection;
 import logbook.bean.BattleLogScriptCollection.BattleLogScript;
@@ -144,7 +144,7 @@ public class BattleLogScriptController extends WindowController {
         StringWriter writer = new StringWriter();
         PrintWriter out = new PrintWriter(writer, true);
         try {
-            ScriptEngine engine = new ScriptEngineManager().getEngineByExtension("js");
+            ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
             JSObject obj = (JSObject) engine.eval("this");
             obj.setMember("print", (Consumer<Object>) out::println);

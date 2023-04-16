@@ -27,7 +27,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.openjdk.nashorn.api.scripting.JSObject;
+import jdk.nashorn.api.scripting.JSObject;
 import logbook.bean.BattleLog;
 import logbook.bean.BattleLogScriptCollection;
 import logbook.bean.BattleLogScriptCollection.BattleLogScript;

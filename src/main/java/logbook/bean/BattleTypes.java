@@ -1676,11 +1676,11 @@ public class BattleTypes {
         夜襲CI("夜襲CI"),
         主砲魚雷電探CI("主砲魚雷電探CI"),
         魚雷見張員電探CI("魚雷見張員電探CI"),
-        魚水魚CI("魚水魚CI"),
+        魚雷魚雷見張員CI("魚雷魚雷見張員CI"),
         ドラム缶CI("ドラム缶CI"),
-        CI_11("夜戦CI(11種)"),
-        CI_12("夜戦CI(12種)"),
-        CI_13("夜戦CI(13種)"),
+        主砲電探魚雷CI2("主砲電探魚雷CI(2回判定)"),
+        魚雷見張員電探CI2("魚雷見張員電探CI(2回判定)"),
+        魚雷魚雷CI2("魚雷魚雷CI(2回判定)"),
         CI_14("夜戦CI(14種)"),
         CI_15("夜戦CI(15種)"),
         NelsonTouch("NelsonTouch"),
@@ -1726,15 +1726,15 @@ public class BattleTypes {
             case 8:
                 return 魚雷見張員電探CI;
             case 9:
-                return 魚水魚CI;
+                return 魚雷魚雷見張員CI;
             case 10:
                 return ドラム缶CI;
             case 11:
-                return CI_11;
+                return 主砲電探魚雷CI2;
             case 12:
-                return CI_12;
+                return 魚雷見張員電探CI2;
             case 13:
-                return CI_13;
+                return 魚雷魚雷CI2;
             case 14:
                 return CI_14;
             case 15:

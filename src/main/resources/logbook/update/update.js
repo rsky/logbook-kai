@@ -73,7 +73,7 @@ UpdateTask.prototype.getReleaseJson = function() {
                 }
                 for (var i = 0; i < release["assets"].length; i++) {
                     var name = release["assets"][i]["name"];
-                    var prefix = "11".equals(System.getProperty("target_java_version")) ? "logbook-kai-java11_" : "logbook-kai_";
+                    var prefix = "17".equals(System.getProperty("target_java_version")) ? "logbook-kai-java17_" : "logbook-kai_";
                     if (name.startsWith(prefix) && name.endsWith(".zip")) {
                         asset = release["assets"][i];
                         break;

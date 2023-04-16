@@ -144,7 +144,7 @@ public class BattleLogScriptController extends WindowController {
         StringWriter writer = new StringWriter();
         PrintWriter out = new PrintWriter(writer, true);
         try {
-            ScriptEngine engine = new ScriptEngineManager().getEngineByExtension("js");
+            ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
             JSObject obj = (JSObject) engine.eval("this");
             obj.setMember("print", (Consumer<Object>) out::println);

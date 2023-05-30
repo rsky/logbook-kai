@@ -21,7 +21,14 @@ public final class PluginServices {
      * @return クラスローダー
      */
     public static ClassLoader getClassLoader() {
-        ClassLoader classLoader = PluginContainer.class.getClassLoader();
+        ClassLoader classLoader;
+        String version = System.getProperty("java.version");
+        if (version.startsWith("1.8.")) {
+            classLoader = PluginContainer.getInstance().getClassLoader();
+        } else {
+            // FIXME: Java 17ではエラーにならないがプラグインが読み込めない可能性あり。正しいやり方を調べる
+            classLoader = PluginContainer.class.getClassLoader();
+        }
         return classLoader;
     }
 

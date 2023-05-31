@@ -21,8 +21,7 @@ public final class PluginServices {
      * @return クラスローダー
      */
     public static ClassLoader getClassLoader() {
-        ClassLoader classLoader = PluginContainer.class.getClassLoader();
-        return classLoader;
+        return PluginContainer.getInstance().getClassLoader();
     }
 
     /**

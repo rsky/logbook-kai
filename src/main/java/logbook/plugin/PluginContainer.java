@@ -14,13 +14,17 @@ import logbook.internal.LoggerHolder;
  */
 public class PluginContainer {
 
-    private static final PluginContainer container = new PluginContainer();
+    private static final PluginContainer container;
 
     private List<JarBasedPlugin> plugins;
 
     private URLClassLoader classLoader;
 
     private boolean initialized;
+
+    static {
+        container = new PluginContainer();
+    }
 
     private PluginContainer() {
     }

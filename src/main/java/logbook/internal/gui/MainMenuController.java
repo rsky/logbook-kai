@@ -392,7 +392,7 @@ public class MainMenuController extends WindowController {
         List<MenuItem> addItem = Plugin.getContent(serviceClass);
         if (!addItem.isEmpty()) {
             items.add(new SeparatorMenuItem());
-            addItem.forEach(items::add);
+            items.addAll(addItem);
         }
     }
 }

@@ -53,25 +53,25 @@ class ShipImage {
     private static final String[] STANDING_DAMAGED = { "19.png", "19.jpg" };
 
     /** 小破バナーアイコン */
-    private static final String MC_BANNER_ICON0 = "common_misc/common_misc_110.png";
+    private static final String MC_BANNER_ICON0 = "common_misc/common_misc_112.png";
 
     /** 中破バナーアイコン */
     private static final String MC_BANNER_ICON1 = "common_misc/common_misc_104.png";
 
     /** 大破バナーアイコン */
-    private static final String MC_BANNER_ICON2 = "common_misc/common_misc_114.png";
+    private static final String MC_BANNER_ICON2 = "common_misc/common_misc_116.png";
 
     /** 撃沈バナーアイコン */
     private static final String MC_BANNER_ICON3 = "common_misc/common_misc_107.png";
 
     /** 修復バナーアイコン */
-    private static final String MC_BANNER_ICON4 = "common_misc/common_misc_113.png";
+    private static final String MC_BANNER_ICON4 = "common_misc/common_misc_115.png";
 
     /** 遠征バナーアイコン */
     private static final String MC_BANNER_ICON5 = "common_misc/common_misc_105.png";
 
     /** 退避バナーアイコン */
-    private static final String MC_BANNER_ICON10 = "common_misc/common_misc_115.png";
+    private static final String MC_BANNER_ICON10 = "common_misc/common_misc_117.png";
 
     /** 小破汚れ */
     private static final String MC_BANNER_SMOKE_IMG0 = "common_misc/common_misc_101.png";
@@ -86,13 +86,13 @@ class ShipImage {
     private static final String COMMON_MISC_39 = "common_misc/common_misc_39.png";
 
     /** 疲労オレンジ顔 */
-    private static final String COMMON_MISC_117 = "common_misc/common_misc_117.png";
+    private static final String COMMON_MISC_119 = "common_misc/common_misc_119.png";
 
     /** 疲労赤背景 */
     private static final String COMMON_MISC_40 = "common_misc/common_misc_40.png";
 
     /** 疲労赤顔 */
-    private static final String COMMON_MISC_118 = "common_misc/common_misc_118.png";
+    private static final String COMMON_MISC_120 = "common_misc/common_misc_120.png";
 
     /** 小破バッチ */
     private static final Layer SLIGHT_DAMAGE_BADGE = new Layer(0, 0, Paths.get("common", MC_BANNER_ICON0));
@@ -128,13 +128,13 @@ class ShipImage {
     private static final Layer ORANGE_BACKGROUND = new Layer(150, 0, Paths.get("common", COMMON_MISC_39));
 
     /** 疲労オレンジ顔 */
-    private static final Layer ORANGE_FACE = new Layer(214, 18, Paths.get("common", COMMON_MISC_117));
+    private static final Layer ORANGE_FACE = new Layer(214, 18, Paths.get("common", COMMON_MISC_119));
 
     /** 疲労赤背景 */
     private static final Layer RED_BACKGROUND = new Layer(150, 0, Paths.get("common", COMMON_MISC_40));
 
     /** 疲労赤顔 */
-    private static final Layer RED_FACE = new Layer(214, 18, Paths.get("common", COMMON_MISC_118));
+    private static final Layer RED_FACE = new Layer(214, 18, Paths.get("common", COMMON_MISC_120));
 
     /** 出撃札 */
     private static final String JOIN_BANNER = "sally_strategymap/sally_strategymap_{0}.png";

@@ -19,7 +19,7 @@ import lombok.Data;
 @Data
 public class Ship implements Chara, Serializable, Cloneable {
 
-    private static final long serialVersionUID = 3598977177423429679L;
+    private static final long serialVersionUID = 8831803354999776670L;
 
     /** ID */
     private Integer id;
@@ -116,6 +116,9 @@ public class Ship implements Chara, Serializable, Cloneable {
 
     /** 出撃海域 */
     private Integer sallyArea = 0;
+
+    /** 特殊効果アイテム */
+    private List<SpEffectItem> spEffectItems;
 
     @Override
     public Ship clone() {
@@ -219,7 +222,8 @@ public class Ship implements Chara, Serializable, Cloneable {
                 .setIntegerList("api_lucky", bean::setLucky)
                 .setBoolean("api_locked", bean::setLocked)
                 .setBoolean("api_locked_equip", bean::setLockedEquip)
-                .setInteger("api_sally_area", bean::setSallyArea);
+                .setInteger("api_sally_area", bean::setSallyArea)
+                .set("api_sp_effect_items", bean::setSpEffectItems, JsonHelper.toList(SpEffectItem::toSpEffectItem));
         return bean;
     }
 }

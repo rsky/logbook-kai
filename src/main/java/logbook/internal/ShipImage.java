@@ -25,6 +25,7 @@ import logbook.bean.ShipMst;
 import logbook.bean.SlotItem;
 import logbook.bean.SlotitemMst;
 import logbook.bean.SlotitemMstCollection;
+import logbook.bean.SpEffectItem;
 
 class ShipImage {
 
@@ -94,6 +95,12 @@ class ShipImage {
     /** 疲労赤顔 */
     private static final String COMMON_MISC_120 = "common_misc/common_misc_120.png";
 
+    /** 青リボンバナーアイコン */
+    private static final String SP_EFFECT_ITEM_BANNER_ICON1 = "common_misc/common_misc_110.png";
+
+    /** 白タスキバナーアイコン */
+    private static final String SP_EFFECT_ITEM_BANNER_ICON2 = "common_misc/common_misc_111.png";
+
     /** 小破バッチ */
     private static final Layer SLIGHT_DAMAGE_BADGE = new Layer(0, 0, Paths.get("common", MC_BANNER_ICON0));
 
@@ -135,6 +142,12 @@ class ShipImage {
 
     /** 疲労赤顔 */
     private static final Layer RED_FACE = new Layer(214, 18, Paths.get("common", COMMON_MISC_120));
+
+    /** 青リボン */
+    private static final Layer SP_EFFECT_BLUE_RIBBON = new Layer(0, 0, Paths.get("common", SP_EFFECT_ITEM_BANNER_ICON1));
+
+    /** 白タスキ */
+    private static final Layer SP_EFFECT_WHITE_TASUKI = new Layer(0, 0, Paths.get("common", SP_EFFECT_ITEM_BANNER_ICON2));
 
     /** 出撃札 */
     private static final String JOIN_BANNER = "sally_strategymap/sally_strategymap_{0}.png";
@@ -236,6 +249,19 @@ class ShipImage {
             // 退避
             boolean isEscape = isShip && Ships.isEscape(chara.asShip(), escape);
 
+            // 特殊効果
+            if (isShip && banner && chara.asShip().getSpEffectItems() != null) {
+                for (SpEffectItem spEffectItem : chara.asShip().getSpEffectItems()) {
+                    switch (spEffectItem.getKind()) {
+                        case SpEffectItem.KIND_BLUE_RIBBON:
+                            layers.add(SP_EFFECT_BLUE_RIBBON);
+                            break;
+                        case SpEffectItem.KIND_WHITE_TASUKI:
+                            layers.add(SP_EFFECT_WHITE_TASUKI);
+                            break;
+                    }
+                }
+            }
             // バッチ
             if (banner) {
                 if (isOnNdock) {

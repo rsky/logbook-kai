@@ -308,8 +308,8 @@ public class ResourceChartController extends WindowController {
                         .collect(Collectors.toList());
             }
             // 「資源と資材のスケールを合わせる」にチェックが入っており、
-            // 資源（燃料・弾薬・鋼材・ボーキのいずれか）が選択されている場合は
-            // 2軸チャートの代替策として資材（高速建造材・開発資材・高速修復材・改修資材）のY軸の値を100倍する
+            // 資源（燃料・弾薬・鋼材・ボーキ）のいずれかが選択されている場合は、
+            // 資材（高速建造材・開発資材・高速修復材・改修資材）のY軸の値を100倍する。
             final int materialMultiplier;
             if (this.materialX100.isSelected() && (this.fuel.isSelected() || this.ammo.isSelected() || this.metal.isSelected() || this.bauxite.isSelected())) {
                 materialMultiplier = 100;

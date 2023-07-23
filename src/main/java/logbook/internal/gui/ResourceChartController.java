@@ -116,6 +116,10 @@ public class ResourceChartController extends WindowController {
     @FXML
     private CheckBox forceZero;
 
+    /** 資源と資材のスケールを合わせる */
+    @FXML
+    private CheckBox materialX100;
+
     /** チャートx軸 */
     @FXML
     private NumberAxis xAxis;
@@ -223,6 +227,7 @@ public class ResourceChartController extends WindowController {
         config.setResearch(this.research.isSelected());
         config.setImprove(this.improve.isSelected());
         config.setForceZero(this.forceZero.isSelected());
+        config.setMaterialX100(this.materialX100.isSelected());
         AppViewConfig.get().setResourceChartConfig(config);
     }
 
@@ -240,6 +245,7 @@ public class ResourceChartController extends WindowController {
         this.research.setSelected(config.isResearch());
         this.improve.setSelected(config.isImprove());
         this.forceZero.setSelected(config.isForceZero());
+        this.materialX100.setSelected(config.isMaterialX100());
         this.term.getSelectionModel().select(config.getTermIndex());
     }
 
@@ -301,6 +307,15 @@ public class ResourceChartController extends WindowController {
                         .filter(l -> l.getDate().compareTo(toDateTime) <= 0)
                         .collect(Collectors.toList());
             }
+            // 「資源と資材のスケールを合わせる」にチェックが入っており、
+            // 資源（燃料・弾薬・鋼材・ボーキのいずれか）が選択されている場合は
+            // 2軸チャートの代替策として資材（高速建造材・開発資材・高速修復材・改修資材）のY軸の値を100倍する
+            final int materialMultiplier;
+            if (this.materialX100.isSelected() && (this.fuel.isSelected() || this.ammo.isSelected() || this.metal.isSelected() || this.bauxite.isSelected())) {
+                materialMultiplier = 100;
+            } else {
+                materialMultiplier = 1;
+            }
             ResourceSeries series = new ResourceSeries();
             // 燃料
             if (this.fuel.isSelected())
@@ -325,22 +340,22 @@ public class ResourceChartController extends WindowController {
             // 高速修復材
             if (this.bucket.isSelected())
                 series.setBucket(log.stream()
-                        .map(r -> r.getBucketSeries(fromDateTime))
+                        .map(r -> r.getBucketSeries(fromDateTime, materialMultiplier))
                         .collect(Collectors.toList()));
             // 高速建造材
             if (this.burner.isSelected())
                 series.setBurner(log.stream()
-                        .map(r -> r.getBurnerSeries(fromDateTime))
+                        .map(r -> r.getBurnerSeries(fromDateTime, materialMultiplier))
                         .collect(Collectors.toList()));
             // 開発資材
             if (this.research.isSelected())
                 series.setResearch(log.stream()
-                        .map(r -> r.getResearchSeries(fromDateTime))
+                        .map(r -> r.getResearchSeries(fromDateTime, materialMultiplier))
                         .collect(Collectors.toList()));
             // 改修資材
             if (this.improve.isSelected())
                 series.setImprove(log.stream()
-                        .map(r -> r.getImproveSeries(fromDateTime))
+                        .map(r -> r.getImproveSeries(fromDateTime, materialMultiplier))
                         .collect(Collectors.toList()));
 
             this.chart.getData().clear();
@@ -728,8 +743,8 @@ public class ResourceChartController extends WindowController {
          * @param from 開始日時
          * @return 高速修復材
          */
-        public XYChart.Data<Number, Number> getBucketSeries(ZonedDateTime from) {
-            return new XYChart.Data<>(this.date.toEpochSecond() - from.toEpochSecond(), this.bucket);
+        public XYChart.Data<Number, Number> getBucketSeries(ZonedDateTime from, int multiplier) {
+            return new XYChart.Data<>(this.date.toEpochSecond() - from.toEpochSecond(), this.bucket * multiplier);
         }
 
         /**
@@ -753,8 +768,8 @@ public class ResourceChartController extends WindowController {
          * @param from 開始日時
          * @return 高速建造材
          */
-        public XYChart.Data<Number, Number> getBurnerSeries(ZonedDateTime from) {
-            return new XYChart.Data<>(this.date.toEpochSecond() - from.toEpochSecond(), this.burner);
+        public XYChart.Data<Number, Number> getBurnerSeries(ZonedDateTime from, int multiplier) {
+            return new XYChart.Data<>(this.date.toEpochSecond() - from.toEpochSecond(), this.burner * multiplier);
         }
 
         /**
@@ -778,8 +793,8 @@ public class ResourceChartController extends WindowController {
          * @param from 開始日時
          * @return 開発資材
          */
-        public XYChart.Data<Number, Number> getResearchSeries(ZonedDateTime from) {
-            return new XYChart.Data<>(this.date.toEpochSecond() - from.toEpochSecond(), this.research);
+        public XYChart.Data<Number, Number> getResearchSeries(ZonedDateTime from, int multiplier) {
+            return new XYChart.Data<>(this.date.toEpochSecond() - from.toEpochSecond(), this.research * multiplier);
         }
 
         /**
@@ -803,8 +818,8 @@ public class ResourceChartController extends WindowController {
          * @param from 開始日時
          * @return 改修資材
          */
-        public XYChart.Data<Number, Number> getImproveSeries(ZonedDateTime from) {
-            return new XYChart.Data<>(this.date.toEpochSecond() - from.toEpochSecond(), this.improve);
+        public XYChart.Data<Number, Number> getImproveSeries(ZonedDateTime from, int multiplier) {
+            return new XYChart.Data<>(this.date.toEpochSecond() - from.toEpochSecond(), this.improve * multiplier);
         }
 
         /**

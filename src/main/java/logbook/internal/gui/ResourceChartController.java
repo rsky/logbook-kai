@@ -116,7 +116,7 @@ public class ResourceChartController extends WindowController {
     @FXML
     private CheckBox forceZero;
 
-    /** 資源x100 */
+    /** 資材x100 */
     @FXML
     private CheckBox materialX100;
 
@@ -307,7 +307,7 @@ public class ResourceChartController extends WindowController {
                         .filter(l -> l.getDate().compareTo(toDateTime) <= 0)
                         .collect(Collectors.toList());
             }
-            // 「資源x100」にチェックが入っており、
+            // 「資材x100」にチェックが入っており、
             // 資源（燃料・弾薬・鋼材・ボーキ）のいずれかが選択されている場合は、
             // 資材（高速建造材・開発資材・高速修復材・改修資材）のY軸の値を100倍する。
             final int materialMultiplier;

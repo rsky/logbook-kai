@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 @Data
 public class SeaAreaNameConfig implements Serializable {
+    private static final long serialVersionUID = -3429972632602581322L;
+
     private String area1 = "識別札1";
     private String area2 = "識別札2";
     private String area3 = "識別札3";
@@ -17,6 +19,8 @@ public class SeaAreaNameConfig implements Serializable {
     private String area8 = "識別札8";
     private String area9 = "識別札9";
     private String area10 = "識別札10";
+    private String area11 = "識別札11";
+    private String area12 = "識別札12";
 
     public String getAreaName(int area) {
         switch (area) {
@@ -40,6 +44,10 @@ public class SeaAreaNameConfig implements Serializable {
                 return this.area9;
             case 10:
                 return this.area10;
+            case 11:
+                return this.area11;
+            case 12:
+                return this.area12;
             default:
                 return null;
         }

@@ -452,6 +452,8 @@
                               <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
                               <Label text="識別札1" GridPane.rowIndex="0" />
@@ -474,6 +476,10 @@
                               <TextField fx:id="seaAreaName9" text="識別札9" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                               <Label text="識別札10 " GridPane.rowIndex="9" />
                               <TextField fx:id="seaAreaName10" text="識別札10" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <Label text="識別札11 " GridPane.rowIndex="10" />
+                              <TextField fx:id="seaAreaName11" text="識別札11" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <Label text="識別札12 " GridPane.rowIndex="11" />
+                              <TextField fx:id="seaAreaName12" text="識別札12" GridPane.columnIndex="1" GridPane.rowIndex="11" />
                            </children>
                         </GridPane>
                      </children>

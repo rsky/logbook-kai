@@ -310,7 +310,11 @@ class ShipImage {
                         imageNumber = sallyArea + 32;
                     } else {
                         bannerFormat = JOIN_BANNER_2;
-                        imageNumber = sallyArea + 9;
+                        if (sallyArea == 10) {
+                            imageNumber = 16;
+                        } else {
+                            imageNumber = sallyArea + 10;
+                        }
                     }
                     Path p = Paths.get("sally", bannerFormat.replace("{0}", Integer.toString(imageNumber)));
                     layers.add(new Layer(50, -3, p));

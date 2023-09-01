@@ -28,10 +28,12 @@ var scriptFile = System.getProperty("update_script");
 var targetDir = System.getProperty("install_target");
 // インストールバージョン
 var version = System.getProperty("install_version");
+// リリースタグ
+var tag = System.getProperty("release_tag");
 // Prerelease を使うかどうか
 var usePrerelease = System.getProperty("use_prerelease");
 // GitHub Releases API
-var releaseURL = "https://api.github.com/repos/Sdk0815/logbook-kai/releases/tags/v" + version;
+var releaseURL = "https://api.github.com/repos/rsky/logbook-kai/releases/tags/" + tag;
 var release = {};
 var asset = {};
 

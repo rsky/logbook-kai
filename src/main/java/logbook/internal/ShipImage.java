@@ -149,12 +149,6 @@ class ShipImage {
     /** 白タスキ */
     private static final Layer SP_EFFECT_WHITE_TASUKI = new Layer(0, 0, Paths.get("common", SP_EFFECT_ITEM_BANNER_ICON2));
 
-    /** 出撃札 */
-    private static final String JOIN_BANNER = "sally_strategymap/sally_strategymap_{0}.png";
-
-    /** 出撃札（後段作戦） */
-    private static final String JOIN_BANNER_2 = "sally_strategymap_second/sally_strategymap_second_{0}.png";
-
     /** 装備アイコンのサイズ */
     private static final int ITEM_ICON_SIZE = 32;
 
@@ -302,22 +296,11 @@ class ShipImage {
             if (isShip) {
                 Ship ship = chara.asShip();
                 Integer sallyArea = ship.getSallyArea();
-                if (sallyArea != null && sallyArea != 0) {
-                    String bannerFormat;
-                    int imageNumber;
-                    if (sallyArea <= 6) {
-                        bannerFormat = JOIN_BANNER;
-                        imageNumber = sallyArea + 32;
-                    } else {
-                        bannerFormat = JOIN_BANNER_2;
-                        if (sallyArea == 10) {
-                            imageNumber = 16;
-                        } else {
-                            imageNumber = sallyArea + 10;
-                        }
+                if (sallyArea != null) {
+                    Path p = SeaAreaBanner.getJoinBannerPath(sallyArea);
+                    if (p != null) {
+                        layers.add(new Layer(50, -3, p));
                     }
-                    Path p = Paths.get("sally", bannerFormat.replace("{0}", Integer.toString(imageNumber)));
-                    layers.add(new Layer(50, -3, p));
                 }
             }
             // 装備画像

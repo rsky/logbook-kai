@@ -16,8 +16,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -27,7 +25,12 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import jdk.nashorn.api.scripting.JSObject;
+
+import jdk.nashorn.api.scripting.JSObject; // Java 8
+//import org.openjdk.nashorn.api.scripting.JSObject; // Java 17
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import logbook.bean.BattleLog;
 import logbook.bean.BattleLogScriptCollection;
 import logbook.bean.BattleLogScriptCollection.BattleLogScript;

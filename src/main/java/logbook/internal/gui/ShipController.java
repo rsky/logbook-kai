@@ -54,7 +54,7 @@ public class ShipController extends WindowController {
             SeaAreaNameConfig seaAreaNameConfig = SeaAreaNameConfig.get();
             Stream.of(SeaArea.values()).forEach(seaArea -> {
                 String name = seaAreaNameConfig.getAreaName(seaArea.getArea());
-                if (name != null && name.length() > 0) {
+                if (name != null && !name.isEmpty()) {
                     seaArea.setName(name);
                 }
             });

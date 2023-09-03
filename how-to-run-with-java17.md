@@ -40,17 +40,20 @@ Java 17ではJREからJavaScript実行エンジンNashornが削除されてい�
 ソースコードを一部改変してimport元を変更する必要があります。
 
 ```diff
+diff --git a/src/main/java/logbook/internal/gui/BattleLogScriptController.java b/src/main/java/logbook/internal/gui/BattleLogScriptController.java
 --- a/src/main/java/logbook/internal/gui/BattleLogScriptController.java
 +++ b/src/main/java/logbook/internal/gui/BattleLogScriptController.java
-@@ -27,7 +27,7 @@ import javafx.scene.control.TextArea;
- import javafx.scene.control.TextField;
+@@ -26,8 +26,8 @@ import javafx.scene.control.TextField;
  import javafx.scene.layout.Priority;
  import javafx.scene.layout.VBox;
--import jdk.nashorn.api.scripting.JSObject;
-+import org.openjdk.nashorn.api.scripting.JSObject;
- import logbook.bean.BattleLog;
- import logbook.bean.BattleLogScriptCollection;
- import logbook.bean.BattleLogScriptCollection.BattleLogScript;
+ 
+-import jdk.nashorn.api.scripting.JSObject; // Java 8
+-//import org.openjdk.nashorn.api.scripting.JSObject; // Java 17
++//import jdk.nashorn.api.scripting.JSObject; // Java 8
++import org.openjdk.nashorn.api.scripting.JSObject; // Java 17
+ 
+ import com.fasterxml.jackson.databind.ObjectMapper;
+ 
 ```
 
 Java 17版をビルドするには、Mavenで `pom-java17.xml` を指定します。

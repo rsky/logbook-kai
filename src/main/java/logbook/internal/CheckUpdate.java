@@ -38,7 +38,7 @@ import logbook.internal.gui.Tools;
 public class CheckUpdate {
 
     /** GitHub リポジトリのパス */
-    public static final String REPOSITORY_PATH = "Sdk0815/logbook-kai";
+    public static final String REPOSITORY_PATH = "rsky/logbook-kai";
 
     /** 更新確認先 Github tags API */
     private static final String TAGS = "https://api.github.com/repos/" + REPOSITORY_PATH + "/tags";
@@ -50,8 +50,9 @@ public class CheckUpdate {
     private static final String OPEN_URL = "https://github.com/" + REPOSITORY_PATH + "/releases";
 
     /** 検索するtagの名前 */
-    /* 例えばv20.1.1 の 20.1.1にマッチ */
-    static final Pattern TAG_REGIX = Pattern.compile("\\d+\\.\\d+(?:\\.\\d+)?$");
+    /* 例えばv20.1.1 の 20.1.1, v23.8.1-rsky-20230809 の 23.8.1 にマッチ */
+    static final Pattern TAG_REGEX = Pattern.compile("(\\d+\\.\\d+(?:\\.\\d+)?)(-\\w+-\\d{8})?$");
+    static final int TAG_REGEX_GROUP_VERSION = 1;
 
     /** Prerelease を使う System Property */
     private static  final String USE_PRERELEASE = "logbook.use.prerelease";
@@ -65,10 +66,10 @@ public class CheckUpdate {
     }
 
     private static void run(boolean isStartUp, Stage stage) {
-        Version remoteVersion = remoteVersion();
+        VersionAndTag remoteVersion = remoteVersion();
 
-        if (!Version.UNKNOWN.equals(remoteVersion) && Version.getCurrent().compareTo(remoteVersion) < 0) {
-            Platform.runLater(() -> CheckUpdate.openInfo(Version.getCurrent(), remoteVersion, isStartUp, stage));
+        if (!Version.UNKNOWN.equals(remoteVersion.version) && Version.getCurrent().compareTo(remoteVersion.version) < 0) {
+            Platform.runLater(() -> CheckUpdate.openInfo(Version.getCurrent(), remoteVersion.version, remoteVersion.tag, isStartUp, stage));
         } else if (!isStartUp) {
             Tools.Controls.alert(AlertType.INFORMATION, "更新の確認", "最新のバージョンです。", stage);
         }
@@ -78,7 +79,7 @@ public class CheckUpdate {
      * 最新のバージョンを取得します。
      * @return 最新のバージョン
      */
-    private static Version remoteVersion() {
+    private static VersionAndTag remoteVersion() {
         try {
             JsonArray tags;
             try (JsonReader r = Json.createReader(new ByteArrayInputStream(readURI(URI.create(TAGS))))) {
@@ -87,13 +88,13 @@ public class CheckUpdate {
             // Githubのtagsから一番新しいreleasesを取ってくる
             // tagsを処理する
             return tags.stream()
-                    //　tagの名前
+                    // tagの名前
                     .map(val -> val.asJsonObject().getString("name"))
                     // tagの名前にバージョンを含む?実行中のバージョンより新しい?
                     .filter(tagname -> {
-                        Matcher m = TAG_REGIX.matcher(tagname);
+                        Matcher m = TAG_REGEX.matcher(tagname);
                         if (m.find()) {
-                            Version remote = new Version(m.group());
+                            Version remote = new Version(m.group(TAG_REGEX_GROUP_VERSION));
                             return (!Version.UNKNOWN.equals(remote) && Version.getCurrent().compareTo(remote) < 0);
                         }
                         return false;
@@ -115,7 +116,7 @@ public class CheckUpdate {
                             if (!Boolean.getBoolean(USE_PRERELEASE) && releases.getBoolean("prerelease", false))
                                 return false;
                             // assetsが1つ以上ある
-                            if (releases.getJsonArray("assets") == null || releases.getJsonArray("assets").size() == 0)
+                            if (releases.getJsonArray("assets") == null || releases.getJsonArray("assets").isEmpty())
                                 return false;
                             // 最新版が見つかった!
                             return true;
@@ -124,16 +125,12 @@ public class CheckUpdate {
                         }
                     })
                     .findFirst()
-                    .map(tagname -> {
-                        Matcher m = TAG_REGIX.matcher(tagname);
-                        m.find();
-                        return new Version(m.group());
-                    })
-                    .orElse(Version.UNKNOWN);
+                    .map(VersionAndTag::new)
+                    .orElse(VersionAndTag.UNKNOWN);
         } catch (Exception e) {
             LoggerHolder.get().warn("最新バージョンの取得に失敗しました", e);
         }
-        return Version.UNKNOWN;
+        return VersionAndTag.UNKNOWN;
     }
 
     private static byte[] readURI(URI uri) throws IOException {
@@ -160,7 +157,7 @@ public class CheckUpdate {
         return new byte[0];
     }
 
-    private static void openInfo(Version o, Version n, boolean isStartUp, Stage stage) {
+    private static void openInfo(Version o, Version n, String tag, boolean isStartUp, Stage stage) {
         String message = "新しいバージョンがあります。ダウンロードサイトを開きますか？\n"
                 + "現在のバージョン:" + o + "\n"
                 + "新しいバージョン:" + n;
@@ -184,7 +181,7 @@ public class CheckUpdate {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent()) {
             if (result.get() == update)
-                launchUpdate(n);
+                launchUpdate(n, tag);
             if (result.get() == visible)
                 openBrowser();
         }
@@ -203,7 +200,7 @@ public class CheckUpdate {
         }
     }
 
-    private static void launchUpdate(Version newversion) {
+    private static void launchUpdate(Version newversion, String newtag) {
         try {
             // 航海日誌のインストールディレクトリ
             Path dir = new File(Launcher.class.getProtectionDomain().getCodeSource().getLocation().toURI())
@@ -225,11 +222,12 @@ public class CheckUpdate {
                 args.add("-Dupdate_script=" + script);
                 args.add("-Dinstall_target=" + dir);
                 args.add("-Dinstall_version=" + newversion);
+                args.add("-Drelease_tag=" + newtag);
                 if (Boolean.getBoolean(USE_PRERELEASE)) {
                     args.add("-Duse_prerelease=true");
                 }
-                if ("11".equals(System.getProperty("java.specification.version"))) {
-                    args.add("-Dtarget_java_version=11");
+                if ("17".equals(System.getProperty("java.specification.version"))) {
+                    args.add("-Dtarget_java_version=17");
                 }
                 new ProcessBuilder(args)
                                 .inheritIO()
@@ -242,6 +240,30 @@ public class CheckUpdate {
         } catch (Exception e) {
             LoggerHolder.get().warn("アップデートチェックで例外", e);
             openBrowser();
+        }
+    }
+
+    private static class VersionAndTag {
+        private static final VersionAndTag UNKNOWN = new VersionAndTag(Version.UNKNOWN, "");
+
+        private final Version version;
+
+        private final String tag;
+
+        private VersionAndTag(Version version, String tag) {
+            this.version = version;
+            this.tag = tag;
+        }
+
+        VersionAndTag(String tag) {
+            Matcher m = TAG_REGEX.matcher(tag);
+            if (m.find()) {
+                this.version = new Version(m.group(TAG_REGEX_GROUP_VERSION));
+                this.tag = tag;
+            } else {
+                this.version = Version.UNKNOWN;
+                this.tag = "";
+            }
         }
     }
 }

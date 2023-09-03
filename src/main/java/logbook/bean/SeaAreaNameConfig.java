@@ -1,22 +1,27 @@
 package logbook.bean;
 
 import logbook.internal.Config;
+import logbook.internal.SeaArea;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
 public class SeaAreaNameConfig implements Serializable {
-    private String area1 = "識別札1";
-    private String area2 = "識別札2";
-    private String area3 = "識別札3";
-    private String area4 = "識別札4";
-    private String area5 = "識別札5";
-    private String area6 = "識別札6";
-    private String area7 = "識別札7";
-    private String area8 = "識別札8";
-    private String area9 = "識別札9";
-    private String area10 = "識別札10";
+    private static final long serialVersionUID = -3429972632602581322L;
+
+    private String area1 = SeaArea.識別札1.getName();
+    private String area2 = SeaArea.識別札2.getName();
+    private String area3 = SeaArea.識別札3.getName();
+    private String area4 = SeaArea.識別札4.getName();
+    private String area5 = SeaArea.識別札5.getName();
+    private String area6 = SeaArea.識別札6.getName();
+    private String area7 = SeaArea.識別札7.getName();
+    private String area8 = SeaArea.識別札8.getName();
+    private String area9 = SeaArea.識別札9.getName();
+    private String area10 = SeaArea.識別札10.getName();
+    private String area11 = SeaArea.識別札11.getName();
+    private String area12 = SeaArea.識別札12.getName();
 
     public String getAreaName(int area) {
         switch (area) {
@@ -40,6 +45,10 @@ public class SeaAreaNameConfig implements Serializable {
                 return this.area9;
             case 10:
                 return this.area10;
+            case 11:
+                return this.area11;
+            case 12:
+                return this.area12;
             default:
                 return null;
         }

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 /**
  * 外部からのHTTP POSTリクエストを受け付けてListenerを呼び出すサーブレット
- * mitmproxy のようなSSL/TLS証明書をサポートするプロキシがフックしたデータをこちらに送信することを想定している
+ * mitmproxyのようなSSL/TLS証明書をサポートするプロキシがフックしたデータをこちらに送信することを想定している
  */
 public final class PassiveModeServlet extends HttpServlet {
     private static final long serialVersionUID = 1398734900463655319L;
@@ -80,11 +80,11 @@ public final class PassiveModeServlet extends HttpServlet {
         RequestParser() {
         }
 
-        RequestParsingResult parse(HttpServletRequest req) throws IOException {
+        RequestParsingResult parse(HttpServletRequest req) throws IOException, RuntimeException {
             return new RequestParsingResult(this.createRequestMetaDataWrapper(req), this.createResponseMetaDataWrapper(req));
         }
 
-        private RequestMetaDataWrapper createRequestMetaDataWrapper(HttpServletRequest req) {
+        private RequestMetaDataWrapper createRequestMetaDataWrapper(HttpServletRequest req) throws RuntimeException {
             RequestMetaDataWrapper wrapper = new RequestMetaDataWrapper();
 
             wrapper.setContentType(req.getHeader(REQUEST_CONTENT_TYPE_HEADER));
@@ -95,7 +95,7 @@ public final class PassiveModeServlet extends HttpServlet {
             if (requestUri.startsWith(PATH_PREFIX)) {
                 wrapper.setRequestURI(requestUri.substring(PATH_PREFIX.length()-1));
             } else {
-                wrapper.setRequestURI(requestUri);
+                throw new RuntimeException("Unexpected request URI: " + requestUri);
             }
 
             String b64body = req.getHeader(REQUEST_BODY_HEADER);

@@ -114,9 +114,14 @@ public final class PassiveModeServlet extends HttpServlet {
         private ResponseMetaDataWrapper createResponseMetaDataWrapper(HttpServletRequest req) throws IOException {
             ResponseMetaDataWrapper wrapper = new ResponseMetaDataWrapper();
 
-            wrapper.setStatus(200); // Listenerで見てないから200固定でええやろ
-            wrapper.setContentType(req.getContentType()); // Request BodyのContent-Typeそのまま
+            // Listenerで見てないから200固定にしておく
+            wrapper.setStatus(200);
+            // Request BodyのContent-Typeそのまま
+            wrapper.setContentType(req.getContentType());
 
+            // Request Bodyのデータを取得
+            // inputをそのままsetすると、"java.io.IOException: mark/reset not supported" が発生するので
+            // 一度bytes[]に読み込んでからsetする
             InputStream input = req.getInputStream();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -125,7 +130,8 @@ public final class PassiveModeServlet extends HttpServlet {
                 baos.write(buffer, 0, len);
             }
             baos.flush();
-            wrapper.setResponseBody(Optional.of(new ByteArrayInputStream(baos.toByteArray())));
+            // Content-Encoding: gzipの場合はset()内で自動的に展開される
+            wrapper.set(new ByteArrayInputStream(baos.toByteArray()));
 
             return wrapper;
         }

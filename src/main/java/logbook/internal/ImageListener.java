@@ -115,9 +115,23 @@ public class ImageListener implements ContentListenerSpi {
             } else {
                 is = response.getResponseBody().get();
             }
-            Path path = ShipMst.getResourcePathDir(shipMst)
-                    .resolve(name);
-            this.write(is, path);
+            try {
+                Path path = ShipMst.getResourcePathDir(shipMst)
+                        .resolve(name);
+                this.write(is, path);
+            } catch (NullPointerException e) {
+                String mstId, mstName;
+                if (shipMst != null) {
+                    mstId = String.valueOf(shipMst.getId());
+                    mstName = shipMst.getName();
+                } else {
+                    mstId = "null";
+                    mstName = "null";
+                }
+                LoggerHolder.get().warn("画像パス解決中に例外が発生しました[src=" + uri + ", id=" + mstId + ", name=" + mstName + "]", e);
+
+                throw e;
+            }
         }
     }
 

@@ -101,12 +101,12 @@ public class ImageListener implements ContentListenerSpi {
         String uri = URI.create(request.getRequestURI()).getPath();
         int nameIndex = uri.lastIndexOf('/');
         int extIndex = uri.indexOf('_', nameIndex);
-        String shipid = uri.substring(nameIndex + 1, extIndex);
+        String shipId = uri.substring(nameIndex + 1, extIndex);
 
         ShipMst shipMst = ShipMstCollection.get()
                 .getShipMap()
-                .get(Integer.parseInt(shipid));
-        if (response.getResponseBody().isPresent()) {
+                .get(Integer.parseInt(shipId));
+        if (shipMst != null && response.getResponseBody().isPresent()) {
             // 画像ファイルを再圧縮するオプション
             InputStream is;
             if (AppConfig.get().isShipImageCompress()) {
@@ -115,23 +115,9 @@ public class ImageListener implements ContentListenerSpi {
             } else {
                 is = response.getResponseBody().get();
             }
-            try {
-                Path path = ShipMst.getResourcePathDir(shipMst)
-                        .resolve(name);
-                this.write(is, path);
-            } catch (NullPointerException e) {
-                String mstId, mstName;
-                if (shipMst != null) {
-                    mstId = String.valueOf(shipMst.getId());
-                    mstName = shipMst.getName();
-                } else {
-                    mstId = "null";
-                    mstName = "null";
-                }
-                LoggerHolder.get().warn("画像パス解決中に例外が発生しました[src=" + uri + ", id=" + mstId + ", name=" + mstName + "]", e);
-
-                throw e;
-            }
+            Path path = ShipMst.getResourcePathDir(shipMst)
+                    .resolve(name);
+            this.write(is, path);
         }
     }
 

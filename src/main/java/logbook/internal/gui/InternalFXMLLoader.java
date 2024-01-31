@@ -17,9 +17,12 @@ public final class InternalFXMLLoader {
 
     /** OSによる（今の所Macのみ特別扱い）デフォルトのフォントファミリー */
     private static final String DEFAULT_FONT;
+    private static final Boolean IS_MACOS;
 
     static {
-        DEFAULT_FONT = System.getProperty("os.name").toLowerCase().startsWith("mac") ? "Hiragino Maru Gothic ProN" : "Meiryo UI";
+        final String osName = System.getProperty("os.name").toLowerCase();
+        IS_MACOS = osName.startsWith("mac") || osName.startsWith("darwin");
+        DEFAULT_FONT = IS_MACOS ? "Hiragino Maru Gothic ProN" : "Meiryo UI";
     }
 
     public static FXMLLoader load(String name) throws IOException {
@@ -31,6 +34,10 @@ public final class InternalFXMLLoader {
         FXMLLoader loader = new FXMLLoader(url);
         loader.setClassLoader(PluginServices.getClassLoader());
         return loader;
+    }
+
+    public static Boolean isMacOS() {
+        return IS_MACOS;
     }
 
     public static Parent setGlobal(Parent root) {

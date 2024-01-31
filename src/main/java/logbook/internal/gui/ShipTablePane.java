@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javafx.scene.text.TextFlow;
 import org.controlsfx.control.ToggleSwitch;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -101,6 +102,10 @@ public class ShipTablePane extends VBox {
     /** 艦種 */
     @FXML
     private ToggleSwitch typeFilter;
+
+    /** 艦種リスト */
+    @FXML
+    private TextFlow typeList;
 
     /** 海防艦 */
     @FXML
@@ -397,6 +402,10 @@ public class ShipTablePane extends VBox {
             loader.setRoot(this);
             loader.setController(this);
             loader.load();
+            if (InternalFXMLLoader.isMacOS()) {
+                // macOSの場合は艦種リストの横幅を微調整する
+                this.typeList.setPrefWidth(this.typeList.getPrefWidth() + 30.0);
+            }
         } catch (IOException e) {
             LoggerHolder.get().error("FXMLのロードに失敗しました", e);
         }

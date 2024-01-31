@@ -35,7 +35,7 @@
                               <VBox fillWidth="false">
                                  <children>
                                     <ToggleSwitch fx:id="typeFilter" prefWidth="0.0" text="艦種" />
-                                    <TextFlow prefWidth="370.0">
+                                    <TextFlow fx:id="typeList" prefWidth="370.0">
                                        <children>
                                           <CheckBox fx:id="escort" disable="true" mnemonicParsing="false" selected="true" text="海防艦" />
                                           <CheckBox fx:id="destroyer" disable="true" mnemonicParsing="false" selected="true" text="駆逐艦" />

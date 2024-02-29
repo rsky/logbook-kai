@@ -856,6 +856,9 @@ public class PhaseState {
     private void addDetailRaigeki0(List<? extends Chara> attackerFleet, List<? extends Chara> attackerFleetCombined,
             List<? extends Chara> defenderFleet, List<? extends Chara> defenderFleetCombined,
             List<Integer> index, List<Double> ydam, List<Integer> critical) {
+        if (index == null || ydam == null || critical == null) {
+            return;
+        }
 
         if (defenderFleet != null)
             defenderFleet = defenderFleet.stream()

@@ -863,7 +863,7 @@ public class PhaseState {
      */
     private void addDetailOpeningAtack0(List<? extends Chara> attackerFleet, List<? extends Chara> attackerFleetCombined,
             List<? extends Chara> defenderFleet, List<? extends Chara> defenderFleetCombined,
-            List<List<Integer>> indexList, List<List<Double>> ydamList, List<List<Integer>> critical) {
+            List<List<Integer>> indexList, List<List<Double>> ydamList, List<List<Integer>> criticalList) {
         if (defenderFleet != null)
             defenderFleet = defenderFleet.stream()
                     .map(c -> c != null ? c.clone() : null)
@@ -890,7 +890,7 @@ public class PhaseState {
                 defender.setNowhp(defender.getNowhp() - damage);
 
                 this.addDetail(attacker, defender, damage, Collections.singletonList(damage),
-                        Collections.singletonList(critical.get(i).get(j)),
+                        Collections.singletonList(criticalList.get(i).get(j)),
                         SortieAtTypeRaigeki.通常雷撃);
             }
         }

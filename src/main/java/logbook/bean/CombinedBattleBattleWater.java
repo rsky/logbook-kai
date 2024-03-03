@@ -23,7 +23,7 @@ import lombok.Data;
 public class CombinedBattleBattleWater implements ICombinedBattle, ISortieBattle, ISortieHougeki, IFormation, IKouku,
         ISupport, IAirBaseAttack, Serializable {
 
-    private static final long serialVersionUID = -6447392433716613671L;
+    private static final long serialVersionUID = 3186533126573393275L;
 
     /** api_air_base_injection */
     private BattleTypes.AirBaseAttack airBaseInjection;
@@ -121,6 +121,15 @@ public class CombinedBattleBattleWater implements ICombinedBattle, ISortieBattle
     /** api_raigeki */
     private BattleTypes.Raigeki raigeki;
 
+    /** api_smoke_type */
+    private Integer smokeType;
+
+    /** api_balloon_cell */
+    private Integer balloonCell;
+
+    /** api_atoll_cell */
+    private Integer atollCell;
+
     /**
      * JsonObjectから{@link CombinedBattleBattleWater}を構築します
      *
@@ -164,7 +173,10 @@ public class CombinedBattleBattleWater implements ICombinedBattle, ISortieBattle
                 .set("api_hougeki1", bean::setHougeki1, BattleTypes.Hougeki::toHougeki)
                 .set("api_hougeki2", bean::setHougeki2, BattleTypes.Hougeki::toHougeki)
                 .set("api_hougeki3", bean::setHougeki3, BattleTypes.Hougeki::toHougeki)
-                .set("api_raigeki", bean::setRaigeki, BattleTypes.Raigeki::toRaigeki);
+                .set("api_raigeki", bean::setRaigeki, BattleTypes.Raigeki::toRaigeki)
+                .setInteger("api_smoke_type", bean::setSmokeType)
+                .setInteger("api_balloon_cell", bean::setBalloonCell)
+                .setInteger("api_atoll_cell", bean::setAtollCell);
         return bean;
     }
 }

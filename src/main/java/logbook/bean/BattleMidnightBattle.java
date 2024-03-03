@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 public class BattleMidnightBattle implements IMidnightBattle, Serializable {
 
-    private static final long serialVersionUID = 1993839270894519690L;
+    private static final long serialVersionUID = 4437518963527152795L;
 
     /** api_dock_id/api_deck_id */
     private Integer dockId;
@@ -63,6 +63,16 @@ public class BattleMidnightBattle implements IMidnightBattle, Serializable {
     /** api_hougeki */
     private BattleTypes.MidnightHougeki hougeki;
 
+
+    /** api_smoke_type */
+    private Integer smokeType;
+
+    /** api_balloon_cell */
+    private Integer balloonCell;
+
+    /** api_atoll_cell */
+    private Integer atollCell;
+
     /**
      * JsonObjectから{@link BattleMidnightBattle}を構築します
      *
@@ -87,7 +97,10 @@ public class BattleMidnightBattle implements IMidnightBattle, Serializable {
                 .set("api_friendly_battle", bean::setFriendlyBattle, BattleTypes.FriendlyBattle::toFriendlyBattle)
                 .setIntegerList("api_touch_plane", bean::setTouchPlane)
                 .setIntegerList("api_flare_pos", bean::setFlarePos)
-                .set("api_hougeki", bean::setHougeki, BattleTypes.MidnightHougeki::toMidnightHougeki);
+                .set("api_hougeki", bean::setHougeki, BattleTypes.MidnightHougeki::toMidnightHougeki)
+                .setInteger("api_smoke_type", bean::setSmokeType)
+                .setInteger("api_balloon_cell", bean::setBalloonCell)
+                .setInteger("api_atoll_cell", bean::setAtollCell);
         return bean;
     }
 }

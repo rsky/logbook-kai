@@ -25,7 +25,7 @@ import lombok.Data;
 public class CombinedBattleEcNightToDay implements ICombinedBattle, ICombinedEcBattle, IFormation,
         INightToDayBattle, IAirBaseAttack, IKouku, ISortieHougeki, INSupport, ISupport, Serializable {
 
-    private static final long serialVersionUID = -364877629377359534L;
+    private static final long serialVersionUID = 2039831760623918871L;
 
     /** api_dock_id/api_deck_id */
     private Integer dockId;
@@ -162,6 +162,15 @@ public class CombinedBattleEcNightToDay implements ICombinedBattle, ICombinedEcB
     /** api_midnight_flag(未使用) */
     private Boolean midnightFlag;
 
+    /** api_smoke_type */
+    private Integer smokeType;
+
+    /** api_balloon_cell */
+    private Integer balloonCell;
+
+    /** api_atoll_cell */
+    private Integer atollCell;
+
     /**
      * JsonObjectから{@link CombinedBattleEcNightToDay}を構築します
      *
@@ -216,7 +225,10 @@ public class CombinedBattleEcNightToDay implements ICombinedBattle, ICombinedEcB
                 .set("api_hougeki1", bean::setHougeki1, BattleTypes.Hougeki::toHougeki)
                 .set("api_hougeki2", bean::setHougeki2, BattleTypes.Hougeki::toHougeki)
                 .set("api_hougeki3", bean::setHougeki3, BattleTypes.Hougeki::toHougeki)
-                .set("api_raigeki", bean::setRaigeki, BattleTypes.Raigeki::toRaigeki);
+                .set("api_raigeki", bean::setRaigeki, BattleTypes.Raigeki::toRaigeki)
+                .setInteger("api_smoke_type", bean::setSmokeType)
+                .setInteger("api_balloon_cell", bean::setBalloonCell)
+                .setInteger("api_atoll_cell", bean::setAtollCell);
         return bean;
     }
 }

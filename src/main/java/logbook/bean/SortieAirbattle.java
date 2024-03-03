@@ -20,7 +20,7 @@ import lombok.Data;
 @Data
 public class SortieAirbattle implements ISortieBattle, IFormation, IAirbattle, ISupport, IAirBaseAttack, Serializable {
 
-    private static final long serialVersionUID = -6199870579231576550L;
+    private static final long serialVersionUID = 9151084407917872026L;
 
     /** api_air_base_injection */
     private BattleTypes.AirBaseAttack airBaseInjection;
@@ -88,6 +88,15 @@ public class SortieAirbattle implements ISortieBattle, IFormation, IAirbattle, I
     /** api_kouku2 */
     private BattleTypes.Kouku kouku2;
 
+    /** api_smoke_type */
+    private Integer smokeType;
+
+    /** api_balloon_cell */
+    private Integer balloonCell;
+
+    /** api_atoll_cell */
+    private Integer atollCell;
+
     /**
      * JsonObjectから{@link SortieAirbattle}を構築します
      *
@@ -121,7 +130,10 @@ public class SortieAirbattle implements ISortieBattle, IFormation, IAirbattle, I
                 .setInteger("api_support_flag", bean::setSupportFlag)
                 .set("api_support_info", bean::setSupportInfo, BattleTypes.SupportInfo::toSupportInfo)
                 .setIntegerList("api_stage_flag2", bean::setStageFlag2)
-                .set("api_kouku2", bean::setKouku2, BattleTypes.Kouku::toKouku);
+                .set("api_kouku2", bean::setKouku2, BattleTypes.Kouku::toKouku)
+                .setInteger("api_smoke_type", bean::setSmokeType)
+                .setInteger("api_balloon_cell", bean::setBalloonCell)
+                .setInteger("api_atoll_cell", bean::setAtollCell);
         return bean;
     }
 }

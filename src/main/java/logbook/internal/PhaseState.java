@@ -880,6 +880,8 @@ public class PhaseState {
             Chara attacker = Math.max(attackerFleet.size(), 6) > i
                     ? attackerFleet.get(i)
                     : attackerFleetCombined.get(i - 6);
+            // NOTE: indexの要素数が複数のとき、常に index[0] == index[1] であることが確認できたら
+            // ループでなくaddDetail()でまとめて追加すべきかもしれない
             for (int j = 0; j < index.size(); j++) {
                 Chara defender = Math.max(defenderFleet.size(), 6) > index.get(j)
                         ? defenderFleet.get(index.get(j))

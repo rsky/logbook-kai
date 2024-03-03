@@ -282,10 +282,6 @@ public class ConfigController extends WindowController {
     @FXML
     private CheckBox visiblePoseImageOnFleetTab;
 
-    /** 通信エラーの抑止 */
-    @FXML
-    private CheckBox connectionClose;
-
     /** ポート番号 */
     @FXML
     private TextField listenPort;
@@ -500,7 +496,6 @@ public class ConfigController extends WindowController {
         this.hideShipImageFromShipTablePane.setSelected(conf.isHideShipImageFromShipTablePane());
         this.hideItemImageFromShipTablePane.setSelected(conf.isHideItemImageFromShipTablePane());
         this.visiblePoseImageOnFleetTab.setSelected(conf.isVisiblePoseImageOnFleetTab());
-        this.connectionClose.setSelected(conf.isConnectionClose());
         this.listenPort.setText(Integer.toString(conf.getListenPort()));
         this.allowOnlyFromLocalhost.setSelected(conf.isAllowOnlyFromLocalhost());
         this.useProxy.setSelected(conf.isUseProxy());
@@ -625,7 +620,6 @@ public class ConfigController extends WindowController {
         conf.setHideItemImageFromShipTablePane(this.hideItemImageFromShipTablePane.isSelected());
         conf.setVisiblePoseImageOnFleetTab(this.visiblePoseImageOnFleetTab.isSelected());
         
-        conf.setConnectionClose(this.connectionClose.isSelected());
         conf.setListenPort(this.toInt(this.listenPort.getText()));
         conf.setAllowOnlyFromLocalhost(this.allowOnlyFromLocalhost.isSelected());
         conf.setUseProxy(this.useProxy.isSelected());

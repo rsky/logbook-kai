@@ -93,17 +93,17 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.4.52.v20230823</version>
+            <version>9.4.54.v20240208</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.4.52.v20230823</version>
+            <version>9.4.54.v20240208</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-proxy</artifactId>
-            <version>9.4.52.v20230823</version>
+            <version>9.4.54.v20240208</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -153,12 +153,12 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.12</version>
+            <version>1.4.14</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.2.12</version>
+            <version>1.4.14</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

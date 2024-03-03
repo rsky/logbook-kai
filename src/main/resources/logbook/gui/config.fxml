@@ -304,6 +304,7 @@
                               <CheckBox fx:id="storeApiStart2" mnemonicParsing="false" onAction="#storeApiStart2" text="api_start2" GridPane.rowIndex="6" />
                               <TextField fx:id="storeApiStart2Dir" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                               <Button fx:id="storeApiStart2DirRef" mnemonicParsing="false" onAction="#selectApiStart2Dir" text="参照..." GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                              <CheckBox fx:id="usePassiveMode" mnemonicParsing="false" text="パッシブモードを有効にする(試験的)*" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
                            </children>
                         </GridPane>
                      </children>

@@ -314,6 +314,9 @@ public class ConfigController extends WindowController {
     @FXML
     private Button storeApiStart2DirRef;
 
+    @FXML
+    private CheckBox usePassiveMode;
+
     /** FFmpeg 実行ファイル */
     @FXML
     private TextField ffmpegPath;
@@ -509,6 +512,7 @@ public class ConfigController extends WindowController {
         this.storeInternal.setSelected(conf.isStoreApiStart2());
         this.storeApiStart2.setSelected(conf.isStoreApiStart2());
         this.storeApiStart2Dir.setText(conf.getStoreApiStart2Dir());
+        this.usePassiveMode.setSelected(conf.isUsePassiveMode());
         this.storeInternal.getOnAction().handle(new ActionEvent());
 
         this.pluginName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -627,7 +631,8 @@ public class ConfigController extends WindowController {
         conf.setProxyPort(this.toInt(this.proxyPort.getText()));
         conf.setStoreApiStart2(this.storeApiStart2.isSelected());
         conf.setStoreApiStart2Dir(this.storeApiStart2Dir.getText());
-        
+        conf.setUsePassiveMode(this.usePassiveMode.isSelected());
+
         conf.setFfmpegPath(this.ffmpegPath.getText());
         conf.setFfmpegArgs(this.ffmpegArgs.getText());
         conf.setFfmpegExt(this.ffmpegExt.getText());

@@ -88,7 +88,7 @@ public class SortieBattle
     private Boolean openingFlag;
 
     /** api_opening_atack */
-    private BattleTypes.Raigeki openingAtack;
+    private BattleTypes.OpeningAtack openingAtack;
 
     /** api_opening_taisen_flag */
     private Boolean openingTaisenFlag;
@@ -144,7 +144,7 @@ public class SortieBattle
                 .setInteger("api_support_flag", bean::setSupportFlag)
                 .set("api_support_info", bean::setSupportInfo, BattleTypes.SupportInfo::toSupportInfo)
                 .setBoolean("api_opening_flag", bean::setOpeningFlag)
-                .set("api_opening_atack", bean::setOpeningAtack, BattleTypes.Raigeki::toRaigeki)
+                .set("api_opening_atack", bean::setOpeningAtack, BattleTypes.OpeningAtack::toOpeningAtack)
                 .setBoolean("api_opening_taisen_flag", bean::setOpeningTaisenFlag)
                 .set("api_opening_taisen", bean::setOpeningTaisen, BattleTypes.Hougeki::toHougeki)
                 .setIntegerList("api_hourai_flag", bean::setHouraiFlag)

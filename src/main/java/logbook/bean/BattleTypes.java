@@ -394,7 +394,7 @@ public class BattleTypes {
          * api_opening_atackを取得します。
          * @return api_opening_atack
          */
-        BattleTypes.Raigeki getOpeningAtack();
+        BattleTypes.OpeningAtack getOpeningAtack();
 
         /**
          * api_opening_taisen_flagを取得します。
@@ -1109,6 +1109,58 @@ public class BattleTypes {
                     .setIntegerList("api_undressing_flag", bean::setUndressingFlag)
                     .setIntegerList("api_cl_list", bean::setClList)
                     .setDoubleList("api_damage", bean::setDamage);
+            return bean;
+        }
+    }
+
+    /**
+     * 開幕
+     */
+    @Data
+    public static class OpeningAtack implements Serializable {
+        private static final long serialVersionUID = 5826255800868507590L;
+
+        /** api_frai_list_items */
+        private List<List<Integer>> fraiListItems;
+
+        /** api_fcl_list_items */
+        private List<List<Integer>> fclListItems;
+
+        /** api_fdam */
+        private List<Double> fdam;
+
+        /** api_fydam_list_items */
+        private List<List<Double>> fydamListItems;
+
+        /** api_erai_list_items */
+        private List<List<Integer>> eraiListItems;
+
+        /** api_ecl_list_items */
+        private List<List<Integer>> eclListItems;
+
+        /** api_edam */
+        private List<Double> edam;
+
+        /** api_eydam_list_items */
+        private List<List<Double>> eydamListItems;
+
+        /**
+         * JsonObjectから{@link OpeningAtack}を構築します
+         *
+         * @param json JsonObject
+         * @return {@link OpeningAtack}
+         */
+        public static OpeningAtack toOpeningAtack(JsonObject json) {
+            OpeningAtack bean = new OpeningAtack();
+            JsonHelper.bind(json)
+                    .set("api_frai_list_items", bean::setFraiListItems, JsonHelper.toList(JsonHelper::checkedToIntegerList))
+                    .set("api_fcl_list_items", bean::setFclListItems, JsonHelper.toList(JsonHelper::checkedToIntegerList))
+                    .setDoubleList("api_fdam", bean::setFdam)
+                    .set("api_fydam_list_items", bean::setFydamListItems, JsonHelper.toList(JsonHelper::checkedToDoubleList))
+                    .set("api_erai_list_items", bean::setEraiListItems, JsonHelper.toList(JsonHelper::checkedToIntegerList))
+                    .set("api_ecl_list_items", bean::setEclListItems, JsonHelper.toList(JsonHelper::checkedToIntegerList))
+                    .setDoubleList("api_edam", bean::setEdam)
+                    .set("api_eydam_list_items", bean::setEydamListItems, JsonHelper.toList(JsonHelper::checkedToDoubleList));
             return bean;
         }
     }

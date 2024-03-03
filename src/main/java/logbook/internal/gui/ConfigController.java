@@ -282,10 +282,6 @@ public class ConfigController extends WindowController {
     @FXML
     private CheckBox visiblePoseImageOnFleetTab;
 
-    /** 通信エラーの抑止 */
-    @FXML
-    private CheckBox connectionClose;
-
     /** ポート番号 */
     @FXML
     private TextField listenPort;
@@ -317,6 +313,9 @@ public class ConfigController extends WindowController {
 
     @FXML
     private Button storeApiStart2DirRef;
+
+    @FXML
+    private CheckBox usePassiveMode;
 
     /** FFmpeg 実行ファイル */
     @FXML
@@ -500,7 +499,6 @@ public class ConfigController extends WindowController {
         this.hideShipImageFromShipTablePane.setSelected(conf.isHideShipImageFromShipTablePane());
         this.hideItemImageFromShipTablePane.setSelected(conf.isHideItemImageFromShipTablePane());
         this.visiblePoseImageOnFleetTab.setSelected(conf.isVisiblePoseImageOnFleetTab());
-        this.connectionClose.setSelected(conf.isConnectionClose());
         this.listenPort.setText(Integer.toString(conf.getListenPort()));
         this.allowOnlyFromLocalhost.setSelected(conf.isAllowOnlyFromLocalhost());
         this.useProxy.setSelected(conf.isUseProxy());
@@ -514,6 +512,7 @@ public class ConfigController extends WindowController {
         this.storeInternal.setSelected(conf.isStoreApiStart2());
         this.storeApiStart2.setSelected(conf.isStoreApiStart2());
         this.storeApiStart2Dir.setText(conf.getStoreApiStart2Dir());
+        this.usePassiveMode.setSelected(conf.isUsePassiveMode());
         this.storeInternal.getOnAction().handle(new ActionEvent());
 
         this.pluginName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -625,7 +624,6 @@ public class ConfigController extends WindowController {
         conf.setHideItemImageFromShipTablePane(this.hideItemImageFromShipTablePane.isSelected());
         conf.setVisiblePoseImageOnFleetTab(this.visiblePoseImageOnFleetTab.isSelected());
         
-        conf.setConnectionClose(this.connectionClose.isSelected());
         conf.setListenPort(this.toInt(this.listenPort.getText()));
         conf.setAllowOnlyFromLocalhost(this.allowOnlyFromLocalhost.isSelected());
         conf.setUseProxy(this.useProxy.isSelected());
@@ -633,7 +631,8 @@ public class ConfigController extends WindowController {
         conf.setProxyPort(this.toInt(this.proxyPort.getText()));
         conf.setStoreApiStart2(this.storeApiStart2.isSelected());
         conf.setStoreApiStart2Dir(this.storeApiStart2Dir.getText());
-        
+        conf.setUsePassiveMode(this.usePassiveMode.isSelected());
+
         conf.setFfmpegPath(this.ffmpegPath.getText());
         conf.setFfmpegArgs(this.ffmpegArgs.getText());
         conf.setFfmpegExt(this.ffmpegExt.getText());

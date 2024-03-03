@@ -21,7 +21,7 @@ class SeaAreaBanner {
         String bannerFormat;
         int imageNumber;
 
-        // 2023年夏イベント最終版
+        // 2024年早春イベント暫定版
         switch (area) {
             case 1:
             case 2:
@@ -29,22 +29,16 @@ class SeaAreaBanner {
             case 4:
             case 5:
             case 6:
-                bannerFormat = JOIN_BANNER;
-                imageNumber = area + 32;
-                break;
             case 7:
+                bannerFormat = JOIN_BANNER;
+                imageNumber = area + 34;
+                break;
             case 8:
             case 9:
-                bannerFormat = JOIN_BANNER_2;
-                imageNumber = area + 10;
-                break;
             case 10:
-                bannerFormat = JOIN_BANNER_2;
-                imageNumber = 16;
-                break;
             case 11:
-                bannerFormat = JOIN_BANNER_3;
-                imageNumber = 12;
+                bannerFormat = JOIN_BANNER_2;
+                imageNumber = area + 4;
                 break;
             default:
                 return null;

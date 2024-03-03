@@ -56,11 +56,13 @@ public final class ProxyServerImpl implements ProxyServerSpi {
             holder.setInitParameter("timeout", "600000");
             context.addServlet(holder, "/*");
 
-            // パッシブモードのハンドラをセット
-            ServletHolder passive = new ServletHolder(new PassiveModeServlet());
-            passive.setInitParameter("maxThreads", "128");
-            passive.setInitParameter("timeout", "300000");
-            context.addServlet(passive, PassiveModeServlet.PATH_SPEC);
+            if (AppConfig.get().isUsePassiveMode()) {
+                // パッシブモードのハンドラをセット
+                ServletHolder passive = new ServletHolder(new PassiveModeServlet());
+                passive.setInitParameter("maxThreads", "128");
+                passive.setInitParameter("timeout", "300000");
+                context.addServlet(passive, PassiveModeServlet.PATH_SPEC);
+            }
 
             try {
                 try {

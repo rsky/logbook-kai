@@ -13,8 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import logbook.bean.AppCondition;
-import logbook.bean.BattleLog;
+import logbook.bean.*;
 import logbook.bean.BattleTypes.AirBaseAttack;
 import logbook.bean.BattleTypes.AtType;
 import logbook.bean.BattleTypes.CombinedType;
@@ -42,13 +41,6 @@ import logbook.bean.BattleTypes.Stage3;
 import logbook.bean.BattleTypes.SupportAiratack;
 import logbook.bean.BattleTypes.SupportHourai;
 import logbook.bean.BattleTypes.SupportInfo;
-import logbook.bean.Chara;
-import logbook.bean.Enemy;
-import logbook.bean.Friend;
-import logbook.bean.Ship;
-import logbook.bean.SlotItem;
-import logbook.bean.SlotItemCollection;
-import logbook.bean.SlotitemMst;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -252,8 +244,8 @@ public class PhaseState {
     public void applySortieHougeki(ISortieHougeki battle) {
         // 先制対潜攻撃
         this.applyHougeki(battle.getOpeningTaisen());
-        // 開幕雷撃
-        this.applyRaigeki(battle.getOpeningAtack());
+        // 開幕攻撃
+        this.applyOpeningAtack(battle.getOpeningAtack());
         if (!this.combined && battle.isICombinedEcBattle()) {
             // 1巡目
             this.applyHougeki(battle.getHougeki1());
@@ -518,6 +510,22 @@ public class PhaseState {
                 this.applyEnemyDamage(hou.getDamage());
             }
         }
+    }
+
+    /**
+     * 開幕攻撃フェイズを適用します
+     *
+     * @param openingAtack 開幕攻撃フェイズ
+     */
+    private void applyOpeningAtack(BattleTypes.OpeningAtack openingAtack) {
+        if (openingAtack == null) {
+            return;
+        }
+        this.addDetailOpeningAtack(openingAtack);
+        // 新API
+        this.applyFriendDamage(openingAtack.getFdam());
+        // 敵
+        this.applyEnemyDamage(openingAtack.getEdam());
     }
 
     /**
@@ -828,6 +836,67 @@ public class PhaseState {
     }
 
     /**
+     * ダメージ詳細(開幕攻撃)
+     *
+     * @param openingAtack
+     */
+    private void addDetailOpeningAtack(BattleTypes.OpeningAtack openingAtack) {
+        // 敵→味方
+        this.addDetailOpeningAtack0(this.afterEnemy, this.afterEnemyCombined, this.afterFriend,
+                this.afterFriendCombined,
+                openingAtack.getEraiListItems(), openingAtack.getEydamListItems(), openingAtack.getEclListItems());
+        // 味方→敵
+        this.addDetailOpeningAtack0(this.afterFriend, this.afterFriendCombined, this.afterEnemy, this.afterEnemyCombined,
+                openingAtack.getFraiListItems(), openingAtack.getFydamListItems(), openingAtack.getFclListItems());
+    }
+
+    /**
+     * ダメージ詳細(開幕攻撃)
+     *
+     * @param attackerFleet         攻撃側艦隊
+     * @param attackerFleetCombined 攻撃側艦隊(第2艦隊)
+     * @param defenderFleet         防御側艦隊
+     * @param defenderFleetCombined 防御側艦隊(第2艦隊)
+     * @param indexList             攻撃対象インデックス
+     * @param ydamList              与ダメージ
+     * @param criticalList          クリティカル
+     */
+    private void addDetailOpeningAtack0(List<? extends Chara> attackerFleet, List<? extends Chara> attackerFleetCombined,
+            List<? extends Chara> defenderFleet, List<? extends Chara> defenderFleetCombined,
+            List<List<Integer>> indexList, List<List<Double>> ydamList, List<List<Integer>> critical) {
+        if (defenderFleet != null)
+            defenderFleet = defenderFleet.stream()
+                    .map(c -> c != null ? c.clone() : null)
+                    .collect(Collectors.toList());
+        if (defenderFleetCombined != null)
+            defenderFleetCombined = defenderFleetCombined.stream()
+                    .map(c -> c != null ? c.clone() : null)
+                    .collect(Collectors.toList());
+        for (int i = 0; i < indexList.size(); i++) {
+            List<Integer> index = indexList.get(i);
+            if (index == null || index.isEmpty()) {
+                continue;
+            }
+            Chara attacker = Math.max(attackerFleet.size(), 6) > i
+                    ? attackerFleet.get(i)
+                    : attackerFleetCombined.get(i - 6);
+            for (int j = 0; j < index.size(); j++) {
+                Chara defender = Math.max(defenderFleet.size(), 6) > index.get(j)
+                        ? defenderFleet.get(index.get(j))
+                        : defenderFleetCombined.get(index.get(j) - 6);
+
+                int damage = (int) ydamList.get(i).get(j).doubleValue();
+
+                defender.setNowhp(defender.getNowhp() - damage);
+
+                this.addDetail(attacker, defender, damage, Collections.singletonList(damage),
+                        Collections.singletonList(critical.get(i).get(j)),
+                        SortieAtTypeRaigeki.通常雷撃);
+            }
+        }
+    }
+
+    /**
      * ダメージ詳細(雷撃)
      *
      * @param raigeki
@@ -856,7 +925,6 @@ public class PhaseState {
     private void addDetailRaigeki0(List<? extends Chara> attackerFleet, List<? extends Chara> attackerFleetCombined,
             List<? extends Chara> defenderFleet, List<? extends Chara> defenderFleetCombined,
             List<Integer> index, List<Double> ydam, List<Integer> critical) {
-
         if (defenderFleet != null)
             defenderFleet = defenderFleet.stream()
                     .map(c -> c != null ? c.clone() : null)

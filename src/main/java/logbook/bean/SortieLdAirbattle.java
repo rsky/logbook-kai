@@ -21,7 +21,7 @@ import lombok.Data;
 public class SortieLdAirbattle
         implements ISortieBattle, IFormation, IKouku, IAirBaseAttack, ILdAirbattle, Serializable {
 
-    private static final long serialVersionUID = -1090849552625550232L;
+    private static final long serialVersionUID = 2405183386671331819L;
 
     /** api_air_base_injection */
     private BattleTypes.AirBaseAttack airBaseInjection;
@@ -77,6 +77,15 @@ public class SortieLdAirbattle
     /** api_kouku */
     private BattleTypes.Kouku kouku;
 
+    /** api_smoke_type */
+    private Integer smokeType;
+
+    /** api_balloon_cell */
+    private Integer balloonCell;
+
+    /** api_atoll_cell */
+    private Integer atollCell;
+
     /**
      * JsonObjectから{@link SortieLdAirbattle}を構築します
      *
@@ -106,7 +115,10 @@ public class SortieLdAirbattle
                 .setIntegerList("api_formation", bean::setFormation)
                 .setIntegerList("api_stage_flag", bean::setStageFlag)
                 .set("api_injection_kouku", bean::setInjectionKouku, BattleTypes.Kouku::toKouku)
-                .set("api_kouku", bean::setKouku, BattleTypes.Kouku::toKouku);
+                .set("api_kouku", bean::setKouku, BattleTypes.Kouku::toKouku)
+                .setInteger("api_smoke_type", bean::setSmokeType)
+                .setInteger("api_balloon_cell", bean::setBalloonCell)
+                .setInteger("api_atoll_cell", bean::setAtollCell);
         return bean;
     }
 }

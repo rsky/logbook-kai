@@ -19,7 +19,7 @@ import lombok.Data;
 @Data
 public class CombinedBattleSpMidnight implements ICombinedBattle, IMidnightBattle, IFormation, INSupport, Serializable {
 
-    private static final long serialVersionUID = -364877629377359534L;
+    private static final long serialVersionUID = -4332436044586027210L;
 
     /** api_dock_id/api_deck_id */
     private Integer dockId;
@@ -84,6 +84,15 @@ public class CombinedBattleSpMidnight implements ICombinedBattle, IMidnightBattl
     /** api_n_support_info */
     private BattleTypes.SupportInfo nSupportInfo;
 
+    /** api_smoke_type */
+    private Integer smokeType;
+
+    /** api_balloon_cell */
+    private Integer balloonCell;
+
+    /** api_atoll_cell */
+    private Integer atollCell;
+
     /**
      * JsonObjectから{@link CombinedBattleSpMidnight}を構築します
      *
@@ -114,7 +123,10 @@ public class CombinedBattleSpMidnight implements ICombinedBattle, IMidnightBattl
                 .setIntegerList("api_flare_pos", bean::setFlarePos)
                 .set("api_hougeki", bean::setHougeki, BattleTypes.MidnightHougeki::toMidnightHougeki)
                 .setInteger("api_n_support_flag", bean::setNSupportFlag)
-                .set("api_n_support_info", bean::setNSupportInfo, BattleTypes.SupportInfo::toSupportInfo);
+                .set("api_n_support_info", bean::setNSupportInfo, BattleTypes.SupportInfo::toSupportInfo)
+                .setInteger("api_smoke_type", bean::setSmokeType)
+                .setInteger("api_balloon_cell", bean::setBalloonCell)
+                .setInteger("api_atoll_cell", bean::setAtollCell);
         return bean;
     }
 }

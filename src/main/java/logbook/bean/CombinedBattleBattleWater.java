@@ -23,7 +23,7 @@ import lombok.Data;
 public class CombinedBattleBattleWater implements ICombinedBattle, ISortieBattle, ISortieHougeki, IFormation, IKouku,
         ISupport, IAirBaseAttack, Serializable {
 
-    private static final long serialVersionUID = -6447392433716613671L;
+    private static final long serialVersionUID = 3186533126573393275L;
 
     /** api_air_base_injection */
     private BattleTypes.AirBaseAttack airBaseInjection;
@@ -98,7 +98,7 @@ public class CombinedBattleBattleWater implements ICombinedBattle, ISortieBattle
     private Boolean openingFlag;
 
     /** api_opening_atack */
-    private BattleTypes.Raigeki openingAtack;
+    private BattleTypes.OpeningAtack openingAtack;
 
     /** api_opening_taisen_flag */
     private Boolean openingTaisenFlag;
@@ -120,6 +120,15 @@ public class CombinedBattleBattleWater implements ICombinedBattle, ISortieBattle
 
     /** api_raigeki */
     private BattleTypes.Raigeki raigeki;
+
+    /** api_smoke_type */
+    private Integer smokeType;
+
+    /** api_balloon_cell */
+    private Integer balloonCell;
+
+    /** api_atoll_cell */
+    private Integer atollCell;
 
     /**
      * JsonObjectから{@link CombinedBattleBattleWater}を構築します
@@ -157,14 +166,17 @@ public class CombinedBattleBattleWater implements ICombinedBattle, ISortieBattle
                 .setInteger("api_support_flag", bean::setSupportFlag)
                 .set("api_support_info", bean::setSupportInfo, BattleTypes.SupportInfo::toSupportInfo)
                 .setBoolean("api_opening_flag", bean::setOpeningFlag)
-                .set("api_opening_atack", bean::setOpeningAtack, BattleTypes.Raigeki::toRaigeki)
+                .set("api_opening_atack", bean::setOpeningAtack, BattleTypes.OpeningAtack::toOpeningAtack)
                 .setBoolean("api_opening_taisen_flag", bean::setOpeningTaisenFlag)
                 .set("api_opening_taisen", bean::setOpeningTaisen, BattleTypes.Hougeki::toHougeki)
                 .setIntegerList("api_hourai_flag", bean::setHouraiFlag)
                 .set("api_hougeki1", bean::setHougeki1, BattleTypes.Hougeki::toHougeki)
                 .set("api_hougeki2", bean::setHougeki2, BattleTypes.Hougeki::toHougeki)
                 .set("api_hougeki3", bean::setHougeki3, BattleTypes.Hougeki::toHougeki)
-                .set("api_raigeki", bean::setRaigeki, BattleTypes.Raigeki::toRaigeki);
+                .set("api_raigeki", bean::setRaigeki, BattleTypes.Raigeki::toRaigeki)
+                .setInteger("api_smoke_type", bean::setSmokeType)
+                .setInteger("api_balloon_cell", bean::setBalloonCell)
+                .setInteger("api_atoll_cell", bean::setAtollCell);
         return bean;
     }
 }

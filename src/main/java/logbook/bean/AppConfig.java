@@ -20,7 +20,7 @@ import lombok.Data;
 @Data
 public final class AppConfig implements Serializable {
 
-    private static final long serialVersionUID = -158061123666406172L;
+    private static final long serialVersionUID = -801833078377154688L;
 
     /** ウインドウスタイル */
     private String windowStyle = "main";
@@ -133,9 +133,6 @@ public final class AppConfig implements Serializable {
     /** 起動時にアップデートチェック */
     private boolean checkUpdate = true;
 
-    /** 通信エラーの抑止 */
-    private boolean connectionClose = true;
-
     /** ポート番号 */
     private int listenPort = 8888;
 
@@ -150,6 +147,9 @@ public final class AppConfig implements Serializable {
 
     /** プロキシポート */
     private int proxyPort = 8080;
+
+    /** パッシブモードを有効にする */
+    private boolean usePassiveMode = false;
 
     /** プラグインを有効にする */
     private boolean usePlugin = true;

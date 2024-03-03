@@ -24,7 +24,7 @@ public class SortieLdShooting
         implements ISortieBattle, ISortieHougeki, IFormation, IKouku, ISupport, IAirBaseAttack, ILdShooting,
         Serializable {
 
-    private static final long serialVersionUID = 3020709530421134903L;
+    private static final long serialVersionUID = 1027540931483394988L;
 
     /** api_air_base_injection */
     private BattleTypes.AirBaseAttack airBaseInjection;
@@ -90,7 +90,7 @@ public class SortieLdShooting
     private Boolean openingFlag;
 
     /** api_opening_atack */
-    private BattleTypes.Raigeki openingAtack;
+    private BattleTypes.OpeningAtack openingAtack;
 
     /** api_opening_taisen_flag */
     private Boolean openingTaisenFlag;
@@ -112,6 +112,15 @@ public class SortieLdShooting
 
     /** api_hougeki3 */
     private BattleTypes.Hougeki hougeki3;
+
+    /** api_smoke_type */
+    private Integer smokeType;
+
+    /** api_balloon_cell */
+    private Integer balloonCell;
+
+    /** api_atoll_cell */
+    private Integer atollCell;
 
     /**
      * JsonObjectから{@link SortieLdShooting}を構築します
@@ -146,14 +155,17 @@ public class SortieLdShooting
                 .setInteger("api_support_flag", bean::setSupportFlag)
                 .set("api_support_info", bean::setSupportInfo, BattleTypes.SupportInfo::toSupportInfo)
                 .setBoolean("api_opening_flag", bean::setOpeningFlag)
-                .set("api_opening_atack", bean::setOpeningAtack, BattleTypes.Raigeki::toRaigeki)
+                .set("api_opening_atack", bean::setOpeningAtack, BattleTypes.OpeningAtack::toOpeningAtack)
                 .setBoolean("api_opening_taisen_flag", bean::setOpeningTaisenFlag)
                 .set("api_opening_taisen", bean::setOpeningTaisen, BattleTypes.Hougeki::toHougeki)
                 .setIntegerList("api_hourai_flag", bean::setHouraiFlag)
                 .set("api_hougeki1", bean::setHougeki1, BattleTypes.Hougeki::toHougeki)
                 .set("api_raigeki", bean::setRaigeki, BattleTypes.Raigeki::toRaigeki)
                 .set("api_hougeki2", bean::setHougeki2, BattleTypes.Hougeki::toHougeki)
-                .set("api_hougeki3", bean::setHougeki3, BattleTypes.Hougeki::toHougeki);
+                .set("api_hougeki3", bean::setHougeki3, BattleTypes.Hougeki::toHougeki)
+                .setInteger("api_smoke_type", bean::setSmokeType)
+                .setInteger("api_balloon_cell", bean::setBalloonCell)
+                .setInteger("api_atoll_cell", bean::setAtollCell);
         return bean;
     }
 }

@@ -413,7 +413,7 @@ public class BattleTypes {
          * api_opening_atackを取得します。
          * @return api_opening_atack
          */
-        BattleTypes.OpeningAtack getOpeningAtack();
+        OpeningAtackCompat getOpeningAtack();
 
         /**
          * api_opening_taisen_flagを取得します。
@@ -1133,12 +1133,117 @@ public class BattleTypes {
     }
 
     /**
+     * 雷撃戦フェイズ
+     */
+    public interface IRaigeki {
+        /**
+         * api_fdamを取得します。
+         * @return api_fdam
+         */
+        List<Double> getFdam();
+
+        /**
+         * api_edamを取得します。
+         * @return api_edam
+         */
+        List<Double> getEdam();
+
+        /**
+         * api_fraiを取得します。
+         * @return api_frai
+         */
+        List<Integer> getFrai();
+
+        /**
+         * api_eraiを取得します。
+         * @return api_erai
+         */
+        List<Integer> getErai();
+
+        /**
+         * api_fydamを取得します。
+         * @return api_fydam
+         */
+        List<Double> getFydam();
+
+        /**
+         * api_eydamを取得します。
+         * @return api_eydam
+         */
+        List<Double> getEydam();
+
+        /**
+         * api_fclを取得します。
+         * @return api_fcl
+         */
+        List<Integer> getFcl();
+
+        /**
+         * api_eclを取得します。
+         * @return api_ecl
+         */
+        List<Integer> getEcl();
+    }
+
+    /**
+     * 開幕戦フェイズ (2024-03-01のアップデート以降の仕様)
+     */
+    public interface IOpeningAtack {
+        /**
+         * api_frai_list_itemsを取得します。
+         * @return api_frai_list_items
+         */
+        List<List<Integer>> getFraiListItems();
+
+        /**
+         * api_fcl_list_itemsを取得します。
+         * @return api_fcl_list_items
+         */
+        List<List<Integer>> getFclListItems();
+
+        /**
+         * api_fdamを取得します。
+         *
+         * @return api_fdam
+         */
+        List<Double> getFdam();
+
+        /**
+         * api_fydam_list_itemsを取得します。
+         * @return api_fydam_list_items
+         */
+        List<List<Double>> getFydamListItems();
+
+        /**
+         * api_erai_list_itemsを取得します。
+         * @return api_erai_list_items
+         */
+        List<List<Integer>> getEraiListItems();
+
+        /**
+         * api_ecl_list_itemsを取得します。
+         * @return api_ecl_list_items
+         */
+        List<List<Integer>> getEclListItems();
+
+        /**
+         * api_edamを取得します。
+         * @return api_edam
+         */
+        List<Double> getEdam();
+
+        /**
+         * api_eydam_list_itemsを取得します。
+         * @return api_eydam_list_items
+         */
+        List<List<Double>> getEydamListItems();
+    }
+
+    /**
      * 開幕 (新旧仕様の互換用ラッパー）
-     *
-     * "atack" は "attack" のtypoなのだが、API仕様としては "api_opening_atack" なのでそのまま採用
      */
     @Data
-    public static class OpeningAtack implements Serializable {
+    public static class OpeningAtackCompat implements IRaigeki, IOpeningAtack, Serializable {
         private static final long serialVersionUID = 6763111484816184379L;
 
         // 2024-03-01のアップデート前後で共通の仕様
@@ -1156,7 +1261,6 @@ public class BattleTypes {
 
         /** api_erai */
         private List<Integer> erai = null;
-
 
         /** api_fydam */
         private List<Double> fydam = null;
@@ -1191,82 +1295,50 @@ public class BattleTypes {
         private List<List<Double>> eydamListItems = null;
 
         // デシリアライズ用にデフォルトコンストラクタが必要
-        public OpeningAtack() {
+        public OpeningAtackCompat() {
         }
 
-        private OpeningAtack(Raigeki raigeki) {
-            this.frai = raigeki.getFrai();
-            this.erai = raigeki.getErai();
-            this.fdam = raigeki.getFdam();
-            this.edam = raigeki.getEdam();
-            this.fydam = raigeki.getFydam();
-            this.eydam = raigeki.getEydam();
-            this.fcl = raigeki.getFcl();
-            this.ecl = raigeki.getEcl();
+        private OpeningAtackCompat(IRaigeki bean) {
+            this.frai = bean.getFrai();
+            this.erai = bean.getErai();
+            this.fdam = bean.getFdam();
+            this.edam = bean.getEdam();
+            this.fydam = bean.getFydam();
+            this.eydam = bean.getEydam();
+            this.fcl = bean.getFcl();
+            this.ecl = bean.getEcl();
         }
 
-        private OpeningAtack(OpeningAtackV2 openingAtackV2) {
-            this.fraiListItems = openingAtackV2.getFraiListItems();
-            this.fclListItems = openingAtackV2.getFclListItems();
-            this.fdam = openingAtackV2.getFdam();
-            this.fydamListItems = openingAtackV2.getFydamListItems();
-            this.eraiListItems = openingAtackV2.getEraiListItems();
-            this.eclListItems = openingAtackV2.getEclListItems();
-            this.edam = openingAtackV2.getEdam();
-            this.eydamListItems = openingAtackV2.getEydamListItems();
-        }
-
-        public Raigeki asRaigeki() {
-            if (!this.isRaigeki()) {
-                return null;
-            }
-            Raigeki bean = new Raigeki();
-            bean.setFrai(this.frai);
-            bean.setErai(this.erai);
-            bean.setFdam(this.fdam);
-            bean.setEdam(this.edam);
-            bean.setFydam(this.fydam);
-            bean.setEydam(this.eydam);
-            bean.setFcl(this.fcl);
-            bean.setEcl(this.ecl);
-            return bean;
-        }
-
-        public OpeningAtackV2 asOpeningAtackV2() {
-            if (!this.isOpeningAtackV2()) {
-                return null;
-            }
-            OpeningAtackV2 bean = new OpeningAtackV2();
-            bean.setFraiListItems(this.fraiListItems);
-            bean.setFclListItems(this.fclListItems);
-            bean.setFdam(this.fdam);
-            bean.setFydamListItems(this.fydamListItems);
-            bean.setEraiListItems(this.eraiListItems);
-            bean.setEclListItems(this.eclListItems);
-            bean.setEdam(this.edam);
-            bean.setEydamListItems(this.eydamListItems);
-            return bean;
+        private OpeningAtackCompat(IOpeningAtack bean) {
+            this.fraiListItems = bean.getFraiListItems();
+            this.fclListItems = bean.getFclListItems();
+            this.fdam = bean.getFdam();
+            this.fydamListItems = bean.getFydamListItems();
+            this.eraiListItems = bean.getEraiListItems();
+            this.eclListItems = bean.getEclListItems();
+            this.edam = bean.getEdam();
+            this.eydamListItems = bean.getEydamListItems();
         }
 
         public boolean isRaigeki() {
             return this.frai != null;
         }
 
-        public boolean isOpeningAtackV2() {
+        public boolean isOpeningAtack() {
             return this.fraiListItems != null;
         }
 
         /**
-         * JsonObjectから{@link OpeningAtack}を構築します
+         * JsonObjectから{@link OpeningAtackCompat}を構築します
          *
          * @param json JsonObject
-         * @return {@link OpeningAtack}
+         * @return {@link OpeningAtackCompat}
          */
-        public static OpeningAtack toOpeningAtack(JsonObject json) {
+        public static OpeningAtackCompat toOpeningAtackCompat(JsonObject json) {
             if (json.containsKey("api_frai_list_items") && json.get("api_frai_list_items") instanceof JsonArray) {
-                return new OpeningAtack(OpeningAtackV2.toOpeningAtackV2(json));
+                return new OpeningAtackCompat(OpeningAtack.toOpeningAtack(json));
             } else {
-                return new OpeningAtack(Raigeki.toRaigeki(json));
+                return new OpeningAtackCompat(Raigeki.toRaigeki(json));
             }
         }
     }
@@ -1275,7 +1347,7 @@ public class BattleTypes {
      * 開幕 (2024-03-01のアップデート以降の仕様)
      */
     @Data
-    public static class OpeningAtackV2 implements Serializable {
+    public static class OpeningAtack implements IOpeningAtack, Serializable {
         private static final long serialVersionUID = 5826255800868507590L;
 
         /** api_frai_list_items */
@@ -1303,13 +1375,13 @@ public class BattleTypes {
         private List<List<Double>> eydamListItems;
 
         /**
-         * JsonObjectから{@link OpeningAtackV2}を構築します
+         * JsonObjectから{@link OpeningAtack}を構築します
          *
          * @param json JsonObject
-         * @return {@link OpeningAtackV2}
+         * @return {@link OpeningAtack}
          */
-        public static OpeningAtackV2 toOpeningAtackV2(JsonObject json) {
-            OpeningAtackV2 bean = new OpeningAtackV2();
+        public static OpeningAtack toOpeningAtack(JsonObject json) {
+            OpeningAtack bean = new OpeningAtack();
             JsonHelper.bind(json)
                     .set("api_frai_list_items", bean::setFraiListItems, JsonHelper.toList(JsonHelper::checkedToIntegerList))
                     .set("api_fcl_list_items", bean::setFclListItems, JsonHelper.toList(JsonHelper::checkedToIntegerList))
@@ -1327,7 +1399,7 @@ public class BattleTypes {
      * 雷撃
      */
     @Data
-    public static class Raigeki implements Serializable {
+    public static class Raigeki implements IRaigeki, Serializable {
 
         private static final long serialVersionUID = 4769524848250854584L;
 

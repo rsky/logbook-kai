@@ -1132,10 +1132,52 @@ public class BattleTypes {
     }
 
     /**
-     * 開幕
+     * 開幕 (新旧仕様の互換用ラッパー）
+     *
+     * "atack" は "attack" のtypoなのだが、API仕様としては "api_opening_atack" なのでそのまま採用
      */
     @Data
     public static class OpeningAtack implements Serializable {
+        private static final long serialVersionUID = 1739445888580394927L;
+
+        /**
+         * v1: 2024-03-01のアップデート以前の仕様 (雷撃と同じ)
+         */
+        private Raigeki v1 = null;
+
+        /**
+         * v2: 2024-03-01のアップデート以降の仕様
+         */
+        private OpeningAtackV2 v2 = null;
+
+        private OpeningAtack(Raigeki v1) {
+            this.v1 = v1;
+        }
+
+        private OpeningAtack(OpeningAtackV2 v2) {
+            this.v2 = v2;
+        }
+
+        /**
+         * JsonObjectから{@link OpeningAtack}を構築します
+         *
+         * @param json JsonObject
+         * @return {@link OpeningAtack}
+         */
+        public static OpeningAtack toOpeningAtack(JsonObject json) {
+            if (json.containsKey("api_frai_list_items")) {
+                return new OpeningAtack(OpeningAtackV2.toOpeningAtackV2(json));
+            } else {
+                return new OpeningAtack(Raigeki.toRaigeki(json));
+            }
+        }
+    }
+
+    /**
+     * 開幕 (2024-03-01のアップデート以降の仕様)
+     */
+    @Data
+    public static class OpeningAtackV2 implements Serializable {
         private static final long serialVersionUID = 5826255800868507590L;
 
         /** api_frai_list_items */
@@ -1163,13 +1205,13 @@ public class BattleTypes {
         private List<List<Double>> eydamListItems;
 
         /**
-         * JsonObjectから{@link OpeningAtack}を構築します
+         * JsonObjectから{@link OpeningAtackV2}を構築します
          *
          * @param json JsonObject
-         * @return {@link OpeningAtack}
+         * @return {@link OpeningAtackV2}
          */
-        public static OpeningAtack toOpeningAtack(JsonObject json) {
-            OpeningAtack bean = new OpeningAtack();
+        public static OpeningAtackV2 toOpeningAtackV2(JsonObject json) {
+            OpeningAtackV2 bean = new OpeningAtackV2();
             JsonHelper.bind(json)
                     .set("api_frai_list_items", bean::setFraiListItems, JsonHelper.toList(JsonHelper::checkedToIntegerList))
                     .set("api_fcl_list_items", bean::setFclListItems, JsonHelper.toList(JsonHelper::checkedToIntegerList))

@@ -513,16 +513,26 @@ public class PhaseState {
     }
 
     /**
-     * 開幕攻撃フェイズを適用します
+     * 開幕攻撃フェイズを適用します（新旧互換）
      *
      * @param openingAtack 開幕攻撃フェイズ
      */
     private void applyOpeningAtack(BattleTypes.OpeningAtack openingAtack) {
+        this.applyRaigeki(openingAtack.getV1());
+        this.applyOpeningAtackV2(openingAtack.getV2());
+    }
+
+    /**
+     * 開幕攻撃フェイズを適用します
+     *
+     * @param openingAtack 開幕攻撃フェイズ
+     */
+    private void applyOpeningAtackV2(BattleTypes.OpeningAtackV2 openingAtack) {
         if (openingAtack == null) {
             return;
         }
         this.addDetailOpeningAtack(openingAtack);
-        // 新API
+        // 味方
         this.applyFriendDamage(openingAtack.getFdam());
         // 敵
         this.applyEnemyDamage(openingAtack.getEdam());
@@ -840,7 +850,7 @@ public class PhaseState {
      *
      * @param openingAtack
      */
-    private void addDetailOpeningAtack(BattleTypes.OpeningAtack openingAtack) {
+    private void addDetailOpeningAtack(BattleTypes.OpeningAtackV2 openingAtack) {
         // 敵→味方
         this.addDetailOpeningAtack0(this.afterEnemy, this.afterEnemyCombined, this.afterFriend,
                 this.afterFriendCombined,

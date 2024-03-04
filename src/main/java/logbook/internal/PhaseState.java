@@ -518,8 +518,14 @@ public class PhaseState {
      * @param openingAtack 開幕攻撃フェイズ
      */
     private void applyOpeningAtack(BattleTypes.OpeningAtack openingAtack) {
-        this.applyRaigeki(openingAtack.getV1());
-        this.applyOpeningAtackV2(openingAtack.getV2());
+        if (openingAtack == null) {
+            return;
+        }
+        if (openingAtack.isOpeningAtackV2()) {
+            this.applyOpeningAtackV2(openingAtack.asOpeningAtackV2());
+        } else if (openingAtack.isRaigeki()) {
+            this.applyRaigeki(openingAtack.asRaigeki());
+        }
     }
 
     /**

@@ -3,6 +3,7 @@ package logbook.bean;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -1138,24 +1139,121 @@ public class BattleTypes {
      */
     @Data
     public static class OpeningAtack implements Serializable {
-        private static final long serialVersionUID = 1739445888580394927L;
+        private static final long serialVersionUID = 6763111484816184379L;
 
-        /**
-         * v1: 2024-03-01のアップデート以前の仕様 (雷撃と同じ)
-         */
-        private Raigeki v1 = null;
+        // 2024-03-01のアップデート前後で共通の仕様
 
-        /**
-         * v2: 2024-03-01のアップデート以降の仕様
-         */
-        private OpeningAtackV2 v2 = null;
+        /** api_fdam */
+        private List<Double> fdam;
 
-        private OpeningAtack(Raigeki v1) {
-            this.v1 = v1;
+        /** api_edam */
+        private List<Double> edam;
+
+        // 2024-03-01のアップデート前の仕様
+
+        /** api_frai */
+        private List<Integer> frai = null;
+
+        /** api_erai */
+        private List<Integer> erai = null;
+
+
+        /** api_fydam */
+        private List<Double> fydam = null;
+
+        /** api_eydam */
+        private List<Double> eydam = null;
+
+        /** api_fcl */
+        private List<Integer> fcl = null;
+
+        /** api_ecl */
+        private List<Integer> ecl = null;
+
+        // 2024-03-01のアップデート後の仕様
+
+        /** api_frai_list_items */
+        private List<List<Integer>> fraiListItems = null;
+
+        /** api_fcl_list_items */
+        private List<List<Integer>> fclListItems = null;
+
+        /** api_fydam_list_items */
+        private List<List<Double>> fydamListItems = null;
+
+        /** api_erai_list_items */
+        private List<List<Integer>> eraiListItems = null;
+
+        /** api_ecl_list_items */
+        private List<List<Integer>> eclListItems = null;
+
+        /** api_eydam_list_items */
+        private List<List<Double>> eydamListItems = null;
+
+        // デシリアライズ用にデフォルトコンストラクタが必要
+        public OpeningAtack() {
         }
 
-        private OpeningAtack(OpeningAtackV2 v2) {
-            this.v2 = v2;
+        private OpeningAtack(Raigeki raigeki) {
+            this.frai = raigeki.getFrai();
+            this.erai = raigeki.getErai();
+            this.fdam = raigeki.getFdam();
+            this.edam = raigeki.getEdam();
+            this.fydam = raigeki.getFydam();
+            this.eydam = raigeki.getEydam();
+            this.fcl = raigeki.getFcl();
+            this.ecl = raigeki.getEcl();
+        }
+
+        private OpeningAtack(OpeningAtackV2 openingAtackV2) {
+            this.fraiListItems = openingAtackV2.getFraiListItems();
+            this.fclListItems = openingAtackV2.getFclListItems();
+            this.fdam = openingAtackV2.getFdam();
+            this.fydamListItems = openingAtackV2.getFydamListItems();
+            this.eraiListItems = openingAtackV2.getEraiListItems();
+            this.eclListItems = openingAtackV2.getEclListItems();
+            this.edam = openingAtackV2.getEdam();
+            this.eydamListItems = openingAtackV2.getEydamListItems();
+        }
+
+        public Raigeki asRaigeki() {
+            if (!this.isRaigeki()) {
+                return null;
+            }
+            Raigeki bean = new Raigeki();
+            bean.setFrai(this.frai);
+            bean.setErai(this.erai);
+            bean.setFdam(this.fdam);
+            bean.setEdam(this.edam);
+            bean.setFydam(this.fydam);
+            bean.setEydam(this.eydam);
+            bean.setFcl(this.fcl);
+            bean.setEcl(this.ecl);
+            return bean;
+        }
+
+        public OpeningAtackV2 asOpeningAtackV2() {
+            if (!this.isOpeningAtackV2()) {
+                return null;
+            }
+            OpeningAtackV2 bean = new OpeningAtackV2();
+            bean.setFraiListItems(this.fraiListItems);
+            bean.setFclListItems(this.fclListItems);
+            bean.setFdam(this.fdam);
+            bean.setFydamListItems(this.fydamListItems);
+            bean.setEraiListItems(this.eraiListItems);
+            bean.setEclListItems(this.eclListItems);
+            bean.setEdam(this.edam);
+            bean.setEydamListItems(this.eydamListItems);
+            return bean;
+        }
+
+        public boolean isRaigeki() {
+            return this.frai != null;
+        }
+
+        public boolean isOpeningAtackV2() {
+            return this.fraiListItems != null;
         }
 
         /**
@@ -1165,7 +1263,7 @@ public class BattleTypes {
          * @return {@link OpeningAtack}
          */
         public static OpeningAtack toOpeningAtack(JsonObject json) {
-            if (json.containsKey("api_frai_list_items")) {
+            if (json.containsKey("api_frai_list_items") && json.get("api_frai_list_items") instanceof JsonArray) {
                 return new OpeningAtack(OpeningAtackV2.toOpeningAtackV2(json));
             } else {
                 return new OpeningAtack(Raigeki.toRaigeki(json));

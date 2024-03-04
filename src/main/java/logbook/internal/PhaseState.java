@@ -513,7 +513,7 @@ public class PhaseState {
     }
 
     /**
-     * 開幕攻撃フェイズを適用します
+     * 開幕攻撃フェイズを適用します（新旧互換）
      *
      * @param openingAtack 開幕攻撃フェイズ
      */
@@ -521,8 +521,24 @@ public class PhaseState {
         if (openingAtack == null) {
             return;
         }
+        if (openingAtack.isOpeningAtackV2()) {
+            this.applyOpeningAtackV2(openingAtack.asOpeningAtackV2());
+        } else if (openingAtack.isRaigeki()) {
+            this.applyRaigeki(openingAtack.asRaigeki());
+        }
+    }
+
+    /**
+     * 開幕攻撃フェイズを適用します
+     *
+     * @param openingAtack 開幕攻撃フェイズ
+     */
+    private void applyOpeningAtackV2(BattleTypes.OpeningAtackV2 openingAtack) {
+        if (openingAtack == null) {
+            return;
+        }
         this.addDetailOpeningAtack(openingAtack);
-        // 新API
+        // 味方
         this.applyFriendDamage(openingAtack.getFdam());
         // 敵
         this.applyEnemyDamage(openingAtack.getEdam());
@@ -840,7 +856,7 @@ public class PhaseState {
      *
      * @param openingAtack
      */
-    private void addDetailOpeningAtack(BattleTypes.OpeningAtack openingAtack) {
+    private void addDetailOpeningAtack(BattleTypes.OpeningAtackV2 openingAtack) {
         // 敵→味方
         this.addDetailOpeningAtack0(this.afterEnemy, this.afterEnemyCombined, this.afterFriend,
                 this.afterFriendCombined,
@@ -863,7 +879,7 @@ public class PhaseState {
      */
     private void addDetailOpeningAtack0(List<? extends Chara> attackerFleet, List<? extends Chara> attackerFleetCombined,
             List<? extends Chara> defenderFleet, List<? extends Chara> defenderFleetCombined,
-            List<List<Integer>> indexList, List<List<Double>> ydamList, List<List<Integer>> critical) {
+            List<List<Integer>> indexList, List<List<Double>> ydamList, List<List<Integer>> criticalList) {
         if (defenderFleet != null)
             defenderFleet = defenderFleet.stream()
                     .map(c -> c != null ? c.clone() : null)
@@ -880,6 +896,8 @@ public class PhaseState {
             Chara attacker = Math.max(attackerFleet.size(), 6) > i
                     ? attackerFleet.get(i)
                     : attackerFleetCombined.get(i - 6);
+            // NOTE: indexの要素数が複数のとき、常に index[0] == index[1] であることが確認できたら
+            // ループでなくaddDetail()でまとめて追加すべきかもしれない
             for (int j = 0; j < index.size(); j++) {
                 Chara defender = Math.max(defenderFleet.size(), 6) > index.get(j)
                         ? defenderFleet.get(index.get(j))
@@ -890,7 +908,7 @@ public class PhaseState {
                 defender.setNowhp(defender.getNowhp() - damage);
 
                 this.addDetail(attacker, defender, damage, Collections.singletonList(damage),
-                        Collections.singletonList(critical.get(i).get(j)),
+                        Collections.singletonList(criticalList.get(i).get(j)),
                         SortieAtTypeRaigeki.通常雷撃);
             }
         }

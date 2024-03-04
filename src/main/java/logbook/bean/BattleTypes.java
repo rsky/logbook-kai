@@ -102,7 +102,7 @@ public class BattleTypes {
          * api_atoll_cellを取得します。
          * @return api_atoll_cell
          */
-
+        Integer getAtollCell();
 
         @JsonIgnore
         default boolean isIAirBaseAttack() {

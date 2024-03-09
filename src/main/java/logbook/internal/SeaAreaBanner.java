@@ -35,10 +35,13 @@ class SeaAreaBanner {
                 break;
             case 8:
             case 9:
+                bannerFormat = JOIN_BANNER_2;
+                imageNumber = area + 6;
+                break;
             case 10:
             case 11:
                 bannerFormat = JOIN_BANNER_2;
-                imageNumber = area + 4;
+                imageNumber = area + 2;
                 break;
             default:
                 return null;

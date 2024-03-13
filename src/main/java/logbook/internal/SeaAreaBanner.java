@@ -21,7 +21,7 @@ class SeaAreaBanner {
         String bannerFormat;
         int imageNumber;
 
-        // 2024年早春イベント暫定版
+        // 2024年早春イベント最終版
         switch (area) {
             case 1:
             case 2:

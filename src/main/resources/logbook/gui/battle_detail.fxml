@@ -38,7 +38,7 @@
                               <Separator />
                               <GridPane>
                                 <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="30.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="3.0" minWidth="3.0" prefWidth="3.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" />
@@ -141,9 +141,19 @@
                                           <Label text="対空CI:" />
                                        </children>
                                     </HBox>
-                                    <HBox GridPane.columnIndex="1" GridPane.columnSpan="7" GridPane.rowIndex="4">
+                                    <HBox GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="4">
                                        <children>
-                                          <Label fx:id="tykuCI" />
+                                          <Label fx:id="tykuCI" textOverrun="CENTER_ELLIPSIS" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="6" GridPane.rowIndex="4">
+                                       <children>
+                                          <Label text="煙幕:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="7" GridPane.rowIndex="4">
+                                       <children>
+                                          <Label fx:id="smoke" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" GridPane.rowIndex="5">

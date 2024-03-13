@@ -34,7 +34,6 @@ import logbook.bean.BattleTypes.ISupport;
 import logbook.bean.BattleTypes.Kouku;
 import logbook.bean.BattleTypes.MidnightHougeki;
 import logbook.bean.BattleTypes.MidnightSpList;
-import logbook.bean.BattleTypes.Raigeki;
 import logbook.bean.BattleTypes.SortieAtType;
 import logbook.bean.BattleTypes.SortieAtTypeRaigeki;
 import logbook.bean.BattleTypes.Stage3;
@@ -245,7 +244,7 @@ public class PhaseState {
         // 先制対潜攻撃
         this.applyHougeki(battle.getOpeningTaisen());
         // 開幕攻撃
-        this.applyOpeningAtack(battle.getOpeningAtack());
+        this.applyOpeningAtackCompat(battle.getOpeningAtack());
         if (!this.combined && battle.isICombinedEcBattle()) {
             // 1巡目
             this.applyHougeki(battle.getHougeki1());
@@ -517,14 +516,13 @@ public class PhaseState {
      *
      * @param openingAtack 開幕攻撃フェイズ
      */
-    private void applyOpeningAtack(BattleTypes.OpeningAtack openingAtack) {
-        if (openingAtack == null) {
-            return;
-        }
-        if (openingAtack.isOpeningAtackV2()) {
-            this.applyOpeningAtackV2(openingAtack.asOpeningAtackV2());
-        } else if (openingAtack.isRaigeki()) {
-            this.applyRaigeki(openingAtack.asRaigeki());
+    private void applyOpeningAtackCompat(BattleTypes.OpeningAtackCompat openingAtack) {
+        if (openingAtack != null) {
+            if (openingAtack.isOpeningAtack()) {
+                this.applyOpeningAtack(openingAtack);
+            } else if (openingAtack.isRaigeki()) {
+                this.applyRaigeki(openingAtack);
+            }
         }
     }
 
@@ -533,15 +531,14 @@ public class PhaseState {
      *
      * @param openingAtack 開幕攻撃フェイズ
      */
-    private void applyOpeningAtackV2(BattleTypes.OpeningAtackV2 openingAtack) {
-        if (openingAtack == null) {
-            return;
+    private void applyOpeningAtack(BattleTypes.IOpeningAtack openingAtack) {
+        if (openingAtack != null) {
+            this.addDetailOpeningAtack(openingAtack);
+            // 味方
+            this.applyFriendDamage(openingAtack.getFdam());
+            // 敵
+            this.applyEnemyDamage(openingAtack.getEdam());
         }
-        this.addDetailOpeningAtack(openingAtack);
-        // 味方
-        this.applyFriendDamage(openingAtack.getFdam());
-        // 敵
-        this.applyEnemyDamage(openingAtack.getEdam());
     }
 
     /**
@@ -549,15 +546,14 @@ public class PhaseState {
      * 
      * @param raigeki 雷撃戦フェイズ
      */
-    private void applyRaigeki(Raigeki raigeki) {
-        if (raigeki == null) {
-            return;
+    private void applyRaigeki(BattleTypes.IRaigeki raigeki) {
+        if (raigeki != null) {
+            this.addDetailRaigeki(raigeki);
+            // 味方
+            this.applyFriendDamage(raigeki.getFdam());
+            // 敵
+            this.applyEnemyDamage(raigeki.getEdam());
         }
-        this.addDetailRaigeki(raigeki);
-        // 新API
-        this.applyFriendDamage(raigeki.getFdam());
-        // 敵
-        this.applyEnemyDamage(raigeki.getEdam());
     }
 
     /**
@@ -856,7 +852,7 @@ public class PhaseState {
      *
      * @param openingAtack
      */
-    private void addDetailOpeningAtack(BattleTypes.OpeningAtackV2 openingAtack) {
+    private void addDetailOpeningAtack(BattleTypes.IOpeningAtack openingAtack) {
         // 敵→味方
         this.addDetailOpeningAtack0(this.afterEnemy, this.afterEnemyCombined, this.afterFriend,
                 this.afterFriendCombined,
@@ -896,8 +892,7 @@ public class PhaseState {
             Chara attacker = Math.max(attackerFleet.size(), 6) > i
                     ? attackerFleet.get(i)
                     : attackerFleetCombined.get(i - 6);
-            // NOTE: indexの要素数が複数のとき、常に index[0] == index[1] であることが確認できたら
-            // ループでなくaddDetail()でまとめて追加すべきかもしれない
+            // 特四式内火艇x2積みの場合に2回攻撃が発生し、それぞれターゲットが異なる
             for (int j = 0; j < index.size(); j++) {
                 Chara defender = Math.max(defenderFleet.size(), 6) > index.get(j)
                         ? defenderFleet.get(index.get(j))
@@ -919,7 +914,7 @@ public class PhaseState {
      *
      * @param raigeki
      */
-    private void addDetailRaigeki(Raigeki raigeki) {
+    private void addDetailRaigeki(BattleTypes.IRaigeki raigeki) {
         // 敵→味方
         this.addDetailRaigeki0(this.afterEnemy, this.afterEnemyCombined, this.afterFriend,
                 this.afterFriendCombined,

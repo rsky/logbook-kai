@@ -142,7 +142,7 @@ public class CombinedBattleEcNightToDay implements ICombinedBattle, ICombinedEcB
     private Boolean openingFlag;
 
     /** api_opening_atack */
-    private BattleTypes.OpeningAtack openingAtack;
+    private BattleTypes.OpeningAtackCompat openingAtack;
 
     /** api_hourai_flag */
     private List<Integer> houraiFlag;
@@ -220,7 +220,7 @@ public class CombinedBattleEcNightToDay implements ICombinedBattle, ICombinedEcB
                 .setBoolean("api_opening_taisen_flag", bean::setOpeningTaisenFlag)
                 .set("api_opening_taisen", bean::setOpeningTaisen, BattleTypes.Hougeki::toHougeki)
                 .setBoolean("api_opening_flag", bean::setOpeningFlag)
-                .set("api_opening_atack", bean::setOpeningAtack, BattleTypes.OpeningAtack::toOpeningAtack)
+                .set("api_opening_atack", bean::setOpeningAtack, BattleTypes.OpeningAtackCompat::toOpeningAtackCompat)
                 .setIntegerList("api_hourai_flag", bean::setHouraiFlag)
                 .set("api_hougeki1", bean::setHougeki1, BattleTypes.Hougeki::toHougeki)
                 .set("api_hougeki2", bean::setHougeki2, BattleTypes.Hougeki::toHougeki)

@@ -23,6 +23,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 import logbook.bean.BattleLog;
@@ -151,6 +152,10 @@ public class BattleDetail extends WindowController {
     /** 対空CI */
     @FXML
     private Label tykuCI;
+
+    /** 煙幕 */
+    @FXML
+    private Label smoke;
 
     /** 評価 */
     @FXML
@@ -334,6 +339,17 @@ public class BattleDetail extends WindowController {
                     .filter(Objects::nonNull)
                     .mapToInt(Ships::airSuperiority)
                     .sum()));
+        }
+
+        // 煙幕
+        if (this.isPractice || this.battle.getSmokeType() == null) {
+            this.smoke.setText("");
+        } else {
+            if (this.battle.getSmokeType() > 0) {
+                this.smoke.setText(this.battle.getSmokeType().toString() + "重");
+            } else {
+                this.smoke.setText("なし");
+            }
         }
 
         // 初期化

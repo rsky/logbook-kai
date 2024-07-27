@@ -268,6 +268,7 @@ public class Items {
         case 水上戦闘機:
         case 陸上攻撃機:
         case 局地戦闘機:
+        case 大型陸上機:
         case 噴式戦闘機:
         case 噴式戦闘爆撃機:
         case 噴式攻撃機:
@@ -313,6 +314,7 @@ public class Items {
         case 水上戦闘機:
         case 陸上攻撃機:
         case 局地戦闘機:
+        case 大型陸上機:
         case 噴式戦闘機:
         case 噴式戦闘爆撃機:
         case 噴式攻撃機:

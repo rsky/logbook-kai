@@ -16,6 +16,10 @@ class SeaAreaBanner {
      * @return 出撃札の画像パス。存在しない場合はnull
      */
     static Path getJoinBannerPath(int area) {
+        if (area < 1) {
+            return null;
+        }
+
         // 2024年夏イベント後段作戦まで
         int imageNumber = 2 + area * 2;
 

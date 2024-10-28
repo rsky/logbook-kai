@@ -142,10 +142,16 @@ public class Ships {
         // 改修係数
         // 小型電探：1.25
         LV_COEFFICIENT.put(SlotItemType.小型電探, 1.25D);
-        // 大型電探：1.25
-        LV_COEFFICIENT.put(SlotItemType.大型電探, 1.25D);
+        // 大型電探：1.4
+        LV_COEFFICIENT.put(SlotItemType.大型電探, 1.4D);
         // 水上偵察機：1.2
         LV_COEFFICIENT.put(SlotItemType.水上偵察機, 1.2D);
+        // 水上爆撃機 1.15
+        LV_COEFFICIENT.put(SlotItemType.水上爆撃機, 1.15D);
+        // 艦上偵察機 1.2
+        LV_COEFFICIENT.put(SlotItemType.艦上偵察機, 1.2D);
+        // 大型飛行艇 1.2
+        LV_COEFFICIENT.put(SlotItemType.大型飛行艇, 1.2D);
 
         // 対空係数
         // 対空機銃：6

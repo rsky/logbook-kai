@@ -4,7 +4,7 @@
     <name>logbook-kai</name>
     <artifactId>logbook-kai-java17</artifactId>
     <groupId>logbook</groupId>
-    <version>24.8.1</version>
+    <version>24.10.1</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -82,6 +82,11 @@
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>11.0.0</version>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -93,17 +98,17 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.4.55.v20240627</version>
+            <version>9.4.56.v20240826</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.4.55.v20240627</version>
+            <version>9.4.56.v20240826</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-proxy</artifactId>
-            <version>9.4.55.v20240627</version>
+            <version>9.4.56.v20240826</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -143,27 +148,27 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.17.2</version>
+            <version>2.18.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.15</version>
+            <version>2.0.16</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>2.0.15</version>
+            <version>2.0.16</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.6</version>
+            <version>1.5.12</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.5.6</version>
+            <version>1.5.12</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

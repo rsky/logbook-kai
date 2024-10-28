@@ -7,9 +7,7 @@ import java.nio.file.Paths;
  * 出撃札
  */
 class SeaAreaBanner {
-    private static final String JOIN_BANNER = "sally_strategymap/sally_strategymap_{0}.png";
-    private static final String JOIN_BANNER_2 = "sally_strategymap_second/sally_strategymap_second_{0}.png";
-    private static final String JOIN_BANNER_3 = "sally_strategymap_third/sally_strategymap_third_{0}.png";
+    private static final String COMMON_EVENT = "common_event";
 
     /**
      * 出撃札の画像パスを取得します
@@ -18,37 +16,13 @@ class SeaAreaBanner {
      * @return 出撃札の画像パス。存在しない場合はnull
      */
     static Path getJoinBannerPath(int area) {
-        String bannerFormat;
-        int imageNumber;
-
-        // 2024年夏イベント後段作戦まで
-        switch (area) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                bannerFormat = JOIN_BANNER;
-                imageNumber = area + 25;
-                break;
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-                bannerFormat = JOIN_BANNER_2;
-                imageNumber = area + 12;
-                break;
-            /*
-            case 10:
-            case 11:
-                bannerFormat = JOIN_BANNER_2;
-                imageNumber = area + 2;
-                break;
-             */
-            default:
-                return null;
+        if (area < 1) {
+            return null;
         }
 
-        return Paths.get("sally", bannerFormat.replace("{0}", Integer.toString(imageNumber)));
+        // 2024年夏イベント後段作戦まで
+        int imageNumber = 2 + area * 2;
+
+        return Paths.get("common", COMMON_EVENT, String.format("%s_%d.png", COMMON_EVENT, imageNumber));
     }
 }

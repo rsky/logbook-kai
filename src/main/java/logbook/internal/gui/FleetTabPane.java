@@ -22,9 +22,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import logbook.Messages;
@@ -209,17 +209,17 @@ public class FleetTabPane extends ScrollPane {
      */
     @FXML
     void changeBranchCoefficient(ActionEvent event) {
-        TextInputDialog dialog = new TextInputDialog(Double.toString(this.branchCoefficient));
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(Integer.toString((int) this.branchCoefficient), "1", "2", "3", "4");
         dialog.getDialogPane().getStylesheets().add("logbook/gui/application.css");
         InternalFXMLLoader.setGlobal(dialog.getDialogPane());
         dialog.initOwner(this.getScene().getWindow());
         dialog.setTitle("分岐点係数を変更");
-        dialog.setHeaderText("分岐点係数を数値で入力してください 例)\n"
-                + "沖ノ島沖 G,I,Jマス 係数: 1.0\n"
-                + "北方AL海域 Gマス 係数: 4.0\n"
-                + "中部海域哨戒線 G,Hマス 係数: 4.0\n"
-                + "MS諸島沖 E,Iマス 係数: 3.0\n"
-                + "グアノ環礁沖海域 Hマス 係数: 3.0");
+        dialog.setHeaderText("分岐点係数を選択してください 例)\n"
+                + "沖ノ島沖 G,I,Jマス 係数: 1\n"
+                + "北方AL海域 Gマス 係数: 4\n"
+                + "中部海域哨戒線 G,Hマス 係数: 4\n"
+                + "MS諸島沖 E,Iマス 係数: 3\n"
+                + "グアノ環礁沖海域 Hマス 係数: 3");
 
         val result = dialog.showAndWait();
         if (result.isPresent()) {
@@ -470,7 +470,7 @@ public class FleetTabPane extends ScrollPane {
             return new PopOverPane("判定式(33)", content);
         });
         popover.install(this.decision33, decision33);
-        this.branchCoefficientButton.setText("分岐点係数:" + this.branchCoefficient);
+        this.branchCoefficientButton.setText("分岐点係数:" + (int) this.branchCoefficient);
     }
 
     private void setIcon() {

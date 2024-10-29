@@ -27,7 +27,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import jdk.nashorn.api.scripting.JSObject; // Java 8
-//import org.openjdk.nashorn.api.scripting.JSObject; // Java 17
+//import org.openjdk.nashorn.api.scripting.JSObject; // Java 17+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

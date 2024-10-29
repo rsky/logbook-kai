@@ -2,7 +2,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <name>logbook-kai</name>
-    <artifactId>logbook-kai-java17</artifactId>
+    <artifactId>logbook-kai-java21</artifactId>
     <groupId>logbook</groupId>
     <version>24.10.1</version>
     <properties>
@@ -15,7 +15,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>17</release>
+                    <release>21</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -123,17 +123,17 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
-            <version>17.0.12</version>
+            <version>22.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
-            <version>17.0.12</version>
+            <version>22.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-web</artifactId>
-            <version>17.0.12</version>
+            <version>22.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.controlsfx</groupId>

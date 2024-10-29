@@ -1,18 +1,29 @@
 航海日誌 (logbook-kai)
 --
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Sdk0815/logbook-kai)](https://github.com/Sdk0815/logbook-kai/releases/latest)
-[![GitHub](https://img.shields.io/github/license/Sdk0815/logbook-kai)](LICENSE)
-[![GitHub All Releases](https://img.shields.io/github/downloads/Sdk0815/logbook-kai/total)](https://github.com/Sdk0815/logbook-kai/releases)
-[![GitHub Release Date](https://img.shields.io/github/release-date/Sdk0815/logbook-kai)](https://github.com/Sdk0815/logbook-kai/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/rsky/logbook-kai)](https://github.com/Sdk0815/logbook-kai/releases/latest)
+[![GitHub](https://img.shields.io/github/license/rsky/logbook-kai)](LICENSE)
+[![GitHub All Releases](https://img.shields.io/github/downloads/rsky/logbook-kai/total)](https://github.com/Sdk0815/logbook-kai/releases)
+[![GitHub Release Date](https://img.shields.io/github/release-date/rsky/logbook-kai)](https://github.com/rsky/logbook-kai/releases)
 
 ## ****重要なお知らせ****
+これは[sanaehirotaka さん](https://github.com/sanaehirotaka/logbook-kai/)、[Sdk0815 さん](https://github.com/Sdk0815/logbook-kai/)が開発されていた航海日誌(logbook-kai)を2021年夏より[rsky](https://github.com/rsky/logbook-kai/)が個人用にメンテナンスしているものです。
+
+Java 8版、Java 17版、Java 21版を提供しています。Java 17以降で動かす方法は[こちら](how-to-run-with-java17.md)を参照してください。[^1]
+
+艦これAPIの仕様変更等にはできるだけ早く追従できるように努めていますが、新機能の追加は基本的に行わない予定です。
+
+独自の仕様としては、passive mode APIを追加しています。プロキシサーバー等、別のソフトウェアからHTTP POSTでデータを受け取り、GUIのみ航海日誌(logbook-kai)を利用するための機能です。詳細は[こちら](how-to-passive-mode.md)をご覧ください。
+
+[^1]: リンク先はJava 17での説明ですが、Java 21でも同様の手順で起動しますので適宜読み替えてください。
+
+## ****（以前の）重要なお知らせ****
 航海日誌(logbook-kai)は[sanaehirotaka さん](https://github.com/sanaehirotaka/logbook-kai/)が開発されたものを引き継ぐ形で、2020年から[Sdk0815](https://github.com/Sdk0815/logbook-kai/)によってメンテナンスを継続してきましたが、諸般の事情により今後のメンテナンスを停止することといたしました。現状の最新版である `v21.7.1` が最終盤となります。公式Twitterアカウントも後日閉鎖する予定です。
 
 今後もし開発を引き継いでいただける方がおられましたら引き継ぎのサポートはさせていただこうと思いますので私まで（issueをあげていただくか[Sdk0815＠Twitter](https://twitter.com/Sdk0815)まで）お知らせいただければと思います。ソースコードは当初より公開しておりますので特にお知らせなくforkしていただいてももちろん問題ありません。
 
 引き継いで1年とちょっとでの開発終了となり心苦しい気持ちではありますが、ご理解いただけるとありがたく思います。以上、よろしくお願いいたします。
 
-## ****（以前の）重要なお知らせ****
+## ****（もっと以前の）重要なお知らせ****
 
 v20.9.2 以降のバージョンはオリジナルの [sanaehirotaka さんのリポジトリ](https://github.com/sanaehirotaka/logbook-kai/)ではなく
 こちらの[Sdk0815 の fork](https://github.com/Sdk0815/logbook-kai/)にて開発を行います。

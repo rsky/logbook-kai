@@ -58,7 +58,7 @@
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>assembly.xml</descriptor>
+                                <descriptor>assembly21.xml</descriptor>
                             </descriptors>
                             <finalName>${project.artifactId}_${project.version}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>

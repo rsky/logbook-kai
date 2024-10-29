@@ -1,9 +1,39 @@
 ## logbook-kai passive mode
 
-### コンセプト
+### モチベーションとコンセプト
 
 - 独自のプロキシを開発中だが、Web GUIがまだまだなのでプロキシは独自のものを使いつつ、当面の間GUIは航海日誌を使いたい。
 - HTTPS対応を見据えて、多段プロキシではなく、HTTP POSTでデータを受け取る。(TLS通信は独自プロキシのみでハンドリングする)
+
+### 概念図
+
+開発中の謎のプロキシと、それと連携する謎のAPIサーバー、S3互換ストレージ、航海日誌の関係を示す。
+
+```mermaid
+sequenceDiagram
+  actor Y as Webブラウザ
+  participant P as 謎のプロキシ
+  participant K as 艦これサーバー
+  participant L as logbook-kai
+  participant S as S3互換ストレージ
+  participant X as 謎のAPIサーバー
+
+  Y ->> P: request
+  P ->> K: request
+  K ->> P: response
+  P ->> Y: response
+  P -->> L: request and response data (async)
+  P -->> S: resource and json (async)
+  P -->> X: request and response data (async)
+```
+
+### 実装
+
+[PassiveModeServlet.java](./src/main/java/logbook/internal/proxy/PassiveModeServlet.java)
+
+### 設定
+
+設定の通信タブで「パッシブモードを有効にする」をチェックする。
 
 ### API仕様
 
@@ -31,25 +61,3 @@
 #### リクエストボディ
 
 レスポンスボディそのまま。gzipデコードもされていない生のもの。
-
-### 概念図
-
-開発中の謎のプロキシと、それと連携する謎のAPIサーバー、S3互換ストレージ、航海日誌の関係を示す。
-
-```mermaid
-sequenceDiagram
-  actor Y as Webブラウザ
-  participant P as 謎のプロキシ
-  participant K as 艦これサーバー
-  participant L as logbook-kai
-  participant S as S3互換ストレージ
-  participant X as 謎のAPIサーバー
-
-  Y ->> P: request
-  P ->> K: request
-  K ->> P: response
-  P ->> Y: response
-  P -->> L: request and response data (async)
-  P -->> S: resource and json (async)
-  P -->> X: request and response data (async)
-```

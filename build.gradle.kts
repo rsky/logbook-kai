@@ -32,7 +32,7 @@ dependencies {
 }
 
 group = "logbook"
-version = "24.10.2"
+version = "24.10.3"
 description = "logbook-kai"
 java.sourceCompatibility = JavaVersion.VERSION_21
 

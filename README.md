@@ -8,15 +8,11 @@
 ## ****重要なお知らせ****
 これは[sanaehirotaka さん](https://github.com/sanaehirotaka/logbook-kai/)、[Sdk0815 さん](https://github.com/Sdk0815/logbook-kai/)が開発されていた航海日誌(logbook-kai)を2021年夏より[rsky](https://github.com/rsky/logbook-kai/)が個人用にメンテナンスしているものです。
 
-Java 8版、Java 17版、Java 21版を提供しています。Java 17以降で動かす方法は[こちら](how-to-run-with-java21)を参照してください。[^1][^2]
+Java 8版、Java 21版を提供しています。Java 17以降で動かす方法は[こちら](how-to-run-with-java21)を参照してください。
 
 艦これAPIの仕様変更等にはできるだけ早く追従できるように努めていますが、新機能の追加は基本的に行わない予定です。
 
 独自の仕様としては、passive mode APIを追加しています。プロキシサーバー等、別のソフトウェアからHTTP POSTでデータを受け取り、GUIのみ航海日誌(logbook-kai)を利用するための機能です。詳細は[こちら](how-to-passive-mode.md)をご覧ください。
-
-[^1]: リンク先はJava 21での説明ですが、Java 17でも同様の手順で起動しますので適宜読み替えてください。
-
-[^2]: Java 17版の提供は2021年10月で終了し、以降はJava 8版とJava 21版のみになります。
 
 ## ****（以前の）重要なお知らせ****
 航海日誌(logbook-kai)は[sanaehirotaka さん](https://github.com/sanaehirotaka/logbook-kai/)が開発されたものを引き継ぐ形で、2020年から[Sdk0815](https://github.com/Sdk0815/logbook-kai/)によってメンテナンスを継続してきましたが、諸般の事情により今後のメンテナンスを停止することといたしました。現状の最新版である `v21.7.1` が最終盤となります。公式Twitterアカウントも後日閉鎖する予定です。
@@ -70,18 +66,15 @@ MIT ライセンスの下で公開する、自由ソフトウェアです。
 ![Redhat](https://img.shields.io/badge/-Redhat-EE0000.svg?logo=red-hat)
 ![macOS](https://img.shields.io/badge/-macOS-333333.svg?logo=apple)
 
-Java 8u40以降のJava8がインストールされたWindows,LinuxまたはmacOSが必要です。
+Java 8u40以降のJava8、またはJava21がインストールされたWindows,LinuxまたはmacOSが必要です。
 
 **次のJavaVMで動作確認されています。**
-- **[Liberica JDK version 8](https://bell-sw.com/pages/java-8u232/)**
+- **[Liberica JDK version 8](https://bell-sw.com/pages/downloads/#jdk-8-lts)**
    - 新規に導入する場合、こちらを推奨します。JavaFXを利用しているため必ず**StandardではなくFullをダウンロード**してください。
+- **[Liberica JDK version 21](https://bell-sw.com/pages/downloads/#jdk-21-lts)**
+  - Java 21版ではこちらを推奨します。同じくFullをダウンロードしてください。
 - [Oracle JDK 8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
    - ダウンロードにOTNアカウントが必要です。
-
-次のJavaVMではご利用いただけません。
-- バージョンが8ではないJavaVM
-- Amazon Corretto : 一部機能が動作しません(集計機能・自動アップデートが利用不可)。
-- AdoptOpenJDK : ライブラリが不足しているため起動しません。
 
 ### [ダウンロード](https://github.com/Sdk0815/logbook-kai/releases)
 

@@ -17,7 +17,7 @@ Java 21版は現在試験的なビルドです。
   - Windows 10 (x86_64)
     - Liberica JRE 21.0.5+11-full
 
-Java 21版を動かすにはLiberica JRE FullやZulu FX等のJavaFXを含むラインタイムがおすすめです。
+Java 21版を動かすにはLiberica JRE FullやZulu FX等のJavaFXを含むランタイムがおすすめです。
 
 Java 8版との違いは `-Djavafx.allowjs=true` オプションを付けて起動する点で、Windows用起動スクリプトlaunch.batにはこのオプションが含まれています。
 
@@ -33,9 +33,9 @@ JavaFXを含まないランタイム上で動かすには、JavaFX SDKをダウ�
 java --module-path ./javafx-sdk-21.0.5/lib --add-modules javafx.controls,javafx.fxml,javafx.media,javafx.swing,javafx.web -Djavafx.allowjs=true -jar logbook-kai.jar
 ```
 
-## Java 17での開発方法
+## Java 21での開発方法
 
-Java 17ではJREからJavaScript実行エンジンNashornが削除されています。OpenJDKプロジェクトのNashornを利用するため、ビルドするには
+Java 17からJREからJavaScript実行エンジンNashornが削除されています。OpenJDKプロジェクトのNashornを利用するため、ビルドするには
 ソースコードを一部改変してimport元を変更する必要があります。
 
 ```diff

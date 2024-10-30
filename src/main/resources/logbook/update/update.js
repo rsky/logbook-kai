@@ -75,10 +75,13 @@ UpdateTask.prototype.getReleaseJson = function() {
                 }
                 for (var i = 0; i < release["assets"].length; i++) {
                     var name = release["assets"][i]["name"];
-                    var prefix = "logbook_kai_";
+                    var prefix = "logbook-kai_";
+                    /*
+                    Java 21にはbin/jjsが存在しないので、このスクリプトを起動すること自体がない
                     if ("21".equals(System.getProperty("target_java_version"))) {
                         prefix = "logbook-kai-java21_";
                     }
+                     */
                     if (name.startsWith(prefix) && name.endsWith(".zip")) {
                         asset = release["assets"][i];
                         break;

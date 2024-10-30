@@ -76,9 +76,7 @@ UpdateTask.prototype.getReleaseJson = function() {
                 for (var i = 0; i < release["assets"].length; i++) {
                     var name = release["assets"][i]["name"];
                     var prefix = "logbook_kai_";
-                    if ("17".equals(System.getProperty("target_java_version"))) {
-                        prefix = "logbook-kai-java17_";
-                    } else if ("21".equals(System.getProperty("target_java_version"))) {
+                    if ("21".equals(System.getProperty("target_java_version"))) {
                         prefix = "logbook-kai-java21_";
                     }
                     if (name.startsWith(prefix) && name.endsWith(".zip")) {

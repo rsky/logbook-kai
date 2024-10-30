@@ -166,7 +166,7 @@ public class CheckUpdate {
         }
 
         ButtonType update = new ButtonType("自動更新");
-        ButtonType visible = new ButtonType("ダウンロードサイトを開く");
+        ButtonType visit = new ButtonType("ダウンロードサイトを開く");
         ButtonType no = new ButtonType("後で");
 
         Alert alert = new Alert(AlertType.INFORMATION);
@@ -177,12 +177,17 @@ public class CheckUpdate {
         alert.setContentText(message);
         alert.initOwner(stage);
         alert.getButtonTypes().clear();
-        alert.getButtonTypes().addAll(update, visible, no);
+        if ("21".equals(System.getProperty("java.specification.version"))) {
+            // Java 21にはbin/jjsがないので自動更新はできない
+            alert.getButtonTypes().addAll(visit, no);
+        } else {
+            alert.getButtonTypes().addAll(update, visit, no);
+        }
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent()) {
             if (result.get() == update)
                 launchUpdate(n, tag);
-            if (result.get() == visible)
+            if (result.get() == visit)
                 openBrowser();
         }
     }
@@ -225,9 +230,6 @@ public class CheckUpdate {
                 args.add("-Drelease_tag=" + newtag);
                 if (Boolean.getBoolean(USE_PRERELEASE)) {
                     args.add("-Duse_prerelease=true");
-                }
-                if ("21".equals(System.getProperty("java.specification.version"))) {
-                    args.add("-Dtarget_java_version=21");
                 }
                 new ProcessBuilder(args)
                                 .inheritIO()

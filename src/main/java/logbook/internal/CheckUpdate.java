@@ -226,8 +226,8 @@ public class CheckUpdate {
                 if (Boolean.getBoolean(USE_PRERELEASE)) {
                     args.add("-Duse_prerelease=true");
                 }
-                if ("17".equals(System.getProperty("java.specification.version"))) {
-                    args.add("-Dtarget_java_version=17");
+                if ("21".equals(System.getProperty("java.specification.version"))) {
+                    args.add("-Dtarget_java_version=21");
                 }
                 new ProcessBuilder(args)
                                 .inheritIO()

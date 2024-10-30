@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    `maven-publish`
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 repositories {
@@ -36,12 +36,6 @@ version = "24.10.2"
 description = "logbook-kai"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-    }
-}
-
 tasks.withType<JavaCompile>() {
     options.encoding = "UTF-8"
     options.compilerArgs.add("-Xlint:deprecation")
@@ -49,4 +43,11 @@ tasks.withType<JavaCompile>() {
 
 tasks.withType<Javadoc>() {
     options.encoding = "UTF-8"
+}
+
+val jar by tasks.getting(Jar::class) {
+    manifest {
+        attributes["Main-Class"] = "logbook.internal.Launcher"
+        attributes["Implementation-Version"] = version
+    }
 }

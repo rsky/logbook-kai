@@ -1,16 +1,12 @@
 package logbook.map;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MappingGenerator {
@@ -20,9 +16,10 @@ public class MappingGenerator {
     private static final String KEY_PREFIX = "World ";
     
     @SuppressWarnings("unchecked")
-    public static void main(String[] args) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
+    public static void main(String[] args) throws DatabindException, IOException, URISyntaxException {
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Map<String, List<String>>> json = mapper.readValue(new URL(SOURCE_URL), Map.class);
+        URI u = new URI(SOURCE_URL).parseServerAuthority();
+        Map<String, Map<String, List<String>>> json = mapper.readValue(u.toURL(), Map.class);
         try (FileOutputStream fos = new FileOutputStream(new File("src/main/resources/logbook/map/mapping.json"));
                 PrintWriter pw = new PrintWriter(fos)) {
             // generate the JSON on our own to keep the order in the original JSON file

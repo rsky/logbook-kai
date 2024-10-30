@@ -12,6 +12,7 @@
 hs_err_pid*
 
 # working directory for the logbook
+/build/
 /target/
 /lib/
 /dest/
@@ -32,3 +33,7 @@ hs_err_pid*
 
 # Mac
 .DS_Store
+
+# Gradle
+.gradle/
+.mvn/.develocity/

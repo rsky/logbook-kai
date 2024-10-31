@@ -2,6 +2,8 @@ group = "logbook"
 description = "logbook-kai"
 version = "24.10.3"
 
+val fatJar = "logbook-kai-${version}-all.jar"
+
 java.sourceCompatibility = JavaVersion.VERSION_21
 
 plugins {
@@ -56,10 +58,34 @@ val jar by tasks.getting(Jar::class) {
 task("package", Zip::class) {
     dependsOn("shadowJar")
     from("dist-includes").exclude("*/.gitkeep")
-    from("build/libs/logbook-kai-${version}-all.jar")
-    rename("logbook-kai-${version}-all.jar", "logbook-kai.jar")
+    from("build/libs/${fatJar}")
+    rename(fatJar, "logbook-kai.jar")
 }
 
 task("cleanDest", Delete::class) {
     delete("dest")
+}
+
+task("macApp", Exec::class) {
+    dependsOn("shadowJar")
+    workingDir(".")
+    commandLine("jpackage", "@pkg-options/mac-app.txt", "--app-version", version, "--main-jar", fatJar)
+}
+
+task("macDmg", Exec::class) {
+    dependsOn("shadowJar")
+    workingDir(".")
+    commandLine("jpackage", "@pkg-options/mac-dmg.txt", "--app-version", version, "--main-jar", fatJar)
+}
+
+task("winExe", Exec::class) {
+    dependsOn("shadowJar")
+    workingDir(".")
+    commandLine("jpackage", "@pkg-options/win-exe.txt", "--app-version", version, "--main-jar", fatJar)
+}
+
+task("winMsi", Exec::class) {
+    dependsOn("shadowJar")
+    workingDir(".")
+    commandLine("jpackage", "@pkg-options/win-msi.txt", "--app-version", version, "--main-jar", fatJar)
 }

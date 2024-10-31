@@ -1,5 +1,5 @@
 -t app-image
--i .\build\libs
+-i .\build\package-source
 -d .\dest
 -n logbook-kai
 --main-class logbook.internal.Launcher

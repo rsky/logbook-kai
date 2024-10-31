@@ -2,7 +2,8 @@ group = "logbook"
 description = "logbook-kai"
 version = "24.10.3"
 
-val fatJar = "logbook-kai-${version}-all.jar"
+val fatJarFullName = "logbook-kai-${version}-all.jar"
+val fatJarShortName = "logbook-kai.jar"
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -55,11 +56,18 @@ val jar by tasks.getting(Jar::class) {
     }
 }
 
-task("package", Zip::class) {
+task("prePackage", Copy::class) {
     dependsOn("shadowJar")
+    mkdir("build/package-source")
+    from("build/libs/${fatJarFullName}")
+    into("build/package-source")
+    rename(fatJarFullName, fatJarShortName)
+}
+
+task("package", Zip::class) {
+    dependsOn("prePackage")
     from("dist-includes").exclude("*/.gitkeep")
-    from("build/libs/${fatJar}")
-    rename(fatJar, "logbook-kai.jar")
+    from("build/package-source/${fatJarShortName}")
 }
 
 task("cleanDest", Delete::class) {
@@ -67,25 +75,25 @@ task("cleanDest", Delete::class) {
 }
 
 task("macApp", Exec::class) {
-    dependsOn("shadowJar")
+    dependsOn("prePackage")
     workingDir(".")
-    commandLine("jpackage", "@pkg-options/mac-app.txt", "--app-version", version, "--main-jar", fatJar)
+    commandLine("jpackage", "@pkg-options/mac-app.txt", "--app-version", version, "--main-jar", fatJarShortName)
 }
 
 task("macDmg", Exec::class) {
-    dependsOn("shadowJar")
+    dependsOn("prePackage")
     workingDir(".")
-    commandLine("jpackage", "@pkg-options/mac-dmg.txt", "--app-version", version, "--main-jar", fatJar)
+    commandLine("jpackage", "@pkg-options/mac-dmg.txt", "--app-version", version, "--main-jar", fatJarShortName)
 }
 
 task("winExe", Exec::class) {
-    dependsOn("shadowJar")
+    dependsOn("prePackage")
     workingDir(".")
-    commandLine("jpackage", "@pkg-options/win-exe.txt", "--app-version", version, "--main-jar", fatJar)
+    commandLine("jpackage", "@pkg-options/win-exe.txt", "--app-version", version, "--main-jar", fatJarShortName)
 }
 
 task("winMsi", Exec::class) {
-    dependsOn("shadowJar")
+    dependsOn("prePackage")
     workingDir(".")
-    commandLine("jpackage", "@pkg-options/win-msi.txt", "--app-version", version, "--main-jar", fatJar)
+    commandLine("jpackage", "@pkg-options/win-msi.txt", "--app-version", version, "--main-jar", fatJarShortName)
 }

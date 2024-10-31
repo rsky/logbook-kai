@@ -1,0 +1,7 @@
+-t dmg
+-i ./build/libs
+-d ./dest
+-n Logbook-Kai
+--icon ./app-resources/mac/App.icns
+--mac-package-name 航海日誌
+--main-class logbook.internal.Launcher

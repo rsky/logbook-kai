@@ -1,3 +1,9 @@
+group = "logbook"
+description = "logbook-kai"
+version = "24.10.3"
+
+java.sourceCompatibility = JavaVersion.VERSION_21
+
 plugins {
     `java-library`
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -31,11 +37,6 @@ dependencies {
     testAnnotationProcessor(libs.org.projectlombok.lombok)
 }
 
-group = "logbook"
-version = "24.10.3"
-description = "logbook-kai"
-java.sourceCompatibility = JavaVersion.VERSION_21
-
 tasks.withType<JavaCompile>() {
     options.encoding = "UTF-8"
     options.compilerArgs.add("-Xlint:deprecation")
@@ -50,4 +51,15 @@ val jar by tasks.getting(Jar::class) {
         attributes["Main-Class"] = "logbook.internal.Launcher"
         attributes["Implementation-Version"] = version
     }
+}
+
+task("package", Zip::class) {
+    dependsOn("shadowJar")
+    from("dist-includes").exclude("*/.gitkeep")
+    from("build/libs/logbook-kai-${version}-all.jar")
+    rename("logbook-kai-${version}-all.jar", "logbook-kai.jar")
+}
+
+task("cleanDest", Delete::class) {
+    delete("dest")
 }

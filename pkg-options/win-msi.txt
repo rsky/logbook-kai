@@ -1,4 +1,4 @@
--i .\build\package-source
+-i .\build\pkg-input
 -d .\dest
 -n logbook-kai
 --main-class logbook.internal.Launcher

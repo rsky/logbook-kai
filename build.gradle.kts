@@ -58,16 +58,16 @@ val jar by tasks.getting(Jar::class) {
 
 task("prePackage", Copy::class) {
     dependsOn("shadowJar")
-    mkdir("build/package-source")
+    mkdir("build/pkg-input")
     from("build/libs/${fatJarFullName}")
-    into("build/package-source")
+    into("build/pkg-input")
     rename(fatJarFullName, fatJarShortName)
 }
 
 task("package", Zip::class) {
     dependsOn("prePackage")
     from("dist-includes").exclude("*/.gitkeep")
-    from("build/package-source/${fatJarShortName}")
+    from("build/pkg-input/${fatJarShortName}")
 }
 
 task("cleanDest", Delete::class) {

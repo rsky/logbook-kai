@@ -1,5 +1,5 @@
 -t app-image
--i ./build/package-source
+-i ./build/pkg-input
 -d ./dest
 -n Logbook-Kai
 --icon ./app-resources/mac/App.icns

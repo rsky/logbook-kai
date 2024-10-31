@@ -1,6 +1,5 @@
 package logbook.bean;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -8,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import logbook.internal.AppPath;
 import logbook.internal.Config;
 import logbook.internal.Rank;
 import logbook.internal.ShipImageCacheStrategy;
@@ -119,7 +119,7 @@ public final class AppConfig implements Serializable {
     private int soundLevel = 85;
 
     /** 報告書の保存先 */
-    private String reportPath = new File("").getAbsolutePath();
+    private String reportPath = AppPath.DATA_DIR;
 
     /** 資材ログ保存間隔 */
     private int materialLogInterval = 600;

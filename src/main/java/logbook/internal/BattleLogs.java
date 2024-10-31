@@ -112,7 +112,7 @@ public class BattleLogs {
     }
 
     private static List<Path> tryReadPaths(String dateString) {
-        Path dir = Paths.get(AppConfig.get().getBattleLogDir());
+        Path dir = Paths.get(AppPath.DATA_DIR, AppConfig.get().getBattleLogDir());
         String name = fileNameSafeDateString(dateString);
         return Arrays.asList(
                 dir.resolve(Paths.get(name.substring(0, 7), name + ".json")),
@@ -121,7 +121,7 @@ public class BattleLogs {
     }
 
     private static Path writePath(String dateString) {
-        Path dir = Paths.get(AppConfig.get().getBattleLogDir());
+        Path dir = Paths.get(AppPath.DATA_DIR, AppConfig.get().getBattleLogDir());
         String name = fileNameSafeDateString(dateString);
         String ext;
         if (AppConfig.get().isCompressBattleLogs()) {
@@ -158,7 +158,7 @@ public class BattleLogs {
      * 戦闘ログを年月のフォルダに移動する
      */
     private synchronized static void move() {
-        Path dir = Paths.get(AppConfig.get().getBattleLogDir());
+        Path dir = Paths.get(AppPath.DATA_DIR, AppConfig.get().getBattleLogDir());
         // フォルダが存在しない場合終了
         if (!Files.exists(dir)) {
             return;
@@ -194,7 +194,7 @@ public class BattleLogs {
      */
     private static void delete() {
         try {
-            Path dir = Paths.get(AppConfig.get().getBattleLogDir());
+            Path dir = Paths.get(AppPath.DATA_DIR, AppConfig.get().getBattleLogDir());
             int expires = AppConfig.get().getBattleLogExpires();
             // 期限が無期限の場合終了
             if (AppConfig.get().isIndefiniteExpires()) {

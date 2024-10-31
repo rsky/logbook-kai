@@ -63,7 +63,7 @@ public final class Launcher {
     void initPlugin(String[] args) {
         ExceptionListener listener = e -> LoggerHolder.get().warn("プラグインの初期化中に例外が発生", e); //$NON-NLS-1$
 
-        Path dir = Paths.get(AppConfig.get().getPluginsDir());
+        Path dir = Paths.get(AppPath.DATA_DIR, AppConfig.get().getPluginsDir());
         PluginContainer container = PluginContainer.getInstance();
 
         List<JarBasedPlugin> plugins = Collections.emptyList();

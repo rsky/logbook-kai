@@ -523,7 +523,7 @@ public class MainController extends WindowController {
             Tools.Controls.showNotify(null, "遠征完了", message);
         }
         if (AppConfig.get().isUseSound()) {
-            this.soundNotify(Paths.get(AppConfig.get().getMissionSoundDir()));
+            this.soundNotify(Paths.get(AppPath.DATA_DIR, AppConfig.get().getMissionSoundDir()));
         }
         // 棒読みちゃん連携
         if (AppBouyomiConfig.get().isEnable()) {
@@ -578,7 +578,7 @@ public class MainController extends WindowController {
             Tools.Controls.showNotify(img, "修復完了", message);
         }
         if (AppConfig.get().isUseSound()) {
-            this.soundNotify(Paths.get(AppConfig.get().getNdockSoundDir()));
+            this.soundNotify(Paths.get(AppPath.DATA_DIR, AppConfig.get().getNdockSoundDir()));
         }
         // 棒読みちゃん連携
         if (AppBouyomiConfig.get().isEnable()) {

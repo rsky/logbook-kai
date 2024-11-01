@@ -2,9 +2,6 @@ group = "logbook"
 description = "logbook-kai"
 version = "24.10.3"
 
-val fatJarFullName = "logbook-kai-${version}-all.jar"
-val fatJarShortName = "logbook-kai.jar"
-
 java.sourceCompatibility = JavaVersion.VERSION_21
 
 plugins {
@@ -59,15 +56,15 @@ val jar by tasks.getting(Jar::class) {
 task("prePackage", Copy::class) {
     dependsOn("shadowJar")
     mkdir("build/pkg-input")
-    from("build/libs/${fatJarFullName}")
+    from("build/libs/logbook-kai-${version}-all.jar")
     into("build/pkg-input")
-    rename(fatJarFullName, fatJarShortName)
+    rename("logbook-kai-${version}-all.jar", "logbook-kai.jar")
 }
 
 task("package", Zip::class) {
     dependsOn("prePackage")
     from("dist-includes").exclude("*/.gitkeep")
-    from("build/pkg-input/${fatJarShortName}")
+    from("build/pkg-input/logbook-kai.jar")
 }
 
 task("cleanDest", Delete::class) {
@@ -77,23 +74,23 @@ task("cleanDest", Delete::class) {
 task("macApp", Exec::class) {
     dependsOn("prePackage")
     workingDir(".")
-    commandLine("jpackage", "@pkg-options/mac-app.txt", "--app-version", version, "--main-jar", fatJarShortName)
+    commandLine("jpackage", "@pkg-options/mac-app.txt", "--app-version", version)
 }
 
 task("macDmg", Exec::class) {
     dependsOn("prePackage")
     workingDir(".")
-    commandLine("jpackage", "@pkg-options/mac-dmg.txt", "--app-version", version, "--main-jar", fatJarShortName)
+    commandLine("jpackage", "@pkg-options/mac-dmg.txt", "--app-version", version)
 }
 
 task("winExe", Exec::class) {
     dependsOn("prePackage")
     workingDir(".")
-    commandLine("jpackage", "@pkg-options/win-exe.txt", "--app-version", version, "--main-jar", fatJarShortName)
+    commandLine("jpackage", "@pkg-options/win-exe.txt", "--app-version", version)
 }
 
 task("winMsi", Exec::class) {
     dependsOn("prePackage")
     workingDir(".")
-    commandLine("jpackage", "@pkg-options/win-msi.txt", "--app-version", version, "--main-jar", fatJarShortName)
+    commandLine("jpackage", "@pkg-options/win-msi.txt", "--app-version", version)
 }

@@ -1,14 +1,12 @@
 航海日誌 (logbook-kai)
 --
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/rsky/logbook-kai)](https://github.com/Sdk0815/logbook-kai/releases/latest)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/rsky/logbook-kai)](https://github.com/rsky/logbook-kai/releases/latest)
 [![GitHub](https://img.shields.io/github/license/rsky/logbook-kai)](LICENSE)
-[![GitHub All Releases](https://img.shields.io/github/downloads/rsky/logbook-kai/total)](https://github.com/Sdk0815/logbook-kai/releases)
+[![GitHub All Releases](https://img.shields.io/github/downloads/rsky/logbook-kai/total)](https://github.com/rsky/logbook-kai/releases)
 [![GitHub Release Date](https://img.shields.io/github/release-date/rsky/logbook-kai)](https://github.com/rsky/logbook-kai/releases)
 
 ## ****重要なお知らせ****
 これは[sanaehirotaka さん](https://github.com/sanaehirotaka/logbook-kai/)、[Sdk0815 さん](https://github.com/Sdk0815/logbook-kai/)が開発されていた航海日誌(logbook-kai)を2021年夏より[rsky](https://github.com/rsky/logbook-kai/)が個人用にメンテナンスしているものです。
-
-Java 8版、Java 21版を提供しています。Java 17以降で動かす方法は[こちら](how-to-run-with-java21)を参照してください。
 
 艦これAPIの仕様変更等にはできるだけ早く追従できるように努めていますが、新機能の追加は基本的に行わない予定です。
 
@@ -66,17 +64,27 @@ MIT ライセンスの下で公開する、自由ソフトウェアです。
 ![Redhat](https://img.shields.io/badge/-Redhat-EE0000.svg?logo=red-hat)
 ![macOS](https://img.shields.io/badge/-macOS-333333.svg?logo=apple)
 
-Java 8u40以降のJava8、またはJava21がインストールされたWindows,LinuxまたはmacOSが必要です。
+#### WindowsまたはmacOSの場合
+
+Javaランタイムをバンドルしたアプリケーションを用意しています。こちらを使う場合はJavaのインストールは不要です。
+
+XDG Base Directory Specificationに従って設定ファイルは `~/.config/logbook-kai` に、その他のデータは `~/.local/share/logbook-kai` それぞれ保存します。[^1][^2]
+
+[^1]: 環境変数 `XDG_CONFIG_HOME` が設定されている場合は `~/.config` の代わりにその値を使います。環墩変数 `XDG_DATA_HOME` が設定されている場合は `~/.local/share` の代わりにその値を使います。
+
+[^2]: 環境変数 `LOGBOOK_KAI_CONFIG_DIR`, `LOGBOOK_KAI_DATA_DIR` が設定されている場合はそれぞれ最優先でその値を使います。
+
+#### jarファイルを直接実行する場合
+
+Java21がインストールされたWindows,LinuxまたはmacOSが必要です。
 
 **次のJavaVMで動作確認されています。**
-- **[Liberica JDK version 8](https://bell-sw.com/pages/downloads/#jdk-8-lts)**
-   - 新規に導入する場合、こちらを推奨します。JavaFXを利用しているため必ず**StandardではなくFullをダウンロード**してください。
 - **[Liberica JDK version 21](https://bell-sw.com/pages/downloads/#jdk-21-lts)**
-  - Java 21版ではこちらを推奨します。同じくFullをダウンロードしてください。
-- [Oracle JDK 8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-   - ダウンロードにOTNアカウントが必要です。
+   - こちらを推奨します。JavaFXを利用しているため必ず**StandardではなくFullをダウンロード**してください。
 
-### [ダウンロード](https://github.com/Sdk0815/logbook-kai/releases)
+こちらもXDG Base Directory Specificationに従いますが、zipアーカイブに同梱されている `launch.bat` または `launch.sh` は環境変数 `LOGBOOK_KAI_CONFIG_DIR`, `LOGBOOK_KAI_DATA_DIR` を設定して `logbook-kai.jar` と同じディレクトリ以下に各種データを保存します。これは、XDG Base Directory Specificationに対応する前の挙動と同じです。
+
+### [ダウンロード](https://github.com/rsky/logbook-kai/releases)
 
 **ご注意ください**
 

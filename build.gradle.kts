@@ -118,8 +118,8 @@ task("winApp", Exec::class) {
 
 task("winZip", Zip::class) {
     dependsOn("winApp")
-    from("build/distributions/logbook-kai-${version}")
     archiveFileName.set("logbook-kai-${version}-windows-${archName()}.zip")
+    from("build/distributions/logbook-kai")
 }
 
 task("winMsi", Exec::class) {

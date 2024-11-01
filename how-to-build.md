@@ -54,9 +54,9 @@ WiX v3のインストーラは https://github.com/wixtoolset/wix3/releases か�
 gradlew.bat winApp
 ```
 
-ビルドが成功すると、`build\distributions` ディレクトリにディレクトリ `logbook-kai-<version>` が生成されます。
+ビルドが成功すると、`build\distributions` ディレクトリにディレクトリ `logbook-kai` が生成されます。
 
-`logbook-kai-<version>` は実行ファイル `logbook-kai.exe` とJavaランタイム等を含みます。
+`logbook-kai` は実行ファイル `logbook-kai.exe` とJavaランタイム等を含みます。
 
 ### Windows用アプリケーションを含むzipアーカイブ
 

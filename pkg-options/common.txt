@@ -1,0 +1,6 @@
+--vendor "@rsky"
+--main-class logbook.internal.Launcher
+--main-jar logbook-kai.jar
+--add-modules java.base,java.desktop,java.logging,java.management,java.naming,java.scripting,java.security.jgss,java.sql,java.xml
+--add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web
+--add-modules jdk.dynalink,jdk.jsobject,jdk.unsupported

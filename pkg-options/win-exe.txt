@@ -1,6 +1,0 @@
--t app-image
--i .\build\pkg-input
--d .\dest
--n logbook-kai
---main-class logbook.internal.Launcher
---main-jar logbook-kai.jar

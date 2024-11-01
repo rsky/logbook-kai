@@ -1,0 +1,4 @@
+--input .\build\tmp\pkg-input
+--dist .\build\distributions
+--name logbook-kai
+--icon .\app-resources\windows\logbook-kai.ico

@@ -68,12 +68,14 @@ task("prePackage", Copy::class) {
 
 task("package", Zip::class) {
     dependsOn("prePackage")
+    // Java8版を廃止したら下の行は削除し、デフォルトのファイル名に戻す
+    archiveFileName.set("logbook-kai-java21_${version}.zip")
     from("dist-includes").exclude("*/.gitkeep")
     from("build/tmp/pkg-input/logbook-kai.jar")
 }
 
 task("macApp", Exec::class) {
-    dependsOn("package")
+    dependsOn("prePackage")
     workingDir(".")
     commandLine(
         "jpackage",
@@ -85,7 +87,7 @@ task("macApp", Exec::class) {
 }
 
 task("macDmg", Exec::class) {
-    dependsOn("package")
+    dependsOn("prePackage")
     workingDir(".")
     commandLine(
         "jpackage",
@@ -105,7 +107,7 @@ task("macDmgRelease", Exec::class) {
 }
 
 task("winApp", Exec::class) {
-    dependsOn("package")
+    dependsOn("prePackage")
     workingDir(".")
     commandLine(
         "jpackage",
@@ -125,7 +127,7 @@ task("winZip", Zip::class) {
 task("winMsi", Exec::class) {
     // "major.minor.small" でWindows Installerの挙動が変わるので
     // "year.month.day" 形式のバージョニングは不適切かもしれない
-    dependsOn("package")
+    dependsOn("prePackage")
     workingDir(".")
     commandLine(
         "jpackage",

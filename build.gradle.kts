@@ -98,12 +98,12 @@ task("macDmg", Exec::class) {
     )
 }
 
-task("macDmgRelease", Exec::class) {
+task("macDmgRelease", Copy::class) {
     dependsOn("macDmg")
-    workingDir("build/distributions")
-    commandLine(
-        "mv", "Logbook-Kai-${version}.dmg", "logbook-kai-${version}-macos-${archName()}.dmg"
-    )
+    from("build/distributions")
+    into("build/distributions")
+    include("Logbook-Kai-${version}.dmg")
+    rename("Logbook-Kai-${version}.dmg", "logbook-kai-${version}-macos-${archName()}.dmg")
 }
 
 task("winApp", Exec::class) {
@@ -142,10 +142,10 @@ task("winMsi", Exec::class) {
     )
 }
 
-task("winMsiRelease", Exec::class) {
+task("winMsiRelease", Copy::class) {
     dependsOn("winMsi")
-    workingDir("build/distributions")
-    commandLine(
-        "ren", "logbook-kai-${version}.msi", "logbook-kai-${version}-windows-${archName()}.msi"
-    )
+    from("build/distributions")
+    into("build/distributions")
+    include("logbook-kai-${version}.msi")
+    rename("logbook-kai-${version}.msi", "logbook-kai-${version}-windows-${archName()}.msi")
 }

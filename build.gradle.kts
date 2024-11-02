@@ -75,7 +75,7 @@ task("package", Zip::class) {
 }
 
 task("macApp", Exec::class) {
-    dependsOn("prePackage")
+    dependsOn("clean", "prePackage")
     workingDir(".")
     commandLine(
         "jpackage",
@@ -107,7 +107,7 @@ task("macDmgRelease", Exec::class) {
 }
 
 task("winApp", Exec::class) {
-    dependsOn("prePackage")
+    dependsOn("clean", "prePackage")
     workingDir(".")
     commandLine(
         "jpackage",

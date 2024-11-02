@@ -30,7 +30,6 @@ dependencies {
     api(libs.org.openjdk.nashorn.nashorn.core)
     api(libs.com.fasterxml.jackson.core.jackson.databind)
     api(libs.org.slf4j.slf4j.api)
-    api(libs.org.slf4j.slf4j.simple)
     api(libs.ch.qos.logback.logback.classic)
     api(libs.ch.qos.logback.logback.core)
     testImplementation(libs.junit.junit)

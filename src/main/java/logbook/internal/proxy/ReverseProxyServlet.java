@@ -41,7 +41,7 @@ import logbook.proxy.ResponseMetaData;
  */
 public final class ReverseProxyServlet extends ProxyServlet {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3856391624435553973L;
 
     /** リスナー */
     private transient List<ContentListenerSpi> listeners;
@@ -131,12 +131,7 @@ public final class ReverseProxyServlet extends ProxyServlet {
      */
     @Override
     protected HttpClient newHttpClient() {
-        HttpClient client = new HttpClient() {
-            @Override
-            protected String normalizeHost(String host) {
-                return host;
-            }
-        };
+        HttpClient client = new HttpClient();
         // プロキシを設定する
         if (AppConfig.get().isUseProxy()) {
             // ポート

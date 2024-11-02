@@ -8,7 +8,7 @@
 ## ****重要なお知らせ****
 これは[sanaehirotaka さん](https://github.com/sanaehirotaka/logbook-kai/)、[Sdk0815 さん](https://github.com/Sdk0815/logbook-kai/)が開発されていた航海日誌(logbook-kai)を2021年夏より[rsky](https://github.com/rsky/logbook-kai/)が個人用にメンテナンスしているものです。
 
-Java 8版、Java 21版を提供しています。Java 17以降で動かす方法は[こちら](how-to-run-with-java21)を参照してください。
+Java 8版、Java 21版を提供しています。Java 21版は[java21-only](https://github.com/rsky/logbook-kai/tree/java21-only)ブランチで開発中で、こちらはJavaランタイム込みのアプリケーション化を試験中で、Java 21での安定稼働が確認されたらJava 21に一本化する計画です。
 
 艦これAPIの仕様変更等にはできるだけ早く追従できるように努めていますが、新機能の追加は基本的に行わない予定です。
 

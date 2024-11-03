@@ -1,5 +1,3 @@
 #!/usr/bin/env sh
 JVM_OPT=-XX:MaxMetaspaceSize=256M
-LOGBOOK_KAI_CONFIG_DIR=./config \
-LOGBOOK_KAI_DATA_DIR=. \
-java $JVM_OPT -Djavafx.allowjs=true -jar logbook-kai.jar
+java $JVM_OPT -Djavafx.allowjs=true -Dlogbook_kai.config_dir=./config -Dlogbook_kai.data_dir=. -jar logbook-kai.jar

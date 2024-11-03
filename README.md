@@ -82,7 +82,7 @@ Java21がインストールされたWindows,LinuxまたはmacOSが必要です�
 - **[Liberica JDK version 21](https://bell-sw.com/pages/downloads/#jdk-21-lts)**
    - こちらを推奨します。JavaFXを利用しているため必ず**StandardではなくFullをダウンロード**してください。
 
-こちらもXDG Base Directory Specificationに従いますが、zipアーカイブに同梱されている `launch.bat` または `launch.sh` は環境変数 `LOGBOOK_KAI_CONFIG_DIR`, `LOGBOOK_KAI_DATA_DIR` を設定して `logbook-kai.jar` と同じディレクトリ以下に各種データを保存します。これは、XDG Base Directory Specificationに対応する前の挙動と同じです。
+こちらもXDG Base Directory Specificationに従いますが、zipアーカイブに同梱されている `launch.bat` または `launch.sh` を使って起動する場合は以前の挙動と同じく、カレントディレクトリ以下に各種データを保存します。
 
 ### [ダウンロード](https://github.com/rsky/logbook-kai/releases)
 

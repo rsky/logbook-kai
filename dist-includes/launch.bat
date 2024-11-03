@@ -1,4 +1,2 @@
 SET JVM_OPT=-XX:MaxMetaspaceSize=256M
-SET LOGBOOK_KAI_CONFIG_DIR=.\config
-SET LOGBOOK_KAI_DATA_DIR=.
-START javaw %JVM_OPT% -Djavafx.allowjs=true -jar logbook-kai.jar
+START javaw %JVM_OPT% -Djavafx.allowjs=true -jar -Dlogbook_kai.config_dir=./config -Dlogbook_kai.data_dir=. logbook-kai.jar

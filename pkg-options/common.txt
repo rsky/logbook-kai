@@ -5,4 +5,6 @@
 --add-modules javafx.fxml,javafx.media,javafx.swing,javafx.web
 --add-modules jdk.dynalink,jdk.jsobject,jdk.unsupported
 --add-modules jdk.charsets,jdk.crypto.ec
+--java-options "-XX:MaxMetaspaceSize=256M"
 --java-options "--add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED"
+--java-options "-Djavafx.allowjs=true"

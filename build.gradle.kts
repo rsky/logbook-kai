@@ -95,14 +95,15 @@ task("macDmg", Exec::class) {
         "--app-version", version,
         "--type", "dmg"
     )
-}
-
-task("macDmgRelease", Copy::class) {
-    dependsOn("macDmg")
-    from("build/distributions")
-    into("build/distributions")
-    include("Logbook-Kai-${version}.dmg")
-    rename("Logbook-Kai-${version}.dmg", "logbook-kai-${version}-macos-${archName()}.dmg")
+    doLast {
+        copy {
+            from("build/distributions")
+            into("build/distributions")
+            include("Logbook-Kai-${version}.dmg")
+            rename("Logbook-Kai-${version}.dmg", "logbook-kai-${version}-macos-${archName()}.dmg")
+        }
+        delete("build/distributions/Logbook-Kai-${version}.dmg")
+    }
 }
 
 task("winApp", Exec::class) {
@@ -121,6 +122,7 @@ task("winZip", Zip::class) {
     dependsOn("winApp")
     archiveFileName.set("logbook-kai-${version}-windows-${archName()}.zip")
     from("build/distributions/logbook-kai")
+    from("dist-includes/README.url")
 }
 
 task("winMsi", Exec::class) {
@@ -139,12 +141,13 @@ task("winMsi", Exec::class) {
         "--win-shortcut-prompt",
         "--win-upgrade-uuid", windowsUpgradeUUID
     )
-}
-
-task("winMsiRelease", Copy::class) {
-    dependsOn("winMsi")
-    from("build/distributions")
-    into("build/distributions")
-    include("logbook-kai-${version}.msi")
-    rename("logbook-kai-${version}.msi", "logbook-kai-${version}-windows-${archName()}.msi")
+    doLast {
+        copy {
+            from("build/distributions")
+            into("build/distributions")
+            include("logbook-kai-${version}.msi")
+            rename("logbook-kai-${version}.msi", "logbook-kai-${version}-windows-${archName()}.msi")
+        }
+        delete("build/distributions/logbook-kai-${version}.msi")
+    }
 }

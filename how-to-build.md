@@ -37,7 +37,7 @@ Xcode Command Line Toolsがインストールされている必要がありま�
 ### macOS用アプリケーションを含むディスクイメージ
 
 ```
-./gradlew macDmgRelease
+./gradlew macDmg
 ```
 
 ビルドが成功すると、`build/distributions` ディレクトリに `logbook-kai-<version>-macos-<platform>.dmg` が生成されます。
@@ -71,7 +71,7 @@ gradlew.bat winZip
 ### Windows用インストーラ
 
 ```
-gradlew.bat winMsiRelease
+gradlew.bat winMsi
 ```
 
 ビルドが成功すると、`build\distributions` ディレクトリに `logbook-kai-<version>-windows-<platform>.msi` が生成されます。

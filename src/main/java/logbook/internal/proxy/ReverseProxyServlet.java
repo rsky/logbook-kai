@@ -1,32 +1,5 @@
 package logbook.internal.proxy;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Field;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.zip.GZIPInputStream;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.HttpRequest;
-import org.eclipse.jetty.client.HttpProxy;
-import org.eclipse.jetty.client.ProxyConfiguration;
-import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.api.Response;
-import org.eclipse.jetty.http.HttpHeader;
-import org.eclipse.jetty.http.HttpVersion;
-
 import logbook.bean.AppConfig;
 import logbook.internal.LoggerHolder;
 import logbook.internal.ThreadManager;
@@ -34,6 +7,23 @@ import logbook.plugin.PluginServices;
 import logbook.proxy.ContentListenerSpi;
 import logbook.proxy.RequestMetaData;
 import logbook.proxy.ResponseMetaData;
+import org.eclipse.jetty.client.*;
+import org.eclipse.jetty.client.transport.HttpRequest;
+import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.HttpVersion;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Field;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
 
 /**
  * リバースプロキシ
@@ -57,15 +47,15 @@ public final class ReverseProxyServlet extends ProxyServlet {
 
             // HTTP/1.1 ならkeep-aliveを追加します
             if (proxyRequest.getVersion() == HttpVersion.HTTP_1_1) {
-                proxyRequest.header(HttpHeader.CONNECTION, "keep-alive");
+                proxyRequest.headers(httpFields -> httpFields.add(HttpHeader.CONNECTION, "keep-alive"));
             }
 
             // Pragma: no-cache はプロキシ用なので Cache-Control: no-cache に変換します
             String pragma = proxyRequest.getHeaders().get(HttpHeader.PRAGMA);
             if ((pragma != null) && pragma.equals("no-cache")) {
-                proxyRequest.header(HttpHeader.PRAGMA, null);
-                if (!proxyRequest.getHeaders().containsKey(HttpHeader.CACHE_CONTROL.asString())) {
-                    proxyRequest.header(HttpHeader.CACHE_CONTROL, "no-cache");
+                proxyRequest.headers(httpFields -> httpFields.remove(HttpHeader.PRAGMA));
+                if (proxyRequest.getHeaders().get(HttpHeader.CACHE_CONTROL.asString()) != null) {
+                    proxyRequest.headers(httpFields -> httpFields.add(HttpHeader.CACHE_CONTROL, "no-cache"));
                 }
             }
         }
@@ -111,10 +101,7 @@ public final class ReverseProxyServlet extends ProxyServlet {
                     ResponseMetaDataWrapper res = new ResponseMetaDataWrapper();
                     res.set(response);
 
-                    Runnable task = () -> {
-                        this.invoke(req, res, holder);
-                    };
-                    ThreadManager.getExecutorService().submit(task);
+                    ThreadManager.getExecutorService().submit(() -> this.invoke(req, res, holder));
                 }
             }
         } catch (Exception e) {
@@ -263,7 +250,7 @@ public final class ReverseProxyServlet extends ProxyServlet {
 
         void set(HttpServletRequest req) {
             this.setContentType(req.getContentType());
-            this.setMethod(req.getMethod().toString());
+            this.setMethod(req.getMethod());
             this.setQueryString(req.getQueryString());
             this.setRequestURI(req.getRequestURI());
         }
@@ -277,7 +264,7 @@ public final class ReverseProxyServlet extends ProxyServlet {
                 while ((len = reader.read(cbuf)) > 0) {
                     sb.append(cbuf, 0, len);
                 }
-                bodystr = URLDecoder.decode(sb.toString(), "UTF-8");
+                bodystr = URLDecoder.decode(sb.toString(), StandardCharsets.UTF_8);
             } catch (IOException e) {
                 bodystr = "";
             }
@@ -288,7 +275,7 @@ public final class ReverseProxyServlet extends ProxyServlet {
                 int idx = part.indexOf('=');
                 if (idx > 0) {
                     key = part.substring(0, idx);
-                    value = part.substring(idx + 1, part.length());
+                    value = part.substring(idx + 1);
                 } else {
                     key = part;
                     value = null;

@@ -10,6 +10,7 @@ java.sourceCompatibility = JavaVersion.VERSION_21
 plugins {
     `java-library`
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.github.ben-manes.versions") version "0.51.0"
 }
 
 repositories {

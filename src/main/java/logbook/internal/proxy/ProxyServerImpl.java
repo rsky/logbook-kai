@@ -1,16 +1,5 @@
 package logbook.internal.proxy;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.BindException;
-
-import org.eclipse.jetty.proxy.ConnectHandler;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -20,6 +9,16 @@ import logbook.bean.AppConfig;
 import logbook.internal.LoggerHolder;
 import logbook.internal.gui.InternalFXMLLoader;
 import logbook.proxy.ProxyServerSpi;
+import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee8.servlet.ServletHolder;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ConnectHandler;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.BindException;
 
 /**
  * プロキシサーバーです
@@ -38,12 +37,13 @@ public final class ProxyServerImpl implements ProxyServerSpi {
             boolean allowLocalOnly = AppConfig.get()
                     .isAllowOnlyFromLocalhost();
 
-            ServerConnector connector = new ServerConnector(this.server);
-            connector.setPort(AppConfig.get().getListenPort());
-            if (allowLocalOnly) {
-                connector.setHost("localhost");
+            try (ServerConnector connector = new ServerConnector(this.server)) {
+                connector.setPort(AppConfig.get().getListenPort());
+                if (allowLocalOnly) {
+                    connector.setHost("localhost");
+                }
+                this.server.setConnectors(new Connector[]{connector});
             }
-            this.server.setConnectors(new Connector[] { connector });
 
             // httpsをプロキシできるようにConnectHandlerを設定
             ConnectHandler proxy = new ConnectHandler();

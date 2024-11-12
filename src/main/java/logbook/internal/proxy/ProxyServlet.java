@@ -42,22 +42,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.api.ContentProvider;
-import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.api.Response;
-import org.eclipse.jetty.client.api.Result;
-import org.eclipse.jetty.client.util.InputStreamContentProvider;
-import org.eclipse.jetty.http.HttpField;
-import org.eclipse.jetty.http.HttpHeader;
-import org.eclipse.jetty.http.HttpMethod;
-import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.proxy.ConnectHandler;
+import org.eclipse.jetty.client.*;
+import org.eclipse.jetty.http.*;
 import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.util.HttpCookieStore;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Asynchronous ProxyServlet.
@@ -79,11 +69,9 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
  * <p/>
  * In addition, see {@link #createHttpClient()} for init parameters used to configure
  * the {@link HttpClient} instance.
- *
- * @see ConnectHandler
  */
 public class ProxyServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1614532393592605410L;
     protected static final String ASYNC_CONTEXT = ProxyServlet.class.getName() + ".asyncContext";
     private static final Set<String> HOP_HEADERS = new HashSet<>();
     static {
@@ -138,7 +126,7 @@ public class ProxyServlet extends HttpServlet {
     protected Logger createLogger() {
         String name = this.getServletConfig().getServletName();
         name = name.replace('-', '.');
-        return Log.getLogger(name);
+        return LoggerFactory.getLogger(name);
     }
 
     @Override
@@ -147,7 +135,7 @@ public class ProxyServlet extends HttpServlet {
             this._client.stop();
         } catch (Exception x) {
             if (this._isDebugEnabled)
-                this._log.debug(x);
+                this._log.debug("error in destroy", x);
         }
     }
 
@@ -208,7 +196,7 @@ public class ProxyServlet extends HttpServlet {
         client.setFollowRedirects(false);
 
         // Must not store cookies, otherwise cookies of different clients will mix
-        client.setCookieStore(new HttpCookieStore.Empty());
+        client.setHttpCookieStore(new HttpCookieStore.Empty());
 
         String value = config.getInitParameter("maxThreads");
         if (value == null)
@@ -264,8 +252,7 @@ public class ProxyServlet extends HttpServlet {
     }
 
     @Override
-    protected void service(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void service(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
         URI rewrittenURI = this.rewriteURI(request);
 
         if (this._isDebugEnabled) {
@@ -290,7 +277,7 @@ public class ProxyServlet extends HttpServlet {
     }
 
     private Request createProxyRequest(HttpServletRequest request, HttpServletResponse response, URI targetUri,
-            ContentProvider contentProvider) {
+            Request.Content content) {
         final Request proxyRequest = this._client.newRequest(targetUri)
                 .method(HttpMethod.fromString(request.getMethod()))
                 .version(HttpVersion.fromString(request.getProtocol()));
@@ -310,15 +297,15 @@ public class ProxyServlet extends HttpServlet {
             for (Enumeration<String> headerValues = request.getHeaders(headerName); headerValues.hasMoreElements();) {
                 String headerValue = headerValues.nextElement();
                 if (headerValue != null)
-                    proxyRequest.header(headerName, headerValue);
+                    proxyRequest.headers(httpFields -> httpFields.add(headerName, headerValue));
             }
         }
 
         // Force the Host header if configured
         if (this._hostHeader != null)
-            proxyRequest.header(HttpHeader.HOST, this._hostHeader);
+            proxyRequest.host(this._hostHeader);
 
-        proxyRequest.content(contentProvider);
+        proxyRequest.body(content);
         this.customizeProxyRequest(proxyRequest, request);
         proxyRequest.timeout(this.getTimeout(), TimeUnit.MILLISECONDS);
         return proxyRequest;
@@ -358,7 +345,7 @@ public class ProxyServlet extends HttpServlet {
     protected void onResponseFailure(HttpServletRequest request, HttpServletResponse response, Response proxyResponse,
             Throwable failure) {
         if (this._isDebugEnabled) {
-            this._log.debug(getRequestId(request) + " proxying failed", failure);
+            this._log.debug("{} proxying failed", getRequestId(request), failure);
         }
         if (!response.isCommitted()) {
             if (failure instanceof TimeoutException)
@@ -455,7 +442,7 @@ public class ProxyServlet extends HttpServlet {
                 throw new UnavailableException("Init parameter 'prefix' parameter must start with a '/'.");
 
             if (this._isDebugEnabled) {
-                this._log.debug(config.getServletName() + " @ " + this._prefix + " to " + this._proxyTo);
+                this._log.debug("{} @ {} to {}", config.getServletName(), this._prefix, this._proxyTo);
             }
         }
 
@@ -470,13 +457,12 @@ public class ProxyServlet extends HttpServlet {
             String query = request.getQueryString();
             if (query != null)
                 uri.append("?").append(query);
-            URI rewrittenURI = URI.create(uri.toString()).normalize();
 
-            return rewrittenURI;
+            return URI.create(uri.toString()).normalize();
         }
     }
 
-    private class ProxyRequestHandler extends Response.Listener.Adapter {
+    private class ProxyRequestHandler implements Response.Listener {
         // リトライのために記憶するデータ量
         private static final int RETRY_MAX_SIZE = 256 * 1024;
 
@@ -499,26 +485,16 @@ public class ProxyServlet extends HttpServlet {
 
         /**
          * retryEnabled の時だけだよ
-         * @return
          */
-        private ContentProvider createRetryContentProvider() {
+        private Request.Content createRetryContentProvider() {
             final HttpServletRequest request = this.request;
 
-            return new InputStreamContentProvider(
+            return new InputStreamRequestContent(
                     new SequenceInputStream(new ByteArrayInputStream(this.contentBuffer.toByteArray()),
                             this.contentInputStream)) {
                 @Override
                 public long getLength() {
                     return request.getContentLength();
-                }
-
-                @Override
-                protected ByteBuffer onRead(byte[] buffer, int offset, int length) {
-                    if (ProxyServlet.this._isDebugEnabled) {
-                        ProxyServlet.this._log
-                                .debug("{} proxying content to upstream: {} bytes", getRequestId(request), length);
-                    }
-                    return super.onRead(buffer, offset, length);
                 }
             };
         }
@@ -528,27 +504,10 @@ public class ProxyServlet extends HttpServlet {
             final ByteArrayOutputStream contentBuffer = this.contentBuffer;
 
             Request proxyRequest = ProxyServlet.this.createProxyRequest(request, this.response, this.targetUri,
-                    new InputStreamContentProvider(this.contentInputStream) {
+                    new InputStreamRequestContent(this.contentInputStream) {
                         @Override
                         public long getLength() {
                             return request.getContentLength();
-                        }
-
-                        @Override
-                        protected ByteBuffer onRead(byte[] buffer, int offset, int length) {
-                            if (length > 0) {
-                                if (contentBuffer.size() < RETRY_MAX_SIZE) {
-                                    contentBuffer.write(buffer, offset, length);
-                                } else {
-                                    // データが多すぎ、リトライ不可
-                                    ProxyRequestHandler.this.retryEnabled = false;
-                                }
-                            }
-                            if (ProxyServlet.this._isDebugEnabled) {
-                                ProxyServlet.this._log
-                                        .debug("{} proxying content to upstream: {} bytes", getRequestId(request), length);
-                            }
-                            return super.onRead(buffer, offset, length);
                         }
                     });
 

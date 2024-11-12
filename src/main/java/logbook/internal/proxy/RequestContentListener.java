@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.api.Request.ContentListener;
+import org.eclipse.jetty.client.Request;
+import org.eclipse.jetty.client.Request.ContentListener;
 
 /**
  * リクエストをキャプチャします

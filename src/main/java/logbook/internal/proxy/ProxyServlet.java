@@ -42,6 +42,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentProvider;
 import org.eclipse.jetty.client.api.Request;
@@ -55,8 +57,6 @@ import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.proxy.ConnectHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.util.HttpCookieStore;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 /**
@@ -83,7 +83,7 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
  * @see ConnectHandler
  */
 public class ProxyServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -68833907791982378L;
     protected static final String ASYNC_CONTEXT = ProxyServlet.class.getName() + ".asyncContext";
     private static final Set<String> HOP_HEADERS = new HashSet<>();
     static {
@@ -138,7 +138,7 @@ public class ProxyServlet extends HttpServlet {
     protected Logger createLogger() {
         String name = this.getServletConfig().getServletName();
         name = name.replace('-', '.');
-        return Log.getLogger(name);
+        return LogManager.getLogger(name);
     }
 
     @Override

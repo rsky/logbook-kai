@@ -64,7 +64,7 @@ public final class ReverseProxyServlet extends ProxyServlet {
             String pragma = proxyRequest.getHeaders().get(HttpHeader.PRAGMA);
             if ((pragma != null) && pragma.equals("no-cache")) {
                 proxyRequest.header(HttpHeader.PRAGMA, null);
-                if (!proxyRequest.getHeaders().containsKey(HttpHeader.CACHE_CONTROL.asString())) {
+                if (!proxyRequest.getHeaders().contains(HttpHeader.CACHE_CONTROL)) {
                     proxyRequest.header(HttpHeader.CACHE_CONTROL, "no-cache");
                 }
             }

@@ -18,6 +18,13 @@
 
 package logbook.internal.proxy;
 
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.UnavailableException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.client.HttpClient;
@@ -34,13 +41,6 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.util.HttpCookieStore;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -72,7 +72,8 @@ import java.util.concurrent.TimeoutException;
  * @see ConnectHandler
  */
 public class ProxyServlet extends HttpServlet {
-    private static final long serialVersionUID = -68833907791982378L;
+    @Serial
+    private static final long serialVersionUID = -6418262023268861695L;
     protected static final String ASYNC_CONTEXT = ProxyServlet.class.getName() + ".asyncContext";
     private static final Set<String> HOP_HEADERS = new HashSet<>();
     static {
@@ -253,8 +254,7 @@ public class ProxyServlet extends HttpServlet {
     }
 
     @Override
-    protected void service(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void service(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
         URI rewrittenURI = this.rewriteURI(request);
 
         if (this._isDebugEnabled) {
@@ -323,7 +323,7 @@ public class ProxyServlet extends HttpServlet {
                 continue;
 
             String newHeaderValue = this.filterResponseHeader(request, headerName, field.getValue());
-            if ((newHeaderValue == null) || (newHeaderValue.trim().length() == 0))
+            if (newHeaderValue == null || newHeaderValue.trim().isEmpty())
                 continue;
 
             response.addHeader(headerName, newHeaderValue);
@@ -411,7 +411,8 @@ public class ProxyServlet extends HttpServlet {
      * and the 'prefix' parameter is "/foo", then the request would be proxied to "http://host:80/context/bar".
      */
     public static class Transparent extends ProxyServlet {
-        private static final long serialVersionUID = 1L;
+        @Serial
+        private static final long serialVersionUID = -377127900714988904L;
         private String _proxyTo;
         private String _prefix;
 
@@ -490,7 +491,6 @@ public class ProxyServlet extends HttpServlet {
 
         /**
          * retryEnabled の時だけだよ
-         * @return
          */
         private Request.Content createRetryRequestContent() {
             final HttpServletRequest request = this.request;

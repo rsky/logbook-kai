@@ -1,11 +1,10 @@
 package logbook.internal.proxy;
 
-import java.nio.ByteBuffer;
-
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Request.ContentListener;
+
+import java.nio.ByteBuffer;
 
 /**
  * リクエストをキャプチャします

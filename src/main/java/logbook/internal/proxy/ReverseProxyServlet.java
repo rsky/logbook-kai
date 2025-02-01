@@ -1,5 +1,7 @@
 package logbook.internal.proxy;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import logbook.bean.AppConfig;
 import logbook.internal.LoggerHolder;
 import logbook.internal.ThreadManager;
@@ -16,12 +18,7 @@ import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpVersion;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -34,8 +31,8 @@ import java.util.zip.GZIPInputStream;
  *
  */
 public final class ReverseProxyServlet extends ProxyServlet {
-
-    private static final long serialVersionUID = -3856391624435553973L;
+    @Serial
+    private static final long serialVersionUID = -6055539684009871672L;
 
     /** リスナー */
     private transient List<ContentListenerSpi> listeners;
@@ -282,7 +279,7 @@ public final class ReverseProxyServlet extends ProxyServlet {
                 int idx = part.indexOf('=');
                 if (idx > 0) {
                     key = part.substring(0, idx);
-                    value = part.substring(idx + 1, part.length());
+                    value = part.substring(idx + 1);
                 } else {
                     key = part;
                     value = null;

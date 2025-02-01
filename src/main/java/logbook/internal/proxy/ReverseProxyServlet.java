@@ -1,32 +1,5 @@
 package logbook.internal.proxy;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Field;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.zip.GZIPInputStream;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.HttpRequest;
-import org.eclipse.jetty.client.HttpProxy;
-import org.eclipse.jetty.client.ProxyConfiguration;
-import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.api.Response;
-import org.eclipse.jetty.http.HttpHeader;
-import org.eclipse.jetty.http.HttpVersion;
-
 import logbook.bean.AppConfig;
 import logbook.internal.LoggerHolder;
 import logbook.internal.ThreadManager;
@@ -34,6 +7,27 @@ import logbook.plugin.PluginServices;
 import logbook.proxy.ContentListenerSpi;
 import logbook.proxy.RequestMetaData;
 import logbook.proxy.ResponseMetaData;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.HttpProxy;
+import org.eclipse.jetty.client.HttpRequest;
+import org.eclipse.jetty.client.ProxyConfiguration;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.api.Response;
+import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.HttpVersion;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Field;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
 
 /**
  * リバースプロキシ
@@ -57,15 +51,15 @@ public final class ReverseProxyServlet extends ProxyServlet {
 
             // HTTP/1.1 ならkeep-aliveを追加します
             if (proxyRequest.getVersion() == HttpVersion.HTTP_1_1) {
-                proxyRequest.header(HttpHeader.CONNECTION, "keep-alive");
+                proxyRequest.headers(httpFields -> httpFields.put(HttpHeader.CONNECTION, "keep-alive"));
             }
 
             // Pragma: no-cache はプロキシ用なので Cache-Control: no-cache に変換します
             String pragma = proxyRequest.getHeaders().get(HttpHeader.PRAGMA);
             if ((pragma != null) && pragma.equals("no-cache")) {
-                proxyRequest.header(HttpHeader.PRAGMA, null);
-                if (!proxyRequest.getHeaders().containsKey(HttpHeader.CACHE_CONTROL.asString())) {
-                    proxyRequest.header(HttpHeader.CACHE_CONTROL, "no-cache");
+                proxyRequest.headers(httpFields -> httpFields.remove(HttpHeader.PRAGMA));
+                if (!proxyRequest.getHeaders().contains(HttpHeader.CACHE_CONTROL)) {
+                    proxyRequest.headers(httpFields -> httpFields.put(HttpHeader.CACHE_CONTROL, "no-cache"));
                 }
             }
         }
@@ -141,7 +135,7 @@ public final class ReverseProxyServlet extends ProxyServlet {
             // 設定する
             ProxyConfiguration proxyConfig = client.getProxyConfiguration();
             HttpProxy proxy = new HttpProxy(host, port);
-            proxyConfig.getProxies().add(proxy);
+            proxyConfig.addProxy(proxy);
         }
         return client;
     }

@@ -18,21 +18,21 @@
 
 package logbook.internal.proxy;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.SequenceInputStream;
-import java.net.URI;
-import java.nio.ByteBuffer;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.api.Response;
+import org.eclipse.jetty.client.api.Result;
+import org.eclipse.jetty.client.util.InputStreamRequestContent;
+import org.eclipse.jetty.http.HttpField;
+import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.HttpMethod;
+import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.proxy.ConnectHandler;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.util.HttpCookieStore;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletConfig;
@@ -41,23 +41,12 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.api.ContentProvider;
-import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.api.Response;
-import org.eclipse.jetty.client.api.Result;
-import org.eclipse.jetty.client.util.InputStreamContentProvider;
-import org.eclipse.jetty.http.HttpField;
-import org.eclipse.jetty.http.HttpHeader;
-import org.eclipse.jetty.http.HttpMethod;
-import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.proxy.ConnectHandler;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.util.HttpCookieStore;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
-import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import java.io.*;
+import java.net.URI;
+import java.nio.ByteBuffer;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Asynchronous ProxyServlet.
@@ -83,7 +72,7 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
  * @see ConnectHandler
  */
 public class ProxyServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -68833907791982378L;
     protected static final String ASYNC_CONTEXT = ProxyServlet.class.getName() + ".asyncContext";
     private static final Set<String> HOP_HEADERS = new HashSet<>();
     static {
@@ -138,7 +127,7 @@ public class ProxyServlet extends HttpServlet {
     protected Logger createLogger() {
         String name = this.getServletConfig().getServletName();
         name = name.replace('-', '.');
-        return Log.getLogger(name);
+        return LogManager.getLogger(name);
     }
 
     @Override
@@ -290,7 +279,7 @@ public class ProxyServlet extends HttpServlet {
     }
 
     private Request createProxyRequest(HttpServletRequest request, HttpServletResponse response, URI targetUri,
-            ContentProvider contentProvider) {
+            Request.Content content) {
         final Request proxyRequest = this._client.newRequest(targetUri)
                 .method(HttpMethod.fromString(request.getMethod()))
                 .version(HttpVersion.fromString(request.getProtocol()));
@@ -309,16 +298,18 @@ public class ProxyServlet extends HttpServlet {
 
             for (Enumeration<String> headerValues = request.getHeaders(headerName); headerValues.hasMoreElements();) {
                 String headerValue = headerValues.nextElement();
-                if (headerValue != null)
-                    proxyRequest.header(headerName, headerValue);
+                if (headerValue != null) {
+                    proxyRequest.headers(httpFields -> httpFields.add(headerName, headerValue));
+                }
             }
         }
 
         // Force the Host header if configured
-        if (this._hostHeader != null)
-            proxyRequest.header(HttpHeader.HOST, this._hostHeader);
+        if (this._hostHeader != null) {
+            proxyRequest.headers(httpFields -> httpFields.put(HttpHeader.HOST, this._hostHeader));
+        }
 
-        proxyRequest.content(contentProvider);
+        proxyRequest.body(content);
         this.customizeProxyRequest(proxyRequest, request);
         proxyRequest.timeout(this.getTimeout(), TimeUnit.MILLISECONDS);
         return proxyRequest;
@@ -501,10 +492,10 @@ public class ProxyServlet extends HttpServlet {
          * retryEnabled の時だけだよ
          * @return
          */
-        private ContentProvider createRetryContentProvider() {
+        private Request.Content createRetryRequestContent() {
             final HttpServletRequest request = this.request;
 
-            return new InputStreamContentProvider(
+            return new InputStreamRequestContent(
                     new SequenceInputStream(new ByteArrayInputStream(this.contentBuffer.toByteArray()),
                             this.contentInputStream)) {
                 @Override
@@ -528,7 +519,7 @@ public class ProxyServlet extends HttpServlet {
             final ByteArrayOutputStream contentBuffer = this.contentBuffer;
 
             Request proxyRequest = ProxyServlet.this.createProxyRequest(request, this.response, this.targetUri,
-                    new InputStreamContentProvider(this.contentInputStream) {
+                    new InputStreamRequestContent(this.contentInputStream) {
                         @Override
                         public long getLength() {
                             return request.getContentLength();
@@ -669,7 +660,7 @@ public class ProxyServlet extends HttpServlet {
                 }
 
                 Request proxyRequest = ProxyServlet.this.createProxyRequest(this.request, this.response,
-                        this.targetUri, this.createRetryContentProvider());
+                        this.targetUri, this.createRetryRequestContent());
                 proxyRequest.send(this);
             } else {
                 if (ProxyServlet.this._isDebugEnabled) {

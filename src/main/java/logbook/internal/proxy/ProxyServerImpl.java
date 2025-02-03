@@ -9,8 +9,6 @@ import logbook.bean.AppConfig;
 import logbook.internal.LoggerHolder;
 import logbook.internal.gui.InternalFXMLLoader;
 import logbook.proxy.ProxyServerSpi;
-import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
-import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -34,13 +32,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                 connector.setHost("localhost");
             }
             server.setConnectors(new Connector[]{connector});
-
-            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-            ServletHolder passive = new ServletHolder(new PassiveModeServlet());
-            passive.setInitParameter("maxThreads", "128");
-            passive.setInitParameter("timeout", "300000");
-            context.addServlet(passive, PassiveModeServlet.PATH_SPEC);
-            server.setHandler(context);
+            server.setHandler(new PassiveModeHandler());
 
             try {
                 try {

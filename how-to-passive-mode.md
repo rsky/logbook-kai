@@ -31,10 +31,6 @@ sequenceDiagram
 
 [PassiveModeServlet.java](./src/main/java/logbook/internal/proxy/PassiveModeServlet.java)
 
-### 設定
-
-設定の通信タブで「パッシブモードを有効にする」をチェックする。
-
 ### API仕様
 
 #### エンドポイント

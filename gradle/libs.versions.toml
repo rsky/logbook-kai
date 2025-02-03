@@ -7,8 +7,8 @@ ch-qos-logback-logback-core = "1.5.16"
 com-fasterxml-jackson-core-jackson-databind = "2.18.2"
 junit-junit = "4.13.2"
 org-controlsfx-controlsfx = "11.2.1"
-org-eclipse-jetty-jetty-server = "11.0.24"
-org-eclipse-jetty-jetty-servlet = "11.0.24"
+org-eclipse-jetty-jetty-server = "12.0.16"
+org-eclipse-jetty-jetty-servlet = "12.0.16"
 org-glassfish-javax-json = "1.1.4"
 org-openjdk-nashorn-nashorn-core = "15.6"
 org-openjfx-javafx-controls = "21.0.6"
@@ -27,7 +27,7 @@ com-fasterxml-jackson-core-jackson-databind = { module = "com.fasterxml.jackson.
 junit-junit = { module = "junit:junit", version.ref = "junit-junit" }
 org-controlsfx-controlsfx = { module = "org.controlsfx:controlsfx", version.ref = "org-controlsfx-controlsfx" }
 org-eclipse-jetty-jetty-server = { module = "org.eclipse.jetty:jetty-server", version.ref = "org-eclipse-jetty-jetty-server" }
-org-eclipse-jetty-jetty-servlet = { module = "org.eclipse.jetty:jetty-servlet", version.ref = "org-eclipse-jetty-jetty-servlet" }
+org-eclipse-jetty-jetty-servlet = { module = "org.eclipse.jetty.ee10:jetty-ee10-servlet", version.ref = "org-eclipse-jetty-jetty-servlet" }
 org-glassfish-javax-json = { module = "org.glassfish:javax.json", version.ref = "org-glassfish-javax-json" }
 org-openjdk-nashorn-nashorn-core = { module = "org.openjdk.nashorn:nashorn-core", version.ref = "org-openjdk-nashorn-nashorn-core" }
 org-openjfx-javafx-controls = { module = "org.openjfx:javafx-controls", version.ref = "org-openjfx-javafx-controls" }

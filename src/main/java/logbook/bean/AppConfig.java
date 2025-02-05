@@ -139,18 +139,6 @@ public final class AppConfig implements Serializable {
     /** ローカルループバックアドレスからの接続のみ受け入れる */
     private boolean allowOnlyFromLocalhost = true;
 
-    /** プロキシ利用 */
-    private boolean useProxy;
-
-    /** プロキシホスト */
-    private String proxyHost = "localhost"; //$NON-NLS-1$
-
-    /** プロキシポート */
-    private int proxyPort = 8080;
-
-    /** パッシブモードを有効にする */
-    private boolean usePassiveMode = false;
-
     /** プラグインを有効にする */
     private boolean usePlugin = true;
 

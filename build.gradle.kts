@@ -20,7 +20,6 @@ repositories {
 dependencies {
     api(libs.org.glassfish.javax.json)
     api(libs.org.eclipse.jetty.jetty.server)
-    api(libs.org.eclipse.jetty.jetty.servlet)
     api(libs.org.openjfx.javafx.controls)
     api(libs.org.openjfx.javafx.fxml)
     api(libs.org.openjfx.javafx.media)

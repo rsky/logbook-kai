@@ -29,7 +29,7 @@ sequenceDiagram
 
 ### 実装
 
-[PassiveModeServlet.java](./src/main/java/logbook/internal/proxy/PassiveModeServlet.java)
+[PassiveModeHandler.java](./src/main/java/logbook/internal/proxy/PassiveModeHandler.java)
 
 ### API仕様
 

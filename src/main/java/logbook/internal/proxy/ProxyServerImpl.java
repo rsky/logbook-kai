@@ -41,6 +41,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
             passive.setInitParameter("maxThreads", "128");
             passive.setInitParameter("timeout", "300000");
             context.addServlet(passive, PassiveModeServlet.PATH_SPEC);
+            server.setHandler(context);
 
             try {
                 try {

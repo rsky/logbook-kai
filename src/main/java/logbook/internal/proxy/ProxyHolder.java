@@ -1,15 +1,13 @@
 package logbook.internal.proxy;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import logbook.internal.LoggerHolder;
 import logbook.plugin.PluginServices;
 import logbook.proxy.ProxyServerSpi;
 
+import java.util.List;
+
 /**
  * プロキシサーバースレッドを保持します
- *
  */
 public class ProxyHolder {
 
@@ -18,8 +16,7 @@ public class ProxyHolder {
     static {
         Thread thread = null;
         try {
-            List<ProxyServerSpi> proxies = PluginServices.instances(ProxyServerSpi.class)
-                    .collect(Collectors.toList());
+            List<ProxyServerSpi> proxies = PluginServices.instances(ProxyServerSpi.class).toList();
             ProxyServerSpi impl = null;
             for (ProxyServerSpi proxy : proxies) {
                 // プラグインのプロキシサーバーを優先する

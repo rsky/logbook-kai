@@ -1,0 +1,19 @@
+/* [841]【節分任務:鬼】南西方面節分作戦二〇二五 */
+{
+    "resetType" : "ウィークリー",
+    "filter" : {
+        "area": ["1-4", "2-1", "2-2"],
+        "fleet": {
+            "description": "旗艦/2番艦に「Gloire」「Ranger」「Johnston」「神鷹」「大淀」「夕張」「早霜」「朝霜」「風雲」の艦隊",
+            "operator": "AND",
+            "conditions": [
+                {"name": ["Gloire","Ranger","Johnston","神鷹","大淀","夕張","早霜","朝霜","風雲"], "count": 2, "operator": "GE"}
+            ]
+        }
+    },
+    "conditions" : [
+        {"boss": true, "area": ["1-4"], "rank": ["S","A"], "count": 2},
+        {"boss": true, "area": ["2-1"], "rank": ["S","A"], "count": 2},
+        {"boss": true, "area": ["2-2"], "rank": ["S","A"], "count": 2}
+    ]
+}

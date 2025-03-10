@@ -1,28 +1,5 @@
 package logbook.internal;
 
-import java.awt.Desktop;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -30,6 +7,22 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import logbook.internal.gui.InternalFXMLLoader;
 import logbook.internal.gui.Tools;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * アップデートチェック
@@ -165,7 +158,6 @@ public class CheckUpdate {
             message += "\n※自動アップデートチェックは[その他]-[設定]から無効に出来ます";
         }
 
-        ButtonType update = new ButtonType("自動更新");
         ButtonType visit = new ButtonType("ダウンロードサイトを開く");
         ButtonType no = new ButtonType("後で");
 
@@ -177,18 +169,12 @@ public class CheckUpdate {
         alert.setContentText(message);
         alert.initOwner(stage);
         alert.getButtonTypes().clear();
-        if ("21".equals(System.getProperty("java.specification.version"))) {
-            // Java 21にはbin/jjsがないので自動更新はできない
-            alert.getButtonTypes().addAll(visit, no);
-        } else {
-            alert.getButtonTypes().addAll(update, visit, no);
-        }
+        alert.getButtonTypes().addAll(visit, no);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent()) {
-            if (result.get() == update)
-                launchUpdate(n, tag);
-            if (result.get() == visit)
+            if (result.get() == visit) {
                 openBrowser();
+            }
         }
     }
 
@@ -202,46 +188,6 @@ public class CheckUpdate {
                     });
         } catch (Exception e) {
             LoggerHolder.get().warn("アップデートチェックで例外", e);
-        }
-    }
-
-    private static void launchUpdate(Version newversion, String newtag) {
-        try {
-            // 航海日誌のインストールディレクトリ
-            Path dir = new File(Launcher.class.getProtectionDomain().getCodeSource().getLocation().toURI())
-                    .toPath()
-                    .getParent();
-            // 更新スクリプト
-            InputStream is = Launcher.class.getClassLoader().getResourceAsStream("logbook/update/update.js");
-            Path script = Files.createTempFile("logbook-kai-update-", ".js");
-            try {
-                // 更新スクリプトを一時ファイルにコピー
-                Files.copy(is, script, StandardCopyOption.REPLACE_EXISTING);
-                // 更新スクリプトを動かすコマンド (JAVA_HOME/bin/jjs)
-                Path command = Paths.get(System.getProperty("java.home"), "bin", "jjs");
-
-                List<String> args = new ArrayList<>();
-                args.add(command.toString());
-                args.add(script.toString());
-                args.add("-fx");
-                args.add("-Dupdate_script=" + script);
-                args.add("-Dinstall_target=" + dir);
-                args.add("-Dinstall_version=" + newversion);
-                args.add("-Drelease_tag=" + newtag);
-                if (Boolean.getBoolean(USE_PRERELEASE)) {
-                    args.add("-Duse_prerelease=true");
-                }
-                new ProcessBuilder(args)
-                                .inheritIO()
-                                .start();
-            } catch (Exception e) {
-                // 何か起こったら一時ファイル削除
-                Files.deleteIfExists(script);
-                throw e;
-            }
-        } catch (Exception e) {
-            LoggerHolder.get().warn("アップデートチェックで例外", e);
-            openBrowser();
         }
     }
 

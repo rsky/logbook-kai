@@ -237,7 +237,7 @@ public class MainController extends WindowController {
                         SlotItemType.補給物資
                 )).count();
         Integer maxSlotitem = Basic.get()
-                .getMaxSlotitem();
+                .getMaxSlotitem() + 3; // 暗黙の最大保有可能装備アイテム数+3
         this.item.setText(MessageFormat.format(this.itemFormat, slotitem, maxSlotitem));
 
         boolean itemFully = maxSlotitem - slotitem <= AppConfig.get().getItemFullyThreshold();

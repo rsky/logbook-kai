@@ -704,6 +704,7 @@
     { "id": 733, "name": "Valiant改", "min_taisen": 0, "min_kaihi": 29, "min_sakuteki": 18 },
     { "id": 734, "name": "Phoenix改", "min_taisen": 0, "min_kaihi": 37, "min_sakuteki": 22 },
     { "id": 735, "name": "Lexington改", "min_taisen": 0, "min_kaihi": 22, "min_sakuteki": 46 },
+    { "id": 736, "name": "榧改", "min_taisen": 29, "min_kaihi": 57, "min_sakuteki": 29 },
     { "id": 877, "name": "Conte di Cavour", "min_taisen": 0, "min_kaihi": 21, "min_sakuteki": 6 },
     { "id": 878, "name": "Conte di Cavour改", "min_taisen": 0, "min_kaihi": 29, "min_sakuteki": 11 },
     { "id": 879, "name": "Conte di Cavour nuovo", "min_taisen": 0, "min_kaihi": 31, "min_sakuteki": 18 },
@@ -790,9 +791,17 @@
     { "id": 977, "name": "伊41改", "min_taisen": 0, "min_kaihi": 14, "min_sakuteki": 11 },
     { "id": 979, "name": "稲木改二", "min_taisen": 47, "min_kaihi": 47, "min_sakuteki": 5 },
     { "id": 981, "name": "藤波改二", "min_taisen": 29, "min_kaihi": 47, "min_sakuteki": 12 },
+    { "id": 984, "name": "Wahoo", "min_taisen": 0, "min_kaihi": 17, "min_sakuteki": 12 },
     { "id": 986, "name": "白雪改二", "min_taisen": 26, "min_kaihi": 49, "min_sakuteki": 13 },
+    { "id": 987, "name": "初雪改二", "min_taisen": 27, "min_kaihi": 48, "min_sakuteki": 14 },
+    { "id": 989, "name": "Wahoo改", "min_taisen": 0, "min_kaihi": 17, "min_sakuteki": 12 },
+    { "id": 992, "name": "杉", "min_taisen": 28, "min_kaihi": 29, "min_sakuteki": 8 },
+    { "id": 994, "name": "榧", "min_taisen": 27, "min_kaihi": 30, "min_sakuteki": 8 },
     { "id": 995, "name": "大泊", "min_taisen": 12, "min_kaihi": 14, "min_sakuteki": 7 },
+    { "id": 997, "name": "杉改", "min_taisen": 52, "min_kaihi": 55, "min_sakuteki": 30 },
     { "id": 1001, "name": "Киров", "min_taisen": 15, "min_kaihi": 32, "min_sakuteki": 13 },
+    { "id": 1003, "name": "しまね丸", "min_taisen": 24, "min_kaihi": 14, "min_sakuteki": 13 },
+    { "id": 1005, "name": "Minneapolis", "min_taisen": 0, "min_kaihi": 33, "min_sakuteki": 15 },
     { "id": 1496, "name": "Colorado改", "min_taisen": 0, "min_kaihi": 22, "min_sakuteki": 16 }
   ]
 }

@@ -20,8 +20,13 @@ class SeaAreaBanner {
             return null;
         }
 
-        // 2024年夏イベント後段作戦まで
+        // 2025年初春イベント後段作戦まで
         int imageNumber = 2 + area * 2;
+        if (area == 10) {
+            imageNumber = 5;
+        } else if (area != 1) {
+            imageNumber += 2;
+        }
 
         return Paths.get("common", COMMON_EVENT, String.format("%s_%d.png", COMMON_EVENT, imageNumber));
     }

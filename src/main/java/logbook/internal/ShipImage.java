@@ -477,7 +477,7 @@ class ShipImage {
         for (Layer layer : layers) {
             Image img = null;
             if (layer.path != null) {
-                Path p = Paths.get(AppConfig.get().getResourcesDir()).resolve(layer.path);
+                Path p = Paths.get(AppPath.DATA_DIR, AppConfig.get().getResourcesDir()).resolve(layer.path);
                 img = COMMON_CACHE.get(p.toUri().toString(), (url, status) -> {
                     Image image = new Image(url);
                     status.setDoCache(!image.isError());

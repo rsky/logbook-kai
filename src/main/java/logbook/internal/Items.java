@@ -162,7 +162,7 @@ public class Items {
      * @return 装備リソースファイルのディレクトリ
      */
     static Path getItemResourcePathDir() {
-        return Paths.get(AppConfig.get().getResourcesDir(), "icons");
+        return Paths.get(AppPath.DATA_DIR, AppConfig.get().getResourcesDir(), "icons");
     }
 
     /**
@@ -199,7 +199,7 @@ public class Items {
      * @return 装備アイコン
      */
     private static Image optimizeItemIcon(int type) {
-        Path dir = Paths.get(AppConfig.get().getResourcesDir());
+        Path dir = Paths.get(AppPath.DATA_DIR, AppConfig.get().getResourcesDir());
         Path p = dir.resolve(Paths.get("common", "common_icon_weapon/common_icon_weapon_id_" + type + ".png"));
 
         return CACHE.get(p.toUri().toString(), (url, status) -> {

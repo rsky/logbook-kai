@@ -23,12 +23,8 @@ import logbook.bean.DeckPortCollection;
 import logbook.bean.MapStartNext;
 import logbook.bean.Ship;
 import logbook.bean.ShipMst;
-import logbook.internal.Audios;
-import logbook.internal.BouyomiChanUtils;
+import logbook.internal.*;
 import logbook.internal.BouyomiChanUtils.Type;
-import logbook.internal.LoggerHolder;
-import logbook.internal.Ships;
-import logbook.internal.Tuple;
 import logbook.internal.gui.Tools;
 import logbook.proxy.RequestMetaData;
 import logbook.proxy.ResponseMetaData;
@@ -90,7 +86,7 @@ public class ApiReqMapStart implements APIListenerSpi {
      */
     private static void displayAlert(List<Ship> badlyShips) {
         try {
-            Path dir = Paths.get(AppConfig.get().getAlertSoundDir());
+            Path dir = Paths.get(AppPath.DATA_DIR, AppConfig.get().getAlertSoundDir());
             Path p = Audios.randomAudioFile(dir);
             if (p != null) {
                 AudioClip clip = new AudioClip(p.toUri().toString());

@@ -124,7 +124,7 @@ public class Missions {
      * @return 画像
      */
     private static Image expeditionIcon(int id, int prefWidth, int prefHeight) {
-        Path dir = Paths.get(AppConfig.get().getResourcesDir());
+        Path dir = Paths.get(AppPath.DATA_DIR, AppConfig.get().getResourcesDir());
         Path p = dir.resolve(Paths.get("sally", "sally_expedition/sally_expedition_" + id + ".png"));
 
         return CACHE.get(p.toUri().toString()+"@"+prefWidth+"x"+prefHeight, (url, status) -> {

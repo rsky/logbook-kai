@@ -1,0 +1,5 @@
+--input ./build/tmp/pkg-input
+--dest ./build/distributions
+--name Logbook-Kai
+--icon ./app-resources/macos/Logbook-Kai.icns
+--mac-package-name 航海日誌

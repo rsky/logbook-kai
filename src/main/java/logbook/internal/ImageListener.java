@@ -123,7 +123,7 @@ public class ImageListener implements ContentListenerSpi {
 
     private void images(RequestMetaData request, ResponseMetaData response, String dirname) throws IOException {
         String uri = request.getRequestURI();
-        Path dir = Paths.get(AppConfig.get().getResourcesDir(), dirname);
+        Path dir = Paths.get(AppPath.DATA_DIR, AppConfig.get().getResourcesDir(), dirname);
         Path path = dir.resolve(Paths.get(URI.create(uri).getPath()).getFileName());
         if (response.getResponseBody().isPresent()) {
             this.write(response.getResponseBody().get(), path);

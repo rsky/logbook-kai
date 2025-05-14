@@ -1,5 +1,8 @@
 package logbook.internal.proxy;
 
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import logbook.internal.LoggerHolder;
 import logbook.internal.ThreadManager;
 import logbook.internal.proxy.ReverseProxyServlet.RequestMetaDataWrapper;
@@ -7,13 +10,7 @@ import logbook.internal.proxy.ReverseProxyServlet.ResponseMetaDataWrapper;
 import logbook.plugin.PluginServices;
 import logbook.proxy.ContentListenerSpi;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +22,8 @@ import java.util.stream.Collectors;
  * mitmproxyのようなSSL/TLS証明書をサポートするプロキシがフックしたデータをこちらに送信することを想定している
  */
 public final class PassiveModeServlet extends HttpServlet {
-    private static final long serialVersionUID = 1398734900463655319L;
+    @Serial
+    private static final long serialVersionUID = -7501576705342327540L;
 
     public static final String PATH_SPEC = "/pasv/*";
     private static final String PATH_PREFIX = "/pasv/";

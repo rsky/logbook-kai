@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public final class Config {
 
-    private static final Path CONFIG_DIR = Paths.get("./config"); //$NON-NLS-1$
+    private static final Path CONFIG_DIR = Paths.get(AppPath.CONFIG_DIR); //$NON-NLS-1$
 
     private static final Config DEFAULT = new Config(CONFIG_DIR);
 

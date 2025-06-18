@@ -705,6 +705,7 @@
     { "id": 734, "name": "Phoenix改", "min_taisen": 0, "min_kaihi": 37, "min_sakuteki": 22 },
     { "id": 735, "name": "Lexington改", "min_taisen": 0, "min_kaihi": 22, "min_sakuteki": 46 },
     { "id": 736, "name": "榧改", "min_taisen": 29, "min_kaihi": 57, "min_sakuteki": 29 },
+    { "id": 737, "name": "Richard P.Leary改", "min_taisen": 53, "min_kaihi": 45, "min_sakuteki": 21 },
     { "id": 877, "name": "Conte di Cavour", "min_taisen": 0, "min_kaihi": 21, "min_sakuteki": 6 },
     { "id": 878, "name": "Conte di Cavour改", "min_taisen": 0, "min_kaihi": 29, "min_sakuteki": 11 },
     { "id": 879, "name": "Conte di Cavour nuovo", "min_taisen": 0, "min_kaihi": 31, "min_sakuteki": 18 },
@@ -806,6 +807,8 @@
     { "id": 1003, "name": "しまね丸", "min_taisen": 24, "min_kaihi": 14, "min_sakuteki": 13 },
     { "id": 1005, "name": "Minneapolis", "min_taisen": 0, "min_kaihi": 33, "min_sakuteki": 15 },
     { "id": 1006, "name": "Киров改", "min_taisen": 26, "min_kaihi": 39, "min_sakuteki": 14 },
+    { "id": 1008, "name": "しまね丸改", "min_taisen": 28, "min_kaihi": 15, "min_sakuteki": 22 },
+    { "id": 1010, "name": "Minneapolis改", "min_taisen": 0, "min_kaihi": 34, "min_sakuteki": 16 },
     { "id": 1496, "name": "Colorado改", "min_taisen": 0, "min_kaihi": 22, "min_sakuteki": 16 }
   ]
 }

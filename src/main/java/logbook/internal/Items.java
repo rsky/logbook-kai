@@ -271,6 +271,7 @@ public class Items {
         case 大型陸上機:
         case 噴式戦闘機:
         case 噴式戦闘爆撃機:
+        case 噴式戦闘爆撃機II:
         case 噴式攻撃機:
 
         case 艦上偵察機:
@@ -317,6 +318,7 @@ public class Items {
         case 大型陸上機:
         case 噴式戦闘機:
         case 噴式戦闘爆撃機:
+        case 噴式戦闘爆撃機II:
         case 噴式攻撃機:
             return true;
         default:

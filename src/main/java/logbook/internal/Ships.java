@@ -136,6 +136,8 @@ public class Ships {
         VIEW_COEFFICIENT.put(SlotItemType.艦上偵察機II, 1.0D);
         // 噴式戦闘爆撃機：0.6
         VIEW_COEFFICIENT.put(SlotItemType.噴式戦闘爆撃機, 0.6D);
+        // 噴式戦闘爆撃機(II)：保留
+        //VIEW_COEFFICIENT.put(SlotItemType.噴式戦闘爆撃機II, 0.6D);
         // 潜水艦装備：0.6
         VIEW_COEFFICIENT.put(SlotItemType.潜水艦装備, 0.6D);
 
@@ -621,7 +623,7 @@ public class Ships {
     private static boolean supportsAirSuperiority(SlotitemMst itemMst) {
         // 制空状態に関係するのは対空値を持つ艦戦、艦攻、艦爆、水爆、水戦、噴式機のみ
         if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.艦上攻撃機, SlotItemType.艦上爆撃機, SlotItemType.水上爆撃機,
-                SlotItemType.水上戦闘機, SlotItemType.噴式戦闘爆撃機)) {
+                SlotItemType.水上戦闘機, SlotItemType.噴式戦闘爆撃機, SlotItemType.噴式戦闘爆撃機II)) {
             return true;
         }
 

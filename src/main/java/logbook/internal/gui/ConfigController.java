@@ -290,18 +290,6 @@ public class ConfigController extends WindowController {
     @FXML
     private CheckBox allowOnlyFromLocalhost;
 
-    /** 接続にプロキシを使用する */
-    @FXML
-    private CheckBox useProxy;
-
-    /** プロキシポート番号 */
-    @FXML
-    private TextField proxyPort;
-
-    /** プロキシホスト */
-    @FXML
-    private TextField proxyHost;
-
     @FXML
     private CheckBox storeInternal;
 
@@ -313,9 +301,6 @@ public class ConfigController extends WindowController {
 
     @FXML
     private Button storeApiStart2DirRef;
-
-    @FXML
-    private CheckBox usePassiveMode;
 
     /** FFmpeg 実行ファイル */
     @FXML
@@ -501,9 +486,6 @@ public class ConfigController extends WindowController {
         this.visiblePoseImageOnFleetTab.setSelected(conf.isVisiblePoseImageOnFleetTab());
         this.listenPort.setText(Integer.toString(conf.getListenPort()));
         this.allowOnlyFromLocalhost.setSelected(conf.isAllowOnlyFromLocalhost());
-        this.useProxy.setSelected(conf.isUseProxy());
-        this.proxyPort.setText(Integer.toString(conf.getProxyPort()));
-        this.proxyHost.setText(conf.getProxyHost());
         this.ffmpegPath.setText(conf.getFfmpegPath());
         this.setFFmpegTemplate();
         this.ffmpegArgs.setText(conf.getFfmpegArgs());
@@ -512,7 +494,6 @@ public class ConfigController extends WindowController {
         this.storeInternal.setSelected(conf.isStoreApiStart2());
         this.storeApiStart2.setSelected(conf.isStoreApiStart2());
         this.storeApiStart2Dir.setText(conf.getStoreApiStart2Dir());
-        this.usePassiveMode.setSelected(conf.isUsePassiveMode());
         this.storeInternal.getOnAction().handle(new ActionEvent());
 
         this.pluginName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -626,12 +607,8 @@ public class ConfigController extends WindowController {
         
         conf.setListenPort(this.toInt(this.listenPort.getText()));
         conf.setAllowOnlyFromLocalhost(this.allowOnlyFromLocalhost.isSelected());
-        conf.setUseProxy(this.useProxy.isSelected());
-        conf.setProxyHost(this.proxyHost.getText());
-        conf.setProxyPort(this.toInt(this.proxyPort.getText()));
         conf.setStoreApiStart2(this.storeApiStart2.isSelected());
         conf.setStoreApiStart2Dir(this.storeApiStart2Dir.getText());
-        conf.setUsePassiveMode(this.usePassiveMode.isSelected());
 
         conf.setFfmpegPath(this.ffmpegPath.getText());
         conf.setFfmpegArgs(this.ffmpegArgs.getText());

@@ -1,16 +1,5 @@
 package logbook.internal.proxy;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.BindException;
-
-import org.eclipse.jetty.proxy.ConnectHandler;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -20,66 +9,47 @@ import logbook.bean.AppConfig;
 import logbook.internal.LoggerHolder;
 import logbook.internal.gui.InternalFXMLLoader;
 import logbook.proxy.ProxyServerSpi;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.BindException;
 
 /**
- * プロキシサーバーです
- *
+ * HTTPサーバーです。
+ * 歴史的経緯によりProxyを名乗っていますが、プロキシ機能はありません。
  */
 public final class ProxyServerImpl implements ProxyServerSpi {
-
-    /** Server */
-    private Server server;
-
     @Override
     public void run() {
-        try {
-            this.server = new Server();
+        final Server server = new Server();
 
-            boolean allowLocalOnly = AppConfig.get()
-                    .isAllowOnlyFromLocalhost();
-
-            ServerConnector connector = new ServerConnector(this.server);
+        try (final ServerConnector connector = new ServerConnector(server)) {
             connector.setPort(AppConfig.get().getListenPort());
-            if (allowLocalOnly) {
+            if (AppConfig.get().isAllowOnlyFromLocalhost()) {
                 connector.setHost("localhost");
             }
-            this.server.setConnectors(new Connector[] { connector });
-
-            // httpsをプロキシできるようにConnectHandlerを設定
-            ConnectHandler proxy = new ConnectHandler();
-            this.server.setHandler(proxy);
-
-            // httpはこっちのハンドラでプロキシ
-            ServletContextHandler context = new ServletContextHandler(proxy, "/", ServletContextHandler.SESSIONS);
-            ServletHolder holder = new ServletHolder(new ReverseProxyServlet());
-            holder.setInitParameter("maxThreads", "256");
-            holder.setInitParameter("timeout", "600000");
-            context.addServlet(holder, "/*");
-
-            if (AppConfig.get().isUsePassiveMode()) {
-                // パッシブモードのハンドラをセット
-                ServletHolder passive = new ServletHolder(new PassiveModeServlet());
-                passive.setInitParameter("maxThreads", "128");
-                passive.setInitParameter("timeout", "300000");
-                context.addServlet(passive, PassiveModeServlet.PATH_SPEC);
-            }
+            server.setConnectors(new Connector[]{connector});
+            server.setHandler(new PassiveModeHandler());
 
             try {
                 try {
-                    this.server.start();
-                    this.server.join();
+                    server.start();
+                    server.join();
                 } finally {
                     try {
-                        this.server.stop();
+                        server.stop();
                     } catch (Exception ex) {
-                        LoggerHolder.get().warn("Proxyサーバーのシャットダウンで例外", ex);
+                        LoggerHolder.get().warn("Logbook-Kai HTTPサーバーのシャットダウンで例外", ex);
                     }
                 }
             } catch (Exception e) {
                 handleException(e);
             }
         } catch (Exception e) {
-            LoggerHolder.get().fatal("Proxyサーバーの起動に失敗しました", e);
+            LoggerHolder.get().fatal("Logbook-Kai HTTPサーバーの起動に失敗しました", e);
         }
     }
 

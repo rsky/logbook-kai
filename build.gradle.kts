@@ -9,8 +9,7 @@ java.sourceCompatibility = JavaVersion.VERSION_21
 
 plugins {
     `java-library`
-    // TODO: Upgrade to Gradle 9 and Gradle Shadow 9
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "9.0.2"
 }
 
 repositories {

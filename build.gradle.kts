@@ -1,6 +1,6 @@
 group = "logbook"
 description = "logbook-kai"
-version = "25.5.1"
+version = "25.7.1"
 
 // UpgradeCode (GUID) for Windows Installer
 val windowsUpgradeUUID = "880e4493-20fc-4c89-8c5b-01e4b2479b77"
@@ -9,8 +9,7 @@ java.sourceCompatibility = JavaVersion.VERSION_21
 
 plugins {
     `java-library`
-    // TODO: Upgrade to Gradle 9 and Gradle Shadow 9
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 repositories {
@@ -56,7 +55,7 @@ val jar by tasks.getting(Jar::class) {
 
 fun archName() = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentArchitecture().name
 
-task("prePackage", Copy::class) {
+tasks.register("prePackage", Copy::class) {
     dependsOn("shadowJar")
     mkdir("build/tmp/pkg-input")
     from("build/libs/logbook-kai-${version}-all.jar")
@@ -64,7 +63,7 @@ task("prePackage", Copy::class) {
     rename("logbook-kai-${version}-all.jar", "logbook-kai.jar")
 }
 
-task("package", Zip::class) {
+tasks.register("package", Zip::class) {
     dependsOn("prePackage")
     // Java8版を廃止したら下の行は削除し、デフォルトのファイル名に戻す
     archiveFileName.set("logbook-kai-java21_${version}.zip")
@@ -72,7 +71,7 @@ task("package", Zip::class) {
     from("build/tmp/pkg-input/logbook-kai.jar")
 }
 
-task("macApp", Exec::class) {
+tasks.register("macApp", Exec::class) {
     dependsOn("clean", "prePackage")
     workingDir(".")
     commandLine(
@@ -84,7 +83,7 @@ task("macApp", Exec::class) {
     )
 }
 
-task("macDmg", Exec::class) {
+tasks.register("macDmg", Exec::class) {
     dependsOn("prePackage")
     workingDir(".")
     commandLine(
@@ -105,7 +104,7 @@ task("macDmg", Exec::class) {
     }
 }
 
-task("winApp", Exec::class) {
+tasks.register("winApp", Exec::class) {
     dependsOn("clean", "prePackage")
     workingDir(".")
     commandLine(
@@ -117,14 +116,14 @@ task("winApp", Exec::class) {
     )
 }
 
-task("winZip", Zip::class) {
+tasks.register("winZip", Zip::class) {
     dependsOn("winApp")
     archiveFileName.set("logbook-kai-${version}-windows-${archName()}.zip")
     from("build/distributions/logbook-kai")
     from("dist-includes/README.url")
 }
 
-task("winMsi", Exec::class) {
+tasks.register("winMsi", Exec::class) {
     // "major.minor.small" でWindows Installerの挙動が変わるので
     // "year.month.day" 形式のバージョニングは不適切かもしれない
     dependsOn("prePackage")

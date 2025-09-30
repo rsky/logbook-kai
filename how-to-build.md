@@ -75,3 +75,8 @@ gradlew.bat winMsi
 ```
 
 ビルドが成功すると、`build\distributions` ディレクトリに `logbook-kai-<version>-windows-<platform>.msi` が生成されます。
+
+## アプリケーションのビルドに失敗する場合
+
+JDKのアップデート直後に**Gradle経由での**jpackage実行でプロセスの起動に失敗する場合はPCを再起動すると解決する場合があります。<br />
+（もしかすると再ログインでも良いのかもしれませんが、未確認です。）

@@ -286,19 +286,15 @@
                               <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
                               <Label text="ポート番号*" GridPane.rowIndex="0" />
                               <TextField fx:id="listenPort" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                               <CheckBox fx:id="allowOnlyFromLocalhost" mnemonicParsing="false" text="ローカルループバックアドレスからの接続のみ受け入れる*" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
-                              <CheckBox fx:id="storeInternal" mnemonicParsing="false" onAction="#storeInternal" text="内部データを保存する(試験的)" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
-                              <CheckBox fx:id="storeApiStart2" mnemonicParsing="false" onAction="#storeApiStart2" text="api_start2" GridPane.rowIndex="6" />
-                              <TextField fx:id="storeApiStart2Dir" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <Button fx:id="storeApiStart2DirRef" mnemonicParsing="false" onAction="#selectApiStart2Dir" text="参照..." GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                              <CheckBox fx:id="storeInternal" mnemonicParsing="false" onAction="#storeInternal" text="内部データを保存する(試験的)" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+                              <CheckBox fx:id="storeApiStart2" mnemonicParsing="false" onAction="#storeApiStart2" text="api_start2" GridPane.rowIndex="3" />
+                              <TextField fx:id="storeApiStart2Dir" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Button fx:id="storeApiStart2DirRef" mnemonicParsing="false" onAction="#selectApiStart2Dir" text="参照..." GridPane.columnIndex="2" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                      </children>

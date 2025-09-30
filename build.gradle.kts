@@ -5,7 +5,7 @@ version = "25.11.2"
 // UpgradeCode (GUID) for Windows Installer
 val windowsUpgradeUUID = "880e4493-20fc-4c89-8c5b-01e4b2479b77"
 
-java.sourceCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_25
 
 plugins {
     `java-library`

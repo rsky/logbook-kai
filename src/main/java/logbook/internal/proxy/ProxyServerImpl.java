@@ -61,6 +61,8 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                 final List<String> extraMitmproxyParams = new ArrayList<>();
                 extraMitmproxyParams.add("--set");
                 extraMitmproxyParams.add("termlog_verbosity=warn");
+                extraMitmproxyParams.add("--set");
+                extraMitmproxyParams.add("console_eventlog_verbosity=warn");
                 if (AppConfig.get().isAllowOnlyFromLocalhost()) {
                     extraMitmproxyParams.add("--listen-host");
                     extraMitmproxyParams.add("127.0.0.1");

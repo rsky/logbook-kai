@@ -21,13 +21,10 @@ import struct
 import sys
 import threading
 import traceback
-from logging import getLogger
 
 from mitmproxy import ctx
 from wsproto import ConnectionType, WSConnection
 from wsproto.events import AcceptConnection, BytesMessage, CloseConnection, Ping, Pong, RejectConnection, Request
-
-logger = getLogger(__name__)
 
 
 def convert_headers_to_bytes(header_entry):
@@ -256,15 +253,16 @@ class WebSocketAdapter:
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as conn:
                     conn.setblocking(False)
-                    await self.worker_event_loop.sock_connect(conn, ("localhost", 8765))
+                    await self.worker_event_loop.sock_connect(conn, ("127.0.0.1", 8765))
 
                     # Negotiate WebSocket opening handshake
                     ws = WSConnection(ConnectionType.CLIENT)
-                    await send_data(ws.send(Request(host="localhost", target="/")), conn, self.worker_event_loop)
+                    await send_data(ws.send(Request(host="127.0.0.1", target="/")), conn, self.worker_event_loop)
                     await receive_data(ws, conn, self.worker_event_loop)
                     for event in ws.events():
                         if isinstance(event, AcceptConnection):
-                            logger.info("WebSocket negotiation complete")
+                            print("WebSocket negotiation complete")
+                            pass
                         else:
                             handle_unexpected_events(ws)
 
@@ -274,7 +272,7 @@ class WebSocketAdapter:
                         await receive_data(ws, conn, self.worker_event_loop)
                         for event in ws.events():
                             if isinstance(event, Pong):
-                                # logger.debug(f"Received pong: {event.payload!r}")
+                                # print(f"Received pong: {event.payload!r}")
                                 pass
                             else:
                                 handle_unexpected_events(ws)
@@ -289,7 +287,7 @@ class WebSocketAdapter:
                                 await receive_data(ws, conn, self.worker_event_loop)
                                 for event in ws.events():
                                     if isinstance(event, BytesMessage):
-                                        # logger.debug(f"Received bytes message: length={len(event.data)}")
+                                        # print(f"Received bytes message: length={len(event.data)}")
                                         obj["response"] = event.data
                                     else:
                                         handle_unexpected_events(ws)
@@ -300,7 +298,7 @@ class WebSocketAdapter:
                         except queue.Empty:
                             pass
             except Exception:
-                logger.error("[mitmproxy-java plugin] Unexpected error:", sys.exc_info())
+                print("[mitmproxy-java plugin] Unexpected error:", sys.exc_info())
                 traceback.print_exc(file=sys.stdout)
 
 
@@ -329,11 +327,11 @@ async def receive_data(ws, conn, loop):
 def handle_unexpected_events(ws) -> None:
     for event in ws.events():
         if isinstance(event, CloseConnection):
-            logger.info("WebSocket connection closed")
+            print("WebSocket connection closed")
         elif isinstance(event, RejectConnection):
-            logger.warning("WebSocket connection rejected")
+            print("WebSocket connection rejected")
         else:
-            logger.warning(f"Unexpected event: {str(event)}")
+            print(f"Unexpected event: {str(event)}")
 
 
 addons = [WebSocketAdapter()]

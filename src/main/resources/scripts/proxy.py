@@ -16,6 +16,7 @@ See also: https://github.com/appium/mitmproxy-java
 
 import asyncio
 import json
+import platform
 import queue
 import socket
 import struct
@@ -164,11 +165,14 @@ class WebSocketAdapter:
                 print("[mitmproxy-java plugin] Connection aborted, trying to reconnect...")
             except ConnectionRefusedError:
                 print("[mitmproxy-java plugin] Connection refused, breaking websocket loop")
-                self.done()
                 break
             except Exception:
                 print("[mitmproxy-java plugin] Unexpected error:", sys.exc_info())
                 traceback.print_exc(file=sys.stdout)
+
+        # Workaround that the child process is not killed when shutdown on windows
+        if not self.finished and platform.system() == "Windows":
+            sys.exit(0)
 
 
 async def send_data(data, conn, loop):

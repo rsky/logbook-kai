@@ -137,23 +137,13 @@ class WebSocketAdapter:
                     ws = WSConnection(ConnectionType.CLIENT)
                     await send_data(ws.send(Request(host="127.0.0.1", target="/")), conn, self.worker_event_loop)
                     await receive_data(ws, conn, self.worker_event_loop)
-                    for event in ws.events():
-                        if isinstance(event, AcceptConnection):
-                            print("WebSocket negotiation complete")
-                            pass
-                        else:
-                            handle_unexpected_events(ws)
+                    await handle_events(ws, conn, self.worker_event_loop)
 
                     while True:
                         # Make sure the connection is still live.
                         await send_data(ws.send(Ping()), conn, self.worker_event_loop)
                         await receive_data(ws, conn, self.worker_event_loop)
-                        for event in ws.events():
-                            if isinstance(event, Pong):
-                                # print(f"Received pong: {event.payload!r}")
-                                pass
-                            else:
-                                handle_unexpected_events(ws)
+                        await handle_events(ws, conn, self.worker_event_loop)
 
                         try:
                             obj = self.queue.get(timeout=1)
@@ -163,20 +153,19 @@ class WebSocketAdapter:
                                 obj["lock"].acquire()
                                 await send_data(ws.send(BytesMessage(data=obj["msg"])), conn, self.worker_event_loop)
                                 await receive_data(ws, conn, self.worker_event_loop)
-                                for event in ws.events():
-                                    if isinstance(event, BytesMessage):
-                                        # print(f"Received bytes message: length={len(event.data)}")
-                                        # We don't need to handle response
-                                        # obj["response"] = None
-                                        pass
-                                    else:
-                                        handle_unexpected_events(ws)
+                                await handle_events(ws, conn, self.worker_event_loop)
                             finally:
                                 # Always remember to wake up other threads + release lock to avoid deadlocks
                                 obj["lock"].notify()
                                 obj["lock"].release()
                         except queue.Empty:
                             pass
+            except ConnectionAbortedError:
+                print("[mitmproxy-java plugin] Connection aborted, trying to reconnect...")
+            except ConnectionRefusedError:
+                print("[mitmproxy-java plugin] Connection refused, breaking websocket loop")
+                self.done()
+                break
             except Exception:
                 print("[mitmproxy-java plugin] Unexpected error:", sys.exc_info())
                 traceback.print_exc(file=sys.stdout)
@@ -204,12 +193,23 @@ async def receive_data(ws, conn, loop):
         ws.receive_data(data)
 
 
-def handle_unexpected_events(ws) -> None:
+async def handle_events(ws, conn, loop) -> None:
     for event in ws.events():
-        if isinstance(event, CloseConnection):
+        if isinstance(event, AcceptConnection):
+            print("WebSocket negotiation complete")
+        elif isinstance(event, CloseConnection):
             print("WebSocket connection closed")
         elif isinstance(event, RejectConnection):
             print("WebSocket connection rejected")
+        elif isinstance(event, BytesMessage):
+            # print(f"Received bytes message: length={len(event.data)}")
+            pass
+        elif isinstance(event, Ping):
+            # print(f"Received ping: {event.payload!r}")
+            await send_data(ws.send(Pong(payload=event.payload)), conn, loop)
+        elif isinstance(event, Pong):
+            # print(f"Received pong: {event.payload!r}")
+            pass
         else:
             print(f"Unexpected event: {str(event)}")
 

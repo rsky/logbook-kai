@@ -75,10 +75,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                 // 指定されたポートでmitmproxyが待ち受ける
                 // serverはproxyを終了させないようにjoin()するためにランダムなポートで待ち受ける
                 final List<String> extraMitmproxyParams = new ArrayList<>();
-                extraMitmproxyParams.add("--set");
-                extraMitmproxyParams.add("termlog_verbosity=warn");
-                extraMitmproxyParams.add("--set");
-                extraMitmproxyParams.add("console_eventlog_verbosity=warn");
+                extraMitmproxyParams.add("--quiet");
                 if (AppConfig.get().isAllowOnlyFromLocalhost()) {
                     extraMitmproxyParams.add("--listen-host");
                     extraMitmproxyParams.add("127.0.0.1");

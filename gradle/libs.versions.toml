@@ -5,6 +5,7 @@
 ch-qos-logback-logback-classic = "1.5.18"
 ch-qos-logback-logback-core = "1.5.18"
 com-fasterxml-jackson-core-jackson-databind = "2.20.0"
+io-appium-mitmproxy-java = "2.0.2"
 junit-junit = "4.13.2"
 org-controlsfx-controlsfx = "11.2.2"
 org-eclipse-jetty-jetty-server = "12.0.27"
@@ -23,6 +24,7 @@ org-slf4j-slf4j-simple = "2.0.17"
 ch-qos-logback-logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "ch-qos-logback-logback-classic" }
 ch-qos-logback-logback-core = { module = "ch.qos.logback:logback-core", version.ref = "ch-qos-logback-logback-core" }
 com-fasterxml-jackson-core-jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "com-fasterxml-jackson-core-jackson-databind" }
+io-appium-mitmproxy-java = { module = "io.appium:mitmproxy-java", version.ref = "io-appium-mitmproxy-java" }
 junit-junit = { module = "junit:junit", version.ref = "junit-junit" }
 org-controlsfx-controlsfx = { module = "org.controlsfx:controlsfx", version.ref = "org-controlsfx-controlsfx" }
 org-eclipse-jetty-jetty-server = { module = "org.eclipse.jetty:jetty-server", version.ref = "org-eclipse-jetty-jetty-server" }

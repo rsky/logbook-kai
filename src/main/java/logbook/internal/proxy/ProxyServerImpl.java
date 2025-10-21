@@ -1,5 +1,7 @@
 package logbook.internal.proxy;
 
+import io.appium.mitmproxy.InterceptedMessage;
+import io.appium.mitmproxy.MitmproxyJava;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -16,26 +18,68 @@ import org.eclipse.jetty.server.ServerConnector;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.BindException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * HTTPサーバーです。
- * 歴史的経緯によりProxyを名乗っていますが、プロキシ機能はありません。
+ * プロキシサーバーです。
+ * 設定に応じてパッシブモードのHTTPサーバーまたはmitmproxy(mtimdump)を起動します。
  */
 public final class ProxyServerImpl implements ProxyServerSpi {
     @Override
     public void run() {
+        final boolean usePassiveMode = AppConfig.get().isUsePassiveMode();
+        final boolean useMitmproxy = AppConfig.get().isUseMitmproxy();
+        if (usePassiveMode) {
+            if (useMitmproxy) {
+                showAlert("設定に問題があります", "設定でパッシブモードとmitmproxyの両方が有効になっています。mitmproxyは無視されます。", null);
+            }
+            this.runServer(true);
+        } else if (useMitmproxy) {
+            this.runServer(false);
+        } else {
+            showAlert("サーバーを起動できませんでした", "設定からパッシブモードかmitmproxyのどちらかを有効にしてください。", null);
+        }
+    }
+
+    private void runServer(boolean passiveMode) {
         final Server server = new Server();
+        MitmproxyJava proxy = null;
 
         try (final ServerConnector connector = new ServerConnector(server)) {
-            connector.setPort(AppConfig.get().getListenPort());
-            if (AppConfig.get().isAllowOnlyFromLocalhost()) {
-                connector.setHost("localhost");
+            if (passiveMode) {
+                // 指定されたポートでパッシブモードのHTTPサーバが待ち受ける
+                connector.setPort(AppConfig.get().getListenPort());
+                if (AppConfig.get().isAllowOnlyFromLocalhost()) {
+                    connector.setHost("localhost");
+                }
+                server.setConnectors(new Connector[]{connector});
+                server.setHandler(new PassiveModeHandler());
+            } else {
+                // 指定されたポートでmitmproxyが待ち受ける
+                // serverはproxyを終了させないようにjoin()するためにランダムなポートで待ち受ける
+                final List<String> extraMitmproxyParams = new ArrayList<>();
+                extraMitmproxyParams.add("--set");
+                extraMitmproxyParams.add("termlog_verbosity=warn");
+                if (AppConfig.get().isAllowOnlyFromLocalhost()) {
+                    extraMitmproxyParams.add("--listen-host");
+                    extraMitmproxyParams.add("127.0.0.1");
+                }
+
+                final MitmMessageInterceptor interceptor = new MitmMessageInterceptor();
+
+                proxy = new MitmproxyJava(AppConfig.get().getMitmdumpPath(), (InterceptedMessage m) -> {
+                    interceptor.intercept(m);
+                    // レスポンスを改変しないのでnullを返す
+                    return null;
+                }, AppConfig.get().getListenPort(), extraMitmproxyParams);
             }
-            server.setConnectors(new Connector[]{connector});
-            server.setHandler(new PassiveModeHandler());
 
             try {
                 try {
+                    if (proxy != null) {
+                        proxy.start();
+                    }
                     server.start();
                     server.join();
                 } finally {
@@ -43,6 +87,15 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                         server.stop();
                     } catch (Exception ex) {
                         LoggerHolder.get().warn("Logbook-Kai HTTPサーバーのシャットダウンで例外", ex);
+                    }
+                    if (proxy != null) {
+                        try {
+                            proxy.stop();
+                        } catch (InterruptedException ex) {
+                            LoggerHolder.get().info("MitmproxyJavaサーバーを中断");
+                        } catch (Exception ex) {
+                            LoggerHolder.get().warn("MitmproxyJavaサーバーのシャットダウンで例外", ex);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -68,19 +121,23 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         e.printStackTrace(new PrintWriter(w));
         String stackTrace = w.toString();
 
-        Runnable runnable = () -> {
+        showAlert(title, message, stackTrace);
+    }
+
+    private static void showAlert(String title, String message, String extraContent) {
+        Platform.runLater(() -> {
             Alert alert = new Alert(AlertType.WARNING);
             alert.getDialogPane().getStylesheets().add("logbook/gui/application.css");
             InternalFXMLLoader.setGlobal(alert.getDialogPane());
-            TextArea textArea = new TextArea(stackTrace);
-            alert.getDialogPane().setExpandableContent(textArea);
+            if (extraContent != null) {
+                TextArea textArea = new TextArea(extraContent);
+                alert.getDialogPane().setExpandableContent(textArea);
+            }
 
             alert.setTitle(title);
             alert.setHeaderText(title);
             alert.setContentText(message);
             alert.showAndWait();
-        };
-
-        Platform.runLater(runnable);
+        });
     }
 }

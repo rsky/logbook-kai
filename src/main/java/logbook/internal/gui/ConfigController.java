@@ -302,6 +302,18 @@ public class ConfigController extends WindowController {
     @FXML
     private Button storeApiStart2DirRef;
 
+    /** パッシブモードを有効にする (x-ray-proxy連携) */
+    @FXML
+    private CheckBox usePassiveMode;
+
+    /** mitmproxyを使用する (パッシブモードとは排他) */
+    @FXML
+    private CheckBox useMitmproxy;
+
+    /** mitmdump 実行ファイル */
+    @FXML
+    private TextField mitmdumpPath;
+
     /** FFmpeg 実行ファイル */
     @FXML
     private TextField ffmpegPath;
@@ -494,6 +506,9 @@ public class ConfigController extends WindowController {
         this.storeInternal.setSelected(conf.isStoreApiStart2());
         this.storeApiStart2.setSelected(conf.isStoreApiStart2());
         this.storeApiStart2Dir.setText(conf.getStoreApiStart2Dir());
+        this.usePassiveMode.setSelected(conf.isUsePassiveMode());
+        this.useMitmproxy.setSelected(conf.isUseMitmproxy());
+        this.mitmdumpPath.setText(conf.getMitmdumpPath());
         this.storeInternal.getOnAction().handle(new ActionEvent());
 
         this.pluginName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -609,6 +624,9 @@ public class ConfigController extends WindowController {
         conf.setAllowOnlyFromLocalhost(this.allowOnlyFromLocalhost.isSelected());
         conf.setStoreApiStart2(this.storeApiStart2.isSelected());
         conf.setStoreApiStart2Dir(this.storeApiStart2Dir.getText());
+        conf.setUsePassiveMode(this.usePassiveMode.isSelected());
+        conf.setUseMitmproxy(this.useMitmproxy.isSelected());
+        conf.setMitmdumpPath(this.mitmdumpPath.getText());
 
         conf.setFfmpegPath(this.ffmpegPath.getText());
         conf.setFfmpegArgs(this.ffmpegArgs.getText());
@@ -656,6 +674,16 @@ public class ConfigController extends WindowController {
                 .filter(File::exists)
                 .map(File::getAbsolutePath)
                 .ifPresent(this.reportDir::setText);
+    }
+
+    @FXML
+    void selectMitmdumpPath(ActionEvent event) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("mitmdumpの選択");
+        Optional.ofNullable(fc.showOpenDialog(this.getWindow()))
+                .filter(File::exists)
+                .map(File::getAbsolutePath)
+                .ifPresent(this.mitmdumpPath::setText);
     }
 
     @FXML

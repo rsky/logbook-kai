@@ -30,6 +30,7 @@ dependencies {
     api(libs.org.slf4j.slf4j.api)
     api(libs.ch.qos.logback.logback.classic)
     api(libs.ch.qos.logback.logback.core)
+    implementation(libs.io.appium.mitmproxy.java)
     testImplementation(libs.junit.junit)
     compileOnly(libs.org.projectlombok.lombok)
     annotationProcessor(libs.org.projectlombok.lombok)

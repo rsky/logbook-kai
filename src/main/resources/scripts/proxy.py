@@ -9,6 +9,7 @@ Changes:
 - Uses wsproto instead of websockets, since mitmproxy already uses wsproto, avoiding extra dependencies.
 - Added support for the new mitmproxy header format, `iterable[tuple[bytes, bytes]]`.
 - Code formatting applied.
+- Removed unnecessary features for us.
 
 See also: https://github.com/appium/mitmproxy-java
 """
@@ -22,16 +23,8 @@ import sys
 import threading
 import traceback
 
-from mitmproxy import ctx
 from wsproto import ConnectionType, WSConnection
 from wsproto.events import AcceptConnection, BytesMessage, CloseConnection, Ping, Pong, RejectConnection, Request
-
-
-def convert_headers_to_bytes(header_entry):
-    """
-    Converts a tuple of strings into a tuple of bytes.
-    """
-    return tuple((bytes(header_entry[0], "utf8"), bytes(header_entry[1], "utf8")))
 
 
 def convert_body_to_bytes(body):
@@ -42,14 +35,6 @@ def convert_body_to_bytes(body):
         return bytes()
     else:
         return body
-
-
-def is_text_response(headers):
-    if "content-type" in headers:
-        ct = headers["content-type"].lower()
-        # Allow all application/ and text/ MIME types.
-        return "application" in ct or "text" in ct or ct.strip() == ""
-    return True
 
 
 class WebSocketAdapter:
@@ -68,40 +53,9 @@ class WebSocketAdapter:
 
     def __init__(self):
         self.queue = queue.Queue()
-        self.intercept_paths = frozenset([])
-        self.only_intercept_text_files = False
         self.finished = False
         # Start websocket thread
         threading.Thread(target=self.websocket_thread).start()
-
-    def load(self, loader):
-        loader.add_option(
-            "intercept",
-            str,
-            "",
-            """
-            A list of HTTP paths, delimited by a comma, to intercept and pass to Node without hitting the server.
-            E.g.: /foo,/bar
-            """,
-        )
-        loader.add_option(
-            name="onlyInterceptTextFiles",
-            typespec=bool,
-            default=False,
-            help="If true, the plugin only intercepts text files and passes through other types of files",
-        )
-        return
-
-    def configure(self, updates):
-        if "intercept" in updates:
-            self.intercept_paths = frozenset(ctx.options.intercept.split(","))
-            # print("Intercept paths:")
-            # print(self.intercept_paths)
-        if "onlyInterceptTextFiles" in updates:
-            self.only_intercept_text_files = ctx.options.onlyInterceptTextFiles
-            # print("Only intercept text files:")
-            # print(self.only_intercept_text_files)
-        return
 
     def send_message(self, metadata, data1, data2):
         """
@@ -132,76 +86,18 @@ class WebSocketAdapter:
         # print("waiting")
         obj["lock"].wait()
         # print("wait finished!")
-        new_response = obj["response"]
-        if new_response is None:
-            # Never got a response / an error occurred
-            return None
-
-        new_response_size = len(new_response)
-
-        all_data = struct.unpack("<II" + str(new_response_size - 8) + "s", new_response)
-
-        return json.loads(all_data[2][0 : all_data[0]]), all_data[2][all_data[0] :]
-
-    def request(self, flow):
-        """
-        Intercepts an HTTP request. If the proxy is configured to intercept the path, then
-        do so without sending to the server.
-        """
-        if flow.request.path in self.intercept_paths:
-            request = flow.request
-            message_response = self.send_message(
-                {
-                    "request": {
-                        "method": request.method,
-                        "url": request.url,
-                        "headers": list(request.headers.items(True)),
-                    },
-                    "response": {"status_code": 200, "headers": list()},
-                },
-                convert_body_to_bytes(request.content),
-                convert_body_to_bytes(None),
-            )
-            if message_response is None:
-                # No response received; making no modifications.
-                return
-            # response modification disabled
-            """
-            new_metadata = message_response[0]
-            new_body = message_response[1]
-
-            flow.response = http.Response.make(
-                new_metadata['status_code'],
-                new_body,
-                map(convert_headers_to_bytes, new_metadata['headers'])
-            )
-            """
-        return
-
-    def responseheaders(self, flow):
-        # Stream all non-text responses if only_intercept_text_files is enabled.
-        # Do not stream intercepted paths.
-        flow.response.stream = (
-            flow.request.path not in self.intercept_paths
-            and self.only_intercept_text_files
-            and not is_text_response(flow.response.headers)
-        )
 
     def response(self, flow):
         """
         Intercepts an HTTP response. Mutates its headers / body / status code / etc.
         """
-        # Streaming responses are things we said to stream in responseheaders
-        if flow.response.stream:
-            return
-
         request = flow.request
-
-        # Ignore intercepted paths
-        if request.path in self.intercept_paths:
+        # Only handles .kancolle-server.com
+        if not request.host.endswith(".kancolle-server.com"):
             return
+
         response = flow.response
-        message_response = self.send_message(
+        self.send_message(
             {
                 "request": {
                     "method": request.method,
@@ -216,24 +112,6 @@ class WebSocketAdapter:
             convert_body_to_bytes(request.content),
             convert_body_to_bytes(response.content),
         )
-
-        if message_response is None:
-            # No response received; making no modifications.
-            return
-        # response modification disabled
-        """
-        new_metadata = message_response[0]
-        new_body = message_response[1]
-
-
-        #print("Prepping response!")
-
-        flow.response = http.Response.make(
-            new_metadata['status_code'],
-            new_body,
-            map(convert_headers_to_bytes, new_metadata['headers'])
-        )
-        """
         return
 
     def done(self):
@@ -288,7 +166,9 @@ class WebSocketAdapter:
                                 for event in ws.events():
                                     if isinstance(event, BytesMessage):
                                         # print(f"Received bytes message: length={len(event.data)}")
-                                        obj["response"] = event.data
+                                        # We don't need to handle response
+                                        # obj["response"] = None
+                                        pass
                                     else:
                                         handle_unexpected_events(ws)
                             finally:

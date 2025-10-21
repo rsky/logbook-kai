@@ -85,19 +85,17 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                     server.start();
                     server.join();
                 } finally {
+                    if (proxy != null) {
+                        try {
+                            proxy.stop();
+                        } catch (Exception ex) {
+                            LoggerHolder.get().warn("MitmproxyJavaサーバーのシャットダウンで例外", ex);
+                        }
+                    }
                     try {
                         server.stop();
                     } catch (Exception ex) {
                         LoggerHolder.get().warn("Logbook-Kai HTTPサーバーのシャットダウンで例外", ex);
-                    }
-                    if (proxy != null) {
-                        try {
-                            proxy.stop();
-                        } catch (InterruptedException ex) {
-                            LoggerHolder.get().info("MitmproxyJavaサーバーを中断");
-                        } catch (Exception ex) {
-                            LoggerHolder.get().warn("MitmproxyJavaサーバーのシャットダウンで例外", ex);
-                        }
                     }
                 }
             } catch (Exception e) {

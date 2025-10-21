@@ -15,9 +15,11 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.BindException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,13 +45,27 @@ public final class ProxyServerImpl implements ProxyServerSpi {
     }
 
     private void runServer(boolean passiveMode) {
+        // TCPポートが使用中かチェック
+        final int port = AppConfig.get().getListenPort();
+        if (!isPortAvailable(port)) {
+            showPortAlreadyUsed(port);
+            return;
+        }
+        if (passiveMode) {
+            final int webSocketPort = 8765;
+            if (!isPortAvailable(webSocketPort)) {
+                showPortAlreadyUsed(webSocketPort);
+                return;
+            }
+        }
+
         final Server server = new Server();
         MitmproxyJava proxy = null;
 
         try (final ServerConnector connector = new ServerConnector(server)) {
             if (passiveMode) {
                 // 指定されたポートでパッシブモードのHTTPサーバが待ち受ける
-                connector.setPort(AppConfig.get().getListenPort());
+                connector.setPort(port);
                 if (AppConfig.get().isAllowOnlyFromLocalhost()) {
                     connector.setHost("localhost");
                 }
@@ -74,7 +90,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                     interceptor.intercept(m);
                     // レスポンスを改変しないのでnullを返す
                     return null;
-                }, AppConfig.get().getListenPort(), extraMitmproxyParams);
+                }, port, extraMitmproxyParams);
             }
 
             try {
@@ -104,6 +120,22 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         } catch (Exception e) {
             LoggerHolder.get().fatal("Logbook-Kai HTTPサーバーの起動に失敗しました", e);
         }
+    }
+
+    private static boolean isPortAvailable(int port) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            serverSocket.setReuseAddress(true);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private static void showPortAlreadyUsed(int port) {
+        showAlert("ポートが使用中です",
+                "ポート " + port + " は既に使用されています。\n" +
+                        "設定画面でポート番号を変更するか、他のアプリケーションを終了してください。",
+                null);
     }
 
     private static void handleException(Exception e) {

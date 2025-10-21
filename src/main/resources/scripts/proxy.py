@@ -16,12 +16,9 @@ See also: https://github.com/appium/mitmproxy-java
 
 import asyncio
 import json
-import platform
-import queue
 import socket
 import struct
 import sys
-import threading
 import traceback
 
 from wsproto import ConnectionType, WSConnection
@@ -44,19 +41,12 @@ class WebSocketAdapter:
     Enables using MITMProxy from the outside of Python.
     """
 
-    def websocket_thread(self):
-        """
-        Main function of the websocket thread. Runs the websocket event loop
-        until MITMProxy shuts down.
-        """
-        self.worker_event_loop = asyncio.new_event_loop()
-        self.worker_event_loop.run_until_complete(self.websocket_loop())
-
     def __init__(self):
-        self.queue = queue.Queue()
-        self.finished = False
-        # Start websocket thread
-        threading.Thread(target=self.websocket_thread).start()
+        self.queue = asyncio.Queue()
+        self.task = None
+
+    def load(self, loader):
+        self.task = asyncio.create_task(self.websocket_loop())
 
     def send_message(self, metadata, data1, data2):
         """
@@ -78,15 +68,7 @@ class WebSocketAdapter:
             data1,
             data2,
         )
-        obj = {"lock": threading.Condition(), "msg": msg, "response": None}
-        # We use the lock to marry multithreading with asyncio.
-        # print("acquiring lock")
-        obj["lock"].acquire()
-        # print("inserting into list")
-        self.queue.put(obj)
-        # print("waiting")
-        obj["lock"].wait()
-        # print("wait finished!")
+        self.queue.put_nowait(msg)
 
     def response(self, flow):
         """
@@ -113,66 +95,66 @@ class WebSocketAdapter:
             convert_body_to_bytes(request.content),
             convert_body_to_bytes(response.content),
         )
-        return
 
-    def done(self):
+    async def done(self):
         """
         Called when MITMProxy is shutting down.
         """
-        # Tell the WebSocket loop to stop processing events
-        self.finished = True
-        self.queue.put(None)
-        return
+        await self.queue.join()
+        self.task.cancel()
+        try:
+            await self.task
+        except asyncio.CancelledError:
+            pass  # Expected when cancelling
+        except Exception:
+            print("[mitmproxy-java plugin] Unexpected error:", sys.exc_info())
 
     async def websocket_loop(self):
         """
         Processes messages from self.queue until mitmproxy shuts us down.
         """
-        while not self.finished:
+        while True:
+            retry_delay = 0
+            max_retries = 5
             try:
+                loop = asyncio.get_running_loop()
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as conn:
                     conn.setblocking(False)
-                    await self.worker_event_loop.sock_connect(conn, ("127.0.0.1", 8765))
+                    await loop.sock_connect(conn, ("127.0.0.1", 8765))
+                    retry_delay = 0
 
                     # Negotiate WebSocket opening handshake
                     ws = WSConnection(ConnectionType.CLIENT)
-                    await send_data(ws.send(Request(host="127.0.0.1", target="/")), conn, self.worker_event_loop)
-                    await receive_data(ws, conn, self.worker_event_loop)
-                    await handle_events(ws, conn, self.worker_event_loop)
+                    await send_data(ws.send(Request(host="127.0.0.1", target="/")), conn, loop)
+                    await receive_data(ws, conn, loop)
+                    await handle_events(ws, conn, loop)
 
                     while True:
                         # Make sure the connection is still live.
-                        await send_data(ws.send(Ping()), conn, self.worker_event_loop)
-                        await receive_data(ws, conn, self.worker_event_loop)
-                        await handle_events(ws, conn, self.worker_event_loop)
+                        await send_data(ws.send(Ping()), conn, loop)
+                        await receive_data(ws, conn, loop)
+                        await handle_events(ws, conn, loop)
 
+                        msg = await self.queue.get()
                         try:
-                            obj = self.queue.get(timeout=1)
-                            if obj is None:
-                                break
-                            try:
-                                obj["lock"].acquire()
-                                await send_data(ws.send(BytesMessage(data=obj["msg"])), conn, self.worker_event_loop)
-                                await receive_data(ws, conn, self.worker_event_loop)
-                                await handle_events(ws, conn, self.worker_event_loop)
-                            finally:
-                                # Always remember to wake up other threads + release lock to avoid deadlocks
-                                obj["lock"].notify()
-                                obj["lock"].release()
-                        except queue.Empty:
-                            pass
+                            await send_data(ws.send(BytesMessage(data=msg)), conn, loop)
+                            await receive_data(ws, conn, loop)
+                            await handle_events(ws, conn, loop)
+                        finally:
+                            self.queue.task_done()
             except ConnectionAbortedError:
-                print("[mitmproxy-java plugin] Connection aborted, trying to reconnect...")
+                print(f"[mitmproxy-java plugin] Connection aborted, reconnecting in {retry_delay} seconds...")
+                await asyncio.sleep(retry_delay)
+                retry_delay += 1
+                if retry_delay > max_retries:
+                    print("[mitmproxy-java plugin] Max retries exceeded, breaking websocket loop")
+                    break
             except ConnectionRefusedError:
                 print("[mitmproxy-java plugin] Connection refused, breaking websocket loop")
                 break
             except Exception:
                 print("[mitmproxy-java plugin] Unexpected error:", sys.exc_info())
                 traceback.print_exc(file=sys.stdout)
-
-        # Workaround that the child process is not killed when shutdown on windows
-        if not self.finished and platform.system() == "Windows":
-            sys.exit(0)
 
 
 async def send_data(data, conn, loop):

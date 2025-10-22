@@ -88,8 +88,26 @@ final public class MitmLauncher {
             SystemProcess p = Processes.newStandardProcess(process.getProcess());
             ProcessUtil.destroyGracefullyOrForcefullyAndWait(p, 5, TimeUnit.SECONDS, 5, TimeUnit.SECONDS);
             process = null;
+            // Windowsでは起動した孫プロセスが生き続ける場合があるので手動で始末する
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                killMitmChildProcessIfAlive();
+            }
         }
         pidFilePath  = null;
+    }
+
+    private void killMitmChildProcessIfAlive() {
+        final int mitmPid = getMitmPid();
+        if (mitmPid > 0) {
+            SystemProcess p = Processes.newPidProcess(mitmPid);
+            try {
+                if (p.isAlive()) {
+                    ProcessUtil.destroyGracefullyOrForcefullyAndWait(p, 5, TimeUnit.SECONDS, 5, TimeUnit.SECONDS);
+                }
+            } catch (IOException | InterruptedException | TimeoutException e) {
+                LoggerHolder.get().error("Exception occurred while trying to kill mitm pid", e);
+            }
+        }
     }
 
     public int getMitmPid() {

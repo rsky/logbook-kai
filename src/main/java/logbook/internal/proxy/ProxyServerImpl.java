@@ -97,17 +97,6 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         } finally {
             if (mitmLauncher != null) {
                 try {
-                    if (mitmLauncher.getMitmPid() > 0) {
-                        // Windowsのみ起動した孫プロセスが生き続ける問題があるので手動で始末する
-                        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
-                            try {
-                                ProcessBuilder p = new ProcessBuilder("taskkill", "/F", "/PID", String.valueOf(mitmLauncher.getMitmPid()));
-                                p.start().wait();
-                            } catch (Exception exc) {
-                                LoggerHolder.get().warn("Exception occurred while terminating mitmproxy child process", exc);
-                            }
-                        }
-                    }
                     mitmLauncher.stop();
                 } catch (Exception ex) {
                     LoggerHolder.get().warn("Exception occurred during mitmproxy server shutdown", ex);

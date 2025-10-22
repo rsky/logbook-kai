@@ -1,18 +1,29 @@
 package logbook.internal.proxy;
 
+import lombok.extern.slf4j.Slf4j;
+import org.zeroturnaround.exec.ProcessExecutor;
+import org.zeroturnaround.exec.StartedProcess;
+import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
+import org.zeroturnaround.process.ProcessUtil;
+import org.zeroturnaround.process.Processes;
+import org.zeroturnaround.process.SystemProcess;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+@Slf4j
 final public class MitmLauncher {
     private final String mitmdumpPath;
     private final int listenPort;
     private final String listenHost;
     private final int logbookPort;
-    private Process process = null;
+    private StartedProcess process = null;
 
     public MitmLauncher(String mitmdumpPath, int listenPort, String listenHost, int logbookPort) {
         this.mitmdumpPath = mitmdumpPath;
@@ -40,15 +51,18 @@ final public class MitmLauncher {
         args.add("--set");
         args.add("logbook_port=" + logbookPort);
 
-        process = (new ProcessBuilder(args))
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
+        process = new ProcessExecutor()
+                .command(args)
+                .redirectOutput(Slf4jStream.ofCaller().asInfo())
+                .redirectErrorStream(true)
+                .destroyOnExit()
                 .start();
     }
 
-    public void stop() {
+    public void stop() throws IOException, InterruptedException, TimeoutException {
         if (process != null) {
-            process.destroy();
+            SystemProcess p = Processes.newStandardProcess(process.getProcess());
+            ProcessUtil.destroyGracefullyOrForcefullyAndWait(p, 5, TimeUnit.SECONDS, 5, TimeUnit.SECONDS);
             process = null;
         }
     }

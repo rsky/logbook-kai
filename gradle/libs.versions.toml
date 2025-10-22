@@ -18,6 +18,8 @@ org-openjfx-javafx-web = "21.0.8"
 org-projectlombok-lombok = "1.18.42"
 org-slf4j-slf4j-api = "2.0.17"
 org-slf4j-slf4j-simple = "2.0.17"
+org-zeroturnaround-zt-exec = "1.12"
+org-zeroturnaround-zt-process-killer = "1.11"
 
 [libraries]
 ch-qos-logback-logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "ch-qos-logback-logback-classic" }
@@ -36,3 +38,5 @@ org-openjfx-javafx-web = { module = "org.openjfx:javafx-web", version.ref = "org
 org-projectlombok-lombok = { module = "org.projectlombok:lombok", version.ref = "org-projectlombok-lombok" }
 org-slf4j-slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "org-slf4j-slf4j-api" }
 org-slf4j-slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "org-slf4j-slf4j-simple" }
+org-zeroturnaround-zt-exec = { module = "org.zeroturnaround:zt-exec", version.ref = "org-zeroturnaround-zt-exec" }
+org-zeroturnaround-zt-process-killer = { module = "org.zeroturnaround:zt-process-killer", version.ref = "org-zeroturnaround-zt-process-killer" }

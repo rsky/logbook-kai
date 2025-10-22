@@ -85,6 +85,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                 } finally {
                     if (mitmLauncher != null) {
                         try {
+                            /*
                             if (passiveModeHandler.getMitmPid() > 0) {
                                 // Windowsのみ起動した孫プロセスが生き続ける問題があるので手動で始末する
                                 if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
@@ -96,6 +97,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                                     }
                                 }
                             }
+                             */
                             mitmLauncher.stop();
                         } catch (Exception ex) {
                             LoggerHolder.get().warn("Exception occurred during mitmproxy server shutdown", ex);

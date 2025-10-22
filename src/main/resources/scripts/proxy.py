@@ -1,221 +1,150 @@
-#!/usr/bin/env python3
 """
-Interception proxy using mitmproxy (https://mitmproxy.org).
-Communicates to mitmproxy-java via websockets.
-
-This file is based on mitmproxy-java's `src/main/resources/scripts/proxy.py`.
-Changes:
-- Response modification has been disabled.
-- Uses wsproto instead of websockets, since mitmproxy already uses wsproto, avoiding extra dependencies.
-- Added support for the new mitmproxy header format, `iterable[tuple[bytes, bytes]]`.
-- Code formatting applied.
-- Removed unnecessary features for us.
-
-See also: https://github.com/appium/mitmproxy-java
+logbook-kaiから起動するmitmdump用アドオン
 """
 
 import asyncio
-import json
+import base64
 import os
 import platform
-import socket
-import struct
-import sys
-import traceback
+import urllib.request
+from dataclasses import dataclass
+from logging import getLogger
 
-from wsproto import ConnectionType, WSConnection
-from wsproto.events import AcceptConnection, BytesMessage, CloseConnection, Ping, Pong, RejectConnection, Request
+from mitmproxy import ctx
+from mitmproxy.addonmanager import Loader
+from mitmproxy.http import HTTPFlow, Request, Response
+
+KANCOLLE_SERVER_SUFFIX: str = ".kancolle-server.com"
+PATH_PREFIXES_TO_HANDLE: tuple[str, ...] = (
+    "/kcsapi/",
+    "/kcs2/resources/ship/",
+    "/kcs2/img/common/",
+    "/kcs2/img/duty/",
+    "/kcs2/img/sally/",
+)
+
+LOGBOOK_SCHEME: str = "http"
+LOGBOOK_HOST: str = "127.0.0.1"
+LOGBOOK_DEFAULT_PORT: int = 8888
+
+HTTP_OK: int = 200
+
+logger = getLogger(__name__)
 
 
-def convert_body_to_bytes(body):
-    """
-    Converts an HTTP request/response body into a list of numbers.
-    """
-    if body is None:
-        return bytes()
-    else:
-        return body
+@dataclass(frozen=True, kw_only=True, slots=True, eq=False)
+class PassiveServerParams:
+    path: str
+    headers: dict[str, str]
+    content: bytes | None
 
 
-class WebSocketAdapter:
-    """
-    Relays HTTP/HTTPS requests to a websocket server.
-    Enables using MITMProxy from the outside of Python.
-    """
+def create_params(req: Request, res: Response) -> PassiveServerParams:
+    return PassiveServerParams(path=req.path, headers=create_headers(req, res), content=res.content)
 
-    def __init__(self):
-        self.queue = asyncio.Queue()
-        self.task = None
 
-    def load(self, loader):
-        self.task = asyncio.create_task(self.websocket_loop())
-        if platform.system() == "Windows":
-            self.send_message(
-                {
-                    "request": {
-                        "method": "PID"
-                        "url": "/"
-                        "headers": [],
-                    },
-                    "response": {
-                        "status_code": os.getpid(),
-                        "headers": [],
-                    },
-                },
-                b"",
-                b"",
-            )
+def create_headers(req: Request, res: Response) -> dict[str, str]:
+    headers = {
+        "X-Pasv-Request-Method": req.method,
+    }
 
-    def send_message(self, metadata, data1, data2):
-        """
-        Sends the given message on the WebSocket connection,
-        and awaits a response. Metadata is a JSONable object,
-        and data is bytes.
-        """
-        metadata_bytes = bytes(json.dumps(metadata), "utf8")
-        data1_size = len(data1)
-        data2_size = len(data2)
-        metadata_size = len(metadata_bytes)
+    req_content_type = req.headers.get("content-type")
+    res_content_type = res.headers.get("content-type")
 
-        msg = struct.pack(
-            "<III" + str(metadata_size) + "s" + str(data1_size) + "s" + str(data2_size) + "s",
-            metadata_size,
-            data1_size,
-            data2_size,
-            metadata_bytes,
-            data1,
-            data2,
+    if (
+        req.content is not None
+        and req_content_type is not None
+        and (
+            req_content_type.startswith("text/")
+            or req_content_type in {"application/json", "application/x-www-form-urlencoded"}
         )
-        self.queue.put_nowait(msg)
+    ):
+        headers["X-Pasv-Request-Content-Type"] = req_content_type
+        header_safe_body = base64.b64encode(req.content).decode("utf-8")
+        headers["X-Pasv-Request-Body"] = header_safe_body
 
-    def response(self, flow):
-        """
-        Intercepts an HTTP response. Mutates its headers / body / status code / etc.
-        """
+    if res.content is not None and res_content_type is not None:
+        headers["Content-Type"] = res_content_type
+
+    return headers
+
+
+class LogbookKaiAddon:
+    queue: asyncio.Queue[PassiveServerParams | int]
+    task: asyncio.Task[None]
+    logbook_port: int = LOGBOOK_DEFAULT_PORT
+
+    def __init__(self) -> None:
+        self.queue = asyncio.Queue()
+
+    def load(self, loader: Loader) -> None:
+        loader.add_option(
+            name="logbook_port",
+            typespec=int,
+            default=LOGBOOK_DEFAULT_PORT,
+            help="Port that logbook-kai is listening on.",
+        )
+
+        self.task = asyncio.create_task(self.worker())
+
+        if platform.system() == "Windows":
+            self.queue.put_nowait(os.getpid())
+
+    def configure(self, updated: set[str]) -> None:
+        if "logbook_port" in updated:
+            self.logbook_port = ctx.options.logbook_port
+
+    async def done(self) -> None:
+        await self.queue.join()
+        self.task.cancel()
+        await asyncio.gather(self.task, return_exceptions=True)
+
+    def response(self, flow: HTTPFlow) -> None:
         request = flow.request
-        # Only handles .kancolle-server.com
-        if not request.host.endswith(".kancolle-server.com"):
+        if not request.host.endswith(KANCOLLE_SERVER_SUFFIX):
+            return
+        if not any(request.path.startswith(prefix) for prefix in PATH_PREFIXES_TO_HANDLE):
             return
 
         response = flow.response
-        self.send_message(
-            {
-                "request": {
-                    "method": request.method,
-                    "url": request.url,
-                    "headers": list(request.headers.items(True)),
-                },
-                "response": {
-                    "status_code": response.status_code,
-                    "headers": list(response.headers.items(True)),
-                },
-            },
-            convert_body_to_bytes(request.content),
-            convert_body_to_bytes(response.content),
-        )
+        if response is not None and response.status_code == HTTP_OK:
+            self.queue.put_nowait(create_params(request, response))
 
-    async def done(self):
-        """
-        Called when MITMProxy is shutting down.
-        """
-        await self.queue.join()
-        self.task.cancel()
-        try:
-            await self.task
-        except asyncio.CancelledError:
-            pass  # Expected when cancelling
-        except Exception:
-            print("[mitmproxy-logbook-kai addon] Unexpected error:", sys.exc_info())
-
-    async def websocket_loop(self):
-        """
-        Processes messages from self.queue until mitmproxy shuts us down.
-        """
+    async def worker(self) -> None:
         while True:
-            retry_delay = 0
-            max_retries = 5
+            data = await self.queue.get()
             try:
-                loop = asyncio.get_running_loop()
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as conn:
-                    conn.setblocking(False)
-                    await loop.sock_connect(conn, ("127.0.0.1", 8765))
-                    retry_delay = 0
-
-                    # Negotiate WebSocket opening handshake
-                    ws = WSConnection(ConnectionType.CLIENT)
-                    await send_data(ws.send(Request(host="127.0.0.1", target="/")), conn, loop)
-                    await receive_data(ws, conn, loop)
-                    await handle_events(ws, conn, loop)
-
-                    while True:
-                        # Make sure the connection is still live.
-                        await send_data(ws.send(Ping()), conn, loop)
-                        await receive_data(ws, conn, loop)
-                        await handle_events(ws, conn, loop)
-
-                        msg = await self.queue.get()
-                        try:
-                            await send_data(ws.send(BytesMessage(data=msg)), conn, loop)
-                            await receive_data(ws, conn, loop)
-                            await handle_events(ws, conn, loop)
-                        finally:
-                            self.queue.task_done()
-            except ConnectionAbortedError:
-                print(f"[mitmproxy-logbook-kai addon] Connection aborted, reconnecting...")
-            except ConnectionRefusedError:
-                if retry_delay <= max_retries:
-                    print(f"[mitmproxy-logbook-kai addon] Connection refused, retrying in {retry_delay} seconds...")
-                    await asyncio.sleep(retry_delay)
-                    retry_delay += 1
+                base_url = f"{LOGBOOK_SCHEME}://{LOGBOOK_HOST}:{self.logbook_port}"
+                # 依存関係を増やさないためあえて標準ライブラリを使用
+                # 通信頻度を考慮しても、単一タスクかつブロッキングI/Oで十分なはず
+                # もし非同期I/Oにしたいのならmitmproxyが依存するh11とasyncioの組み合わせを検討する
+                # httpxやaiohttpは別途インストールが必要になるので使わない
+                req: urllib.request.Request
+                if isinstance(data, int):
+                    pid = data
+                    req = urllib.request.Request(
+                        url=f"{base_url}/pid/{pid}",
+                        data=b"",
+                        headers={"Content-Type": "application/octet-stream"},
+                        method="PUT",
+                    )
+                elif isinstance(data, PassiveServerParams):
+                    params = data
+                    req = urllib.request.Request(
+                        url=f"{base_url}/pasv{params.path}",
+                        data=params.content,
+                        headers=params.headers,
+                        method="POST",
+                    )
                 else:
-                    print("[mitmproxy-logbook-kai addon] Max retries exceeded, breaking websocket loop")
-                    break
+                    continue
+                with urllib.request.urlopen(req) as res:
+                    if res.status != HTTP_OK:
+                        logger.error(f"[mitmproxy-logbook-kai addon] Unexpected response: {res.status}")
             except Exception:
-                print("[mitmproxy-logbook-kai addon] Unexpected error:", sys.exc_info())
-                traceback.print_exc(file=sys.stdout)
+                logger.exception("[mitmproxy-logbook-kai addon] Unexpected error")
+            finally:
+                self.queue.task_done()
 
 
-async def send_data(data, conn, loop):
-    await loop.sock_sendall(conn, data)
-
-
-BUFF_SIZE = 4096
-
-
-async def receive_data(ws, conn, loop):
-    data = bytearray()
-    while True:
-        part = await loop.sock_recv(conn, BUFF_SIZE)
-        if not part:
-            break
-        data.extend(part)
-        if len(part) < BUFF_SIZE:
-            break
-    if len(data) == 0:
-        ws.receive_data(None)
-    else:
-        ws.receive_data(data)
-
-
-async def handle_events(ws, conn, loop) -> None:
-    for event in ws.events():
-        if isinstance(event, AcceptConnection):
-            print("WebSocket negotiation complete")
-        elif isinstance(event, CloseConnection):
-            print("WebSocket connection closed")
-        elif isinstance(event, RejectConnection):
-            print("WebSocket connection rejected")
-        elif isinstance(event, BytesMessage):
-            # print(f"Received bytes message: length={len(event.data)}")
-            pass
-        elif isinstance(event, Ping):
-            # print(f"Received ping: {event.payload!r}")
-            await send_data(ws.send(Pong(payload=event.payload)), conn, loop)
-        elif isinstance(event, Pong):
-            # print(f"Received pong: {event.payload!r}")
-            pass
-        else:
-            print(f"Unexpected event: {str(event)}")
-
-
-addons = [WebSocketAdapter()]
+addons = [LogbookKaiAddon()]

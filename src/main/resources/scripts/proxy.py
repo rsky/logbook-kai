@@ -5,7 +5,6 @@ logbook-kaiから起動するmitmdump用アドオン
 import asyncio
 import base64
 import os
-import platform
 import urllib.request
 from dataclasses import dataclass
 from logging import getLogger
@@ -70,7 +69,7 @@ def create_headers(req: Request, res: Response) -> dict[str, str]:
 
 
 class LogbookKaiAddon:
-    queue: asyncio.Queue[PassiveServerParams | int]
+    queue: asyncio.Queue[PassiveServerParams]
     task: asyncio.Task[None]
     logbook_port: int = LOGBOOK_DEFAULT_PORT
 
@@ -84,15 +83,27 @@ class LogbookKaiAddon:
             default=LOGBOOK_DEFAULT_PORT,
             help="Port that logbook-kai is listening on.",
         )
+        loader.add_option(
+            name="pid_file",
+            typespec=str,
+            default="",
+            help="PID file path.",
+        )
 
         self.task = asyncio.create_task(self.worker())
-
-        if platform.system() == "Windows":
-            self.queue.put_nowait(os.getpid())
 
     def configure(self, updated: set[str]) -> None:
         if "logbook_port" in updated:
             self.logbook_port = ctx.options.logbook_port
+
+        if "pid_file" in updated:
+            pid_file = ctx.options.pid_file
+            if pid_file and os.path.exists(pid_file):
+                try:
+                    with open(pid_file, "w") as f:
+                        f.write(str(os.getpid()))
+                except OSError as e:
+                    logger.error(f"Failed to write PID file: {e}")
 
     async def done(self) -> None:
         await self.queue.join()
@@ -112,32 +123,18 @@ class LogbookKaiAddon:
 
     async def worker(self) -> None:
         while True:
-            data = await self.queue.get()
+            params = await self.queue.get()
             try:
-                base_url = f"{LOGBOOK_SCHEME}://{LOGBOOK_HOST}:{self.logbook_port}"
                 # 依存関係を増やさないためあえて標準ライブラリを使用
                 # 通信頻度を考慮しても、単一タスクかつブロッキングI/Oで十分なはず
                 # もし非同期I/Oにしたいのならmitmproxyが依存するh11とasyncioの組み合わせを検討する
                 # httpxやaiohttpは別途インストールが必要になるので使わない
-                req: urllib.request.Request
-                if isinstance(data, int):
-                    pid = data
-                    req = urllib.request.Request(
-                        url=f"{base_url}/pid/{pid}",
-                        data=b"",
-                        headers={"Content-Type": "application/octet-stream"},
-                        method="PUT",
-                    )
-                elif isinstance(data, PassiveServerParams):
-                    params = data
-                    req = urllib.request.Request(
-                        url=f"{base_url}/pasv{params.path}",
-                        data=params.content,
-                        headers=params.headers,
-                        method="POST",
-                    )
-                else:
-                    continue
+                req = urllib.request.Request(
+                    url=f"{LOGBOOK_SCHEME}://{LOGBOOK_HOST}:{self.logbook_port}/pasv{params.path}",
+                    data=params.content,
+                    headers=params.headers,
+                    method="POST",
+                )
                 with urllib.request.urlopen(req) as res:
                     if res.status != HTTP_OK:
                         logger.error(f"[mitmproxy-logbook-kai addon] Unexpected response: {res.status}")

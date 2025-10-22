@@ -4,7 +4,6 @@ import logbook.internal.LoggerHolder;
 import logbook.internal.ThreadManager;
 import logbook.plugin.PluginServices;
 import logbook.proxy.ContentListenerSpi;
-import lombok.Getter;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.server.Handler;
@@ -14,8 +13,6 @@ import org.eclipse.jetty.util.Callback;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +21,6 @@ import java.util.stream.Collectors;
  */
 final public class PassiveModeHandler extends Handler.Abstract {
     private static final String PATH_PREFIX = "/pasv/";
-    private static final String PID_PATH_PREFIX = "/pasv/";
 
     private static final String REQUEST_METHOD_HEADER = "X-Pasv-Request-Method";
     private static final String REQUEST_CONTENT_TYPE_HEADER = "X-Pasv-Request-Content-Type";
@@ -35,19 +31,8 @@ final public class PassiveModeHandler extends Handler.Abstract {
      */
     private List<ContentListenerSpi> listeners = null;
 
-    /**
-     * mitmdumpのプロセスID
-     */
-    @Getter
-    private int mitmPid = -1;
-
     @Override
     public boolean handle(Request request, Response response, Callback callback) throws Exception {
-        if (shouldUpdateMitmPid(request)) {
-            this.updateMitmPid(request.getHttpURI().getPath());
-            return true;
-        }
-
         if (!shouldHandle(request)) {
             return false;
         }
@@ -65,19 +50,6 @@ final public class PassiveModeHandler extends Handler.Abstract {
 
     private static boolean shouldHandle(Request req) {
         return HttpMethod.POST.is(req.getMethod()) && req.getHttpURI().getPath().startsWith(PATH_PREFIX);
-    }
-
-    private static boolean shouldUpdateMitmPid(Request req) {
-        return HttpMethod.PUT.is(req.getMethod()) && req.getHttpURI().getPath().startsWith(PID_PATH_PREFIX);
-    }
-
-    private void updateMitmPid(String pathContainsPid) {
-        Pattern pattern = Pattern.compile("/pid/(\\d+)");
-        Matcher matcher = pattern.matcher(pathContainsPid);
-
-        if (matcher.find()) {
-            this.mitmPid = Integer.parseInt(matcher.group(1));
-        }
     }
 
     private boolean invoke(RequestMetaDataWrapper req, ResponseMetaDataWrapper res) {

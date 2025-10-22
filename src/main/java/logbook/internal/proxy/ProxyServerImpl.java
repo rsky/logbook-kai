@@ -20,8 +20,10 @@ import java.net.BindException;
 import java.net.ServerSocket;
 
 /**
- * プロキシサーバーです。
- * 設定に応じてパッシブモードのHTTPサーバーまたはmitmproxy(mtimdump)を起動します。
+ * プロキシサーバー実装。
+ * パッシブモードのHTTPサーバーを起動し、必要に応じてmitmproxy(mitmdump)も起動します。
+ * mitmproxyを利用する際はmitmdumpがlistenPortで待ち受け、
+ * HTTPサーバーは内部通信用に空いているポートで待ち受けます。
  */
 public final class ProxyServerImpl implements ProxyServerSpi {
     @Override
@@ -50,7 +52,6 @@ public final class ProxyServerImpl implements ProxyServerSpi {
 
     private void runServer(int listenPort, int internalPort, boolean useMitmproxy) {
         final Server server = new Server();
-        final PassiveModeHandler passiveModeHandler = new PassiveModeHandler();
 
         try (final ServerConnector connector = new ServerConnector(server)) {
             if (useMitmproxy) {
@@ -63,57 +64,60 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                 }
             }
             server.setConnectors(new Connector[]{connector});
-            server.setHandler(passiveModeHandler);
+            server.setHandler(new PassiveModeHandler());
 
-            MitmLauncher mitmLauncher = null;
-
+            final MitmLauncher mitmLauncher;
             if (useMitmproxy) {
                 String listenHost = null;
                 if (AppConfig.get().isAllowOnlyFromLocalhost()) {
                     listenHost = "127.0.0.1";
                 }
                 mitmLauncher = new MitmLauncher(AppConfig.get().getMitmdumpPath(), listenPort, listenHost, internalPort);
+            } else {
+                mitmLauncher = null;
             }
 
             try {
-                try {
-                    server.start();
-                    if (mitmLauncher != null) {
-                        mitmLauncher.start();
-                    }
-                    server.join();
-                } finally {
-                    if (mitmLauncher != null) {
-                        try {
-                            /*
-                            if (passiveModeHandler.getMitmPid() > 0) {
-                                // Windowsのみ起動した孫プロセスが生き続ける問題があるので手動で始末する
-                                if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
-                                    try {
-                                        ProcessBuilder p = new ProcessBuilder("taskkill", "/F", "/PID", String.valueOf(passiveModeHandler.getMitmPid()));
-                                        p.start().wait();
-                                    } catch (Exception exc) {
-                                        LoggerHolder.get().warn("Exception occurred while terminating mitmproxy child process", exc);
-                                    }
-                                }
-                            }
-                             */
-                            mitmLauncher.stop();
-                        } catch (Exception ex) {
-                            LoggerHolder.get().warn("Exception occurred during mitmproxy server shutdown", ex);
-                        }
-                    }
-                    try {
-                        server.stop();
-                    } catch (Exception ex) {
-                        LoggerHolder.get().warn("Exception occurred during HTTP server shutdown", ex);
-                    }
-                }
+                runAndWaitServer(server, mitmLauncher);
             } catch (Exception e) {
                 handleException(e);
             }
         } catch (Exception e) {
             LoggerHolder.get().fatal("Failed to start HTTP server", e);
+        }
+    }
+
+    private void runAndWaitServer(Server server, MitmLauncher mitmLauncher) throws Exception {
+        try {
+            server.start();
+            if (mitmLauncher != null) {
+                mitmLauncher.start();
+            }
+            server.join();
+        } finally {
+            if (mitmLauncher != null) {
+                try {
+                    if (mitmLauncher.getMitmPid() > 0) {
+                        // Windowsのみ起動した孫プロセスが生き続ける問題があるので手動で始末する
+                        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+                            try {
+                                ProcessBuilder p = new ProcessBuilder("taskkill", "/F", "/PID", String.valueOf(mitmLauncher.getMitmPid()));
+                                p.start().wait();
+                            } catch (Exception exc) {
+                                LoggerHolder.get().warn("Exception occurred while terminating mitmproxy child process", exc);
+                            }
+                        }
+                    }
+                    mitmLauncher.stop();
+                } catch (Exception ex) {
+                    LoggerHolder.get().warn("Exception occurred during mitmproxy server shutdown", ex);
+                }
+            }
+            try {
+                server.stop();
+            } catch (Exception ex) {
+                LoggerHolder.get().warn("Exception occurred during HTTP server shutdown", ex);
+            }
         }
     }
 

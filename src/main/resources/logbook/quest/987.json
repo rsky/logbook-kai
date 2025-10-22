@@ -8,7 +8,7 @@
             "operator": "AND",
             "conditions": [
                 {"name": ["Roma", "Minneapolis", "村雨", "夕立", "朧", "曙", "Maestrale", "Grecale", "Libeccio", "Scirocco", "Jervis", "Luigi Torelli", "UIT-25", "伊504"], "order": 1},
-                {"name": ["Roma", "Minneapolis", "村雨", "夕立", "朧", "曙", "Maestrale", "Grecale", "Libeccio", "Scirocco", "Jervis", "Luigi Torelli", "UIT-25", "伊504"], "count": 3, "operator": "GE"}
+                {"name": ["Roma", "Minneapolis", "村雨", "夕立", "朧", "曙", "Maestrale", "Grecale", "Libeccio", "Scirocco", "Jervis", "Luigi Torelli", "UIT-25", "伊504"], "count": 2, "operator": "GE"}
             ]
         }
     },

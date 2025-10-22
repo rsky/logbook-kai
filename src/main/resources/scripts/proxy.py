@@ -16,6 +16,8 @@ See also: https://github.com/appium/mitmproxy-java
 
 import asyncio
 import json
+import os
+import platform
 import socket
 import struct
 import sys
@@ -47,6 +49,22 @@ class WebSocketAdapter:
 
     def load(self, loader):
         self.task = asyncio.create_task(self.websocket_loop())
+        if platform.system() == "Windows":
+            self.send_message(
+                {
+                    "request": {
+                        "method": "PID"
+                        "url": "/"
+                        "headers": [],
+                    },
+                    "response": {
+                        "status_code": os.getpid(),
+                        "headers": [],
+                    },
+                },
+                b"",
+                b"",
+            )
 
     def send_message(self, metadata, data1, data2):
         """
@@ -107,7 +125,7 @@ class WebSocketAdapter:
         except asyncio.CancelledError:
             pass  # Expected when cancelling
         except Exception:
-            print("[mitmproxy-java plugin] Unexpected error:", sys.exc_info())
+            print("[mitmproxy-logbook-kai addon] Unexpected error:", sys.exc_info())
 
     async def websocket_loop(self):
         """
@@ -143,17 +161,17 @@ class WebSocketAdapter:
                         finally:
                             self.queue.task_done()
             except ConnectionAbortedError:
-                print(f"[mitmproxy-java plugin] Connection aborted, reconnecting in {retry_delay} seconds...")
-                await asyncio.sleep(retry_delay)
-                retry_delay += 1
-                if retry_delay > max_retries:
-                    print("[mitmproxy-java plugin] Max retries exceeded, breaking websocket loop")
-                    break
+                print(f"[mitmproxy-logbook-kai addon] Connection aborted, reconnecting...")
             except ConnectionRefusedError:
-                print("[mitmproxy-java plugin] Connection refused, breaking websocket loop")
-                break
+                if retry_delay <= max_retries:
+                    print(f"[mitmproxy-logbook-kai addon] Connection refused, retrying in {retry_delay} seconds...")
+                    await asyncio.sleep(retry_delay)
+                    retry_delay += 1
+                else:
+                    print("[mitmproxy-logbook-kai addon] Max retries exceeded, breaking websocket loop")
+                    break
             except Exception:
-                print("[mitmproxy-java plugin] Unexpected error:", sys.exc_info())
+                print("[mitmproxy-logbook-kai addon] Unexpected error:", sys.exc_info())
                 traceback.print_exc(file=sys.stdout)
 
 

@@ -22,6 +22,7 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * プロキシサーバーです。
@@ -62,6 +63,8 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         final Server server = new Server();
         MitmproxyJava proxy = null;
 
+        final ConcurrentHashMap<String, Integer> pidMap = new ConcurrentHashMap<>();
+
         try (final ServerConnector connector = new ServerConnector(server)) {
             if (passiveMode) {
                 // 指定されたポートでパッシブモードのHTTPサーバが待ち受ける
@@ -84,7 +87,13 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                 final MitmMessageInterceptor interceptor = new MitmMessageInterceptor();
 
                 proxy = new MitmproxyJava(AppConfig.get().getMitmdumpPath(), (InterceptedMessage m) -> {
-                    interceptor.intercept(m);
+                    // Windowsでは起動したmitmdumpの子プロセスが終了しない問題があるので、
+                    // ワークアラウンドとしてアドオンからPIDを送らせて、手動で始末する。
+                    if (m.getRequest().getMethod().equals("PID")) {
+                        pidMap.put("PID", m.getResponse().getStatusCode());
+                    } else {
+                        interceptor.intercept(m);
+                    }
                     // レスポンスを改変しないのでnullを返す
                     return null;
                 }, port, extraMitmproxyParams);
@@ -100,6 +109,10 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                 } finally {
                     if (proxy != null) {
                         try {
+                            if (pidMap.containsKey("PID")) {
+                                ProcessBuilder p = new ProcessBuilder("taskkill", "/F", "/PID", String.valueOf(pidMap.get("PID")));
+                                p.start().exitValue();
+                            }
                             proxy.stop();
                         } catch (Exception ex) {
                             LoggerHolder.get().warn("MitmproxyJavaサーバーのシャットダウンで例外", ex);

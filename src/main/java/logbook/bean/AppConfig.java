@@ -139,10 +139,7 @@ public final class AppConfig implements Serializable {
     /** ローカルループバックアドレスからの接続のみ受け入れる */
     private boolean allowOnlyFromLocalhost = true;
 
-    /** パッシブモードを有効にする (x-ray-proxy連携) */
-    private boolean usePassiveMode = false;
-
-    /** mitmproxyを使用する (パッシブモードとは排他) */
+    /** mitmproxyを使用する */
     private boolean useMitmproxy = false;
 
     /** mitmdump実行ファイル */

@@ -55,10 +55,11 @@ final public class MitmLauncher {
 
     /**
      * This method is taken from mitmproxy-java
-     * https://github.com/appium/mitmproxy-java/blob/master/src/main/java/io/appium/mitmproxy/MitmproxyJava.java
+     *
+     * @see <a href="https://github.com/appium/mitmproxy-java/blob/master/src/main/java/io/appium/mitmproxy/MitmproxyJava.java">Original Source</a>
      */
     private String extractPythonScriptToFile() throws IOException {
-        File outfile = File.createTempFile("mitmproxy-python-plugin", ".py");
+        File outfile = File.createTempFile("mitmproxy-logbook-kai-addon", ".py");
 
         try (
                 InputStream inputStream = getClass().getClassLoader().getResourceAsStream("scripts/proxy.py");

@@ -288,7 +288,6 @@
                               <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
                               <Label text="ポート番号*" GridPane.rowIndex="0" />
@@ -298,11 +297,10 @@
                               <CheckBox fx:id="storeApiStart2" mnemonicParsing="false" onAction="#storeApiStart2" text="api_start2" GridPane.rowIndex="3" />
                               <TextField fx:id="storeApiStart2Dir" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Button fx:id="storeApiStart2DirRef" mnemonicParsing="false" onAction="#selectApiStart2Dir" text="参照..." GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                              <CheckBox fx:id="usePassiveMode" mnemonicParsing="false" text="パッシブモードを有効にする (x-ray-proxy連携)*" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-                              <CheckBox fx:id="useMitmproxy" mnemonicParsing="false" text="mitimproxyを使用する (パッシブモードとは排他)*" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
-                              <Label text="mitmdump 実行ファイル" GridPane.rowIndex="6" />
-                              <TextField fx:id="mitmdumpPath" prefWidth="200.0" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-                              <Button mnemonicParsing="false" onAction="#selectMitmdumpPath" text="参照..." GridPane.rowIndex="6" GridPane.columnIndex="2" />
+                              <CheckBox fx:id="useMitmproxy" mnemonicParsing="false" text="mitimproxyを使用する*" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+                              <Label text="mitmdump 実行ファイル*" GridPane.rowIndex="5" />
+                              <TextField fx:id="mitmdumpPath" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5"  />
+                              <Button mnemonicParsing="false" onAction="#selectMitmdumpPath" text="参照..." GridPane.columnIndex="2" GridPane.rowIndex="5" />
                            </children>
                         </GridPane>
                      </children>

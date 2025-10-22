@@ -139,6 +139,12 @@ public final class AppConfig implements Serializable {
     /** ローカルループバックアドレスからの接続のみ受け入れる */
     private boolean allowOnlyFromLocalhost = true;
 
+    /** mitmproxyを使用する */
+    private boolean useMitmproxy = false;
+
+    /** mitmdump実行ファイル */
+    private String mitmdumpPath = "mitmdump";
+
     /** プラグインを有効にする */
     private boolean usePlugin = true;
 

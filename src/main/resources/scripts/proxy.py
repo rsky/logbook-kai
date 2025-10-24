@@ -23,7 +23,7 @@ PATH_PREFIXES_TO_HANDLE: tuple[str, ...] = (
 )
 
 LOGBOOK_SCHEME: str = "http"
-LOGBOOK_HOST: str = "127.0.0.1"
+LOGBOOK_HOST: str = "localhost"
 LOGBOOK_DEFAULT_PORT: int = 8888
 
 HTTP_OK: int = 200
@@ -69,6 +69,15 @@ def create_headers(req: Request, res: Response) -> dict[str, str]:
 
 
 class LogbookKaiAddon:
+    """
+    mitmproxyが取得したレスポンスデータをlogbook-kai passive serverに送信するaddon。
+
+    x-ray-proxyのXRayAddonではrequest()にて自前で実装したリトライ機能付きリクエストを
+    使っているが、こちらでは上流へのリクエストはmitmproxyに任せている。
+    現在の艦これサーバーはHTTP/2に対応しているため、通信エラーが減少すればリトライは
+    不要となる想定。必要に応じて将来的にリトライ機能の追加を検討する。
+    """
+
     queue: asyncio.Queue[PassiveServerParams]
     task: asyncio.Task[None]
     logbook_port: int = LOGBOOK_DEFAULT_PORT
@@ -97,13 +106,17 @@ class LogbookKaiAddon:
             self.logbook_port = ctx.options.logbook_port
 
         if "pid_file" in updated:
-            pid_file = ctx.options.pid_file
-            if pid_file and os.path.exists(pid_file):
-                try:
-                    with open(pid_file, "w") as f:
-                        f.write(str(os.getpid()))
-                except OSError as e:
-                    logger.error(f"Failed to write PID file: {e}")
+            self.write_pid(ctx.options.pid_file)
+
+    @staticmethod
+    def write_pid(pid_file: str) -> None:
+        if not pid_file:
+            return
+        try:
+            with open(pid_file, "w") as f:
+                f.write(str(os.getpid()))
+        except OSError as e:
+            logger.error(f"Failed to write PID file: {e}")
 
     async def done(self) -> None:
         await self.queue.join()

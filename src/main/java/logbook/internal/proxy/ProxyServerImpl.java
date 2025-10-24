@@ -68,11 +68,10 @@ public final class ProxyServerImpl implements ProxyServerSpi {
 
             final MitmLauncher mitmLauncher;
             if (useMitmproxy) {
-                String listenHost = null;
-                if (AppConfig.get().isAllowOnlyFromLocalhost()) {
-                    listenHost = "127.0.0.1";
-                }
-                mitmLauncher = new MitmLauncher(AppConfig.get().getMitmdumpPath(), listenPort, listenHost, internalPort);
+                final String mitmdumpPath = AppConfig.get().getMitmdumpPath();
+                final String listenHost = AppConfig.get().isAllowOnlyFromLocalhost() ? "localhost" : null;
+                final boolean outputEnabled = AppConfig.get().isEnableMitmdumpOutput();
+                mitmLauncher = new MitmLauncher(mitmdumpPath, listenPort, listenHost, internalPort, outputEnabled);
             } else {
                 mitmLauncher = null;
             }

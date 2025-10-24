@@ -12,6 +12,7 @@ import org.zeroturnaround.process.SystemProcess;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -30,14 +31,17 @@ final public class MitmLauncher {
     private final int listenPort;
     private final String listenHost;
     private final int logbookPort;
+    private final boolean outputEnabled;
+
     private StartedProcess process = null;
     private String pidFilePath = null;
 
-    public MitmLauncher(String mitmdumpPath, int listenPort, String listenHost, int logbookPort) {
+    public MitmLauncher(String mitmdumpPath, int listenPort, String listenHost, int logbookPort, boolean outputEnabled) {
         this.mitmdumpPath = mitmdumpPath;
         this.listenPort = listenPort;
         this.listenHost = listenHost;
         this.logbookPort = logbookPort;
+        this.outputEnabled = outputEnabled;
     }
 
     public void start() throws IOException {
@@ -45,22 +49,24 @@ final public class MitmLauncher {
         final String pythonScriptPath = extractPythonScriptToFile();
         pidFilePath = createPidFile();
 
-        final List<String> args = buildCommandArgs(pythonScriptPath);
+        final List<String> args = buildCommandArgs(pythonScriptPath, pidFilePath);
 
         process = new ProcessExecutor()
                 .command(args)
                 .redirectOutput(Slf4jStream.ofCaller().asInfo())
-                .redirectErrorStream(true)
+                .redirectError(Slf4jStream.ofCaller().asError())
                 .destroyOnExit()
                 .start();
     }
 
-    private List<String> buildCommandArgs(String pythonScriptPath) {
+    List<String> buildCommandArgs(String pythonScriptPath, String pidFilePath) {
         final List<String> args = new ArrayList<>();
         args.add(mitmdumpPath);
 
-        // 出力を抑制する
-        args.add("-q");
+        if (!outputEnabled) {
+            // 出力を抑制する
+            args.add("-q");
+        }
 
         // ホスト・ポート・アドオンスクリプト
         args.add("-p");
@@ -122,8 +128,7 @@ final public class MitmLauncher {
         try (
                 InputStream inputStream = getClass().getClassLoader().getResourceAsStream("scripts/proxy.py");
                 FileOutputStream outputStream = new FileOutputStream(outfile)) {
-
-            inputStream.transferTo(outputStream);
+            Objects.requireNonNull(inputStream).transferTo(outputStream);
         }
 
         return outfile.getCanonicalPath();

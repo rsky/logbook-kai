@@ -310,6 +310,10 @@ public class ConfigController extends WindowController {
     @FXML
     private TextField mitmdumpPath;
 
+    /** mitmdumpのログを出力する */
+    @FXML
+    private CheckBox enableMitmdumpOutput;
+
     /** FFmpeg 実行ファイル */
     @FXML
     private TextField ffmpegPath;
@@ -504,6 +508,7 @@ public class ConfigController extends WindowController {
         this.storeApiStart2Dir.setText(conf.getStoreApiStart2Dir());
         this.useMitmproxy.setSelected(conf.isUseMitmproxy());
         this.mitmdumpPath.setText(conf.getMitmdumpPath());
+        this.enableMitmdumpOutput.setSelected(conf.isEnableMitmdumpOutput());
         this.storeInternal.getOnAction().handle(new ActionEvent());
 
         this.pluginName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -621,6 +626,7 @@ public class ConfigController extends WindowController {
         conf.setStoreApiStart2Dir(this.storeApiStart2Dir.getText());
         conf.setUseMitmproxy(this.useMitmproxy.isSelected());
         conf.setMitmdumpPath(this.mitmdumpPath.getText());
+        conf.setEnableMitmdumpOutput(this.enableMitmdumpOutput.isSelected());
 
         conf.setFfmpegPath(this.ffmpegPath.getText());
         conf.setFfmpegArgs(this.ffmpegArgs.getText());

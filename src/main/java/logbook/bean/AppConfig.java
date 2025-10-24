@@ -145,6 +145,9 @@ public final class AppConfig implements Serializable {
     /** mitmdump実行ファイル */
     private String mitmdumpPath = "mitmdump";
 
+    /** mitmdumpのログを出力する */
+    private boolean enableMitmdumpOutput = false;
+
     /** プラグインを有効にする */
     private boolean usePlugin = true;
 

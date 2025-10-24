@@ -41,7 +41,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         if (useMitmproxy) {
             try {
                 internalPort = findAvailablePort();
-            } catch (IOException e){
+            } catch (IOException e) {
                 LoggerHolder.get().warn("Exception occurred while searching for available port", e);
                 internalPort = 8765; // 便宜上fallback。通常は到達しない。
             }

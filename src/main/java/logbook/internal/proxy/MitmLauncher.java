@@ -89,7 +89,7 @@ final public class MitmLauncher {
             ProcessUtil.destroyGracefullyOrForcefullyAndWait(p, 5, TimeUnit.SECONDS, 5, TimeUnit.SECONDS);
             process = null;
         }
-        pidFilePath  = null;
+        pidFilePath = null;
     }
 
     public int getMitmPid() {

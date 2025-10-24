@@ -34,6 +34,7 @@ public class ProxyHolder {
 
     /**
      * リバースプロキシスレッド を取得します
+     *
      * @return リバースプロキシ スレッドインスタンス
      */
     public static Thread getInstance() {

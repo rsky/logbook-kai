@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * プロキシサーバー実装。
@@ -26,7 +27,7 @@ import java.net.ServerSocket;
  * HTTPサーバーは内部通信用に空いているポートで待ち受けます。
  */
 public final class ProxyServerImpl implements ProxyServerSpi {
-    private final String LOCAL_ADDRESS = "127.0.0.1";
+    private static final String LOCAL_ADDRESS = "127.0.0.1";
 
     @Override
     public void run() {
@@ -79,7 +80,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
             }
 
             try {
-                runAndWaitServer(server, mitmLauncher);
+                runAndWaitServer(server, mitmLauncher, internalPort);
             } catch (Exception e) {
                 handleException(e);
             }
@@ -88,10 +89,11 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         }
     }
 
-    private void runAndWaitServer(Server server, MitmLauncher mitmLauncher) throws Exception {
+    private void runAndWaitServer(Server server, MitmLauncher mitmLauncher, int internalPort) throws Exception {
         try {
             server.start();
             if (mitmLauncher != null) {
+                waitForInternalPortListeningOn(internalPort);
                 mitmLauncher.start();
             }
             server.join();
@@ -131,6 +133,29 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         try (ServerSocket socket = new ServerSocket(0)) {
             return socket.getLocalPort();
         }
+    }
+
+    private static void waitForInternalPortListeningOn(int internalPort) {
+        // 100ms間隔で最大10回(合計1秒まで)LOCAL_ADDRESS:internalPortに接続できるのを待つ
+        final int maxAttempts = 10;
+        final int intervalMs = 100;
+
+        for (int i = 0; i < maxAttempts; i++) {
+            try (Socket socket = new Socket(LOCAL_ADDRESS, internalPort)) {
+                // 接続成功 - サーバーがリッスンしている
+                return;
+            } catch (IOException e) {
+                // 接続失敗 - まだサーバーが起動していない
+                try {
+                    Thread.sleep(intervalMs);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    LoggerHolder.get().warn("Interrupted while waiting for internal port", ie);
+                    return;
+                }
+            }
+        }
+        LoggerHolder.get().warn("Internal port {} did not start listening within timeout", internalPort);
     }
 
     private static void handleException(Exception e) {

@@ -13,6 +13,10 @@
 
 独自の仕様としては、passive mode APIを追加しています。プロキシサーバー等、別のソフトウェアからHTTP POSTでデータを受け取り、GUIのみ航海日誌(logbook-kai)を利用するための機能です。詳細は[こちら](how-to-passive-mode.md)をご覧ください。
 
+**v25.10.1 からはHTTPS化した艦これAPIに対応するため、Javaで実装されていたプロキシサーバー機能から、[mitmproxy](https://www.mitmproxy.org/)を起動して、前述のpassive mode APIにデータを送信する方式に移行しました。**
+
+mitmproxyの導入、設定方法は[セットアップガイド](./how-to-mitmproxy.md)をご覧ください。
+
 ## ****（以前の）重要なお知らせ****
 
 航海日誌(logbook-kai)は[sanaehirotaka さん](https://github.com/sanaehirotaka/logbook-kai/)が開発されたものを引き継ぐ形で、2020年から[Sdk0815](https://github.com/Sdk0815/logbook-kai/)によってメンテナンスを継続してきましたが、諸般の事情により今後のメンテナンスを停止することといたしました。現状の最新版である `v21.7.1` が最終盤となります。公式Twitterアカウントも後日閉鎖する予定です。
@@ -43,8 +47,9 @@ Twitter の公式アカウントを作成しました→ [@logbook_kai](https://
 
 ### 航海日誌 について
 
-航海日誌 では[Jetty](http://www.eclipse.org/jetty/) で通信内容をキャプチャして内容を解析／表示します。
-プロキシ設定を行うことで別のツールと連携することも可能です。
+~航海日誌 では[Jetty](http://www.eclipse.org/jetty/) で通信内容をキャプチャして内容を解析／表示します。~
+~プロキシ設定を行うことで別のツールと連携することも可能です。~
+v25.10.1 以降、航海日誌は[mitmproxy](https://www.mitmproxy.org/)を使用して通信内容をキャプチャします。プロキシ設定機能は廃止され、他のツールとの連携はできなくなりました。
 
 **「艦隊これくしょん ～艦これ～」サーバーに対する通信内容の改変、追加の通信等は一切行っていません。**
 

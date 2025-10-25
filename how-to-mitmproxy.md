@@ -10,7 +10,7 @@
 
 https://www.mitmproxy.org/ の案内に従ってmitmproxyをダウンロード、インストールしてください。
 
-WindowsではMicrosoft Storeからインストールしたもので動作確認しています。
+WindowsではMicrosoft Storeからインストールしたもので、macOSではmitmproxy v12, Python 3.13 で動作確認しています。
 
 ![Microsoft Store](./images/mitmproxy-microsoft-store.webp)
 
@@ -71,6 +71,6 @@ A. 他に航海日誌が使うポートを使用しているソフトウェア�
 #### 対応手順
 
 1. Windowsならタスクマネージャーを開いてmitmdumpで検索、タスクが存在していたら終了させます。
-2. ポートの競合が発生していたソフトウェアを終了したら、航海日誌を再起動してください。
+2. ポートの競合が発生しているソフトウェアを終了したら、航海日誌を再起動してください。
 
 [^1]: 「接続にプロキシを利用する(他ツール連携)」機能は廃止され、「通信」タブからこれに関わる設定項目は削除されました。

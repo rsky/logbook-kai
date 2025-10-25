@@ -2,24 +2,24 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-ch-qos-logback-logback-classic = "1.5.18"
-ch-qos-logback-logback-core = "1.5.18"
+ch-qos-logback-logback-classic = "1.5.20"
+ch-qos-logback-logback-core = "1.5.20"
 com-fasterxml-jackson-core-jackson-databind = "2.20.0"
 junit-junit = "4.13.2"
 org-controlsfx-controlsfx = "11.2.2"
-org-eclipse-jetty-jetty-proxy = "11.0.26"
-org-eclipse-jetty-jetty-server = "11.0.26"
-org-eclipse-jetty-jetty-servlet = "11.0.26"
+org-eclipse-jetty-jetty-server = "12.1.3"
 org-glassfish-javax-json = "1.1.4"
 org-openjdk-nashorn-nashorn-core = "15.7"
-org-openjfx-javafx-controls = "21.0.8"
-org-openjfx-javafx-fxml = "21.0.8"
-org-openjfx-javafx-media = "21.0.8"
-org-openjfx-javafx-swing = "21.0.8"
-org-openjfx-javafx-web = "21.0.8"
+org-openjfx-javafx-controls = "21.0.9"
+org-openjfx-javafx-fxml = "21.0.9"
+org-openjfx-javafx-media = "21.0.9"
+org-openjfx-javafx-swing = "21.0.9"
+org-openjfx-javafx-web = "21.0.9"
 org-projectlombok-lombok = "1.18.42"
 org-slf4j-slf4j-api = "2.0.17"
 org-slf4j-slf4j-simple = "2.0.17"
+org-zeroturnaround-zt-exec = "1.12"
+org-zeroturnaround-zt-process-killer = "1.11"
 
 [libraries]
 ch-qos-logback-logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "ch-qos-logback-logback-classic" }
@@ -27,9 +27,7 @@ ch-qos-logback-logback-core = { module = "ch.qos.logback:logback-core", version.
 com-fasterxml-jackson-core-jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "com-fasterxml-jackson-core-jackson-databind" }
 junit-junit = { module = "junit:junit", version.ref = "junit-junit" }
 org-controlsfx-controlsfx = { module = "org.controlsfx:controlsfx", version.ref = "org-controlsfx-controlsfx" }
-org-eclipse-jetty-jetty-proxy = { module = "org.eclipse.jetty:jetty-proxy", version.ref = "org-eclipse-jetty-jetty-proxy" }
 org-eclipse-jetty-jetty-server = { module = "org.eclipse.jetty:jetty-server", version.ref = "org-eclipse-jetty-jetty-server" }
-org-eclipse-jetty-jetty-servlet = { module = "org.eclipse.jetty:jetty-servlet", version.ref = "org-eclipse-jetty-jetty-servlet" }
 org-glassfish-javax-json = { module = "org.glassfish:javax.json", version.ref = "org-glassfish-javax-json" }
 org-openjdk-nashorn-nashorn-core = { module = "org.openjdk.nashorn:nashorn-core", version.ref = "org-openjdk-nashorn-nashorn-core" }
 org-openjfx-javafx-controls = { module = "org.openjfx:javafx-controls", version.ref = "org-openjfx-javafx-controls" }
@@ -40,3 +38,5 @@ org-openjfx-javafx-web = { module = "org.openjfx:javafx-web", version.ref = "org
 org-projectlombok-lombok = { module = "org.projectlombok:lombok", version.ref = "org-projectlombok-lombok" }
 org-slf4j-slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "org-slf4j-slf4j-api" }
 org-slf4j-slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "org-slf4j-slf4j-simple" }
+org-zeroturnaround-zt-exec = { module = "org.zeroturnaround:zt-exec", version.ref = "org-zeroturnaround-zt-exec" }
+org-zeroturnaround-zt-process-killer = { module = "org.zeroturnaround:zt-process-killer", version.ref = "org-zeroturnaround-zt-process-killer" }

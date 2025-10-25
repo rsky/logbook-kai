@@ -19,8 +19,6 @@ repositories {
 dependencies {
     api(libs.org.glassfish.javax.json)
     api(libs.org.eclipse.jetty.jetty.server)
-    api(libs.org.eclipse.jetty.jetty.servlet)
-    api(libs.org.eclipse.jetty.jetty.proxy)
     api(libs.org.openjfx.javafx.controls)
     api(libs.org.openjfx.javafx.fxml)
     api(libs.org.openjfx.javafx.media)
@@ -32,6 +30,8 @@ dependencies {
     api(libs.org.slf4j.slf4j.api)
     api(libs.ch.qos.logback.logback.classic)
     api(libs.ch.qos.logback.logback.core)
+    implementation(libs.org.zeroturnaround.zt.exec)
+    implementation(libs.org.zeroturnaround.zt.process.killer)
     testImplementation(libs.junit.junit)
     compileOnly(libs.org.projectlombok.lombok)
     annotationProcessor(libs.org.projectlombok.lombok)

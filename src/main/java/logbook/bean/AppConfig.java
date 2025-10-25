@@ -139,17 +139,14 @@ public final class AppConfig implements Serializable {
     /** ローカルループバックアドレスからの接続のみ受け入れる */
     private boolean allowOnlyFromLocalhost = true;
 
-    /** プロキシ利用 */
-    private boolean useProxy;
+    /** mitmproxyを使用する */
+    private boolean useMitmproxy = false;
 
-    /** プロキシホスト */
-    private String proxyHost = "localhost"; //$NON-NLS-1$
+    /** mitmdump実行ファイル */
+    private String mitmdumpPath = "mitmdump";
 
-    /** プロキシポート */
-    private int proxyPort = 8080;
-
-    /** パッシブモードを有効にする */
-    private boolean usePassiveMode = false;
+    /** mitmdumpのログを出力する */
+    private boolean enableMitmdumpOutput = false;
 
     /** プラグインを有効にする */
     private boolean usePlugin = true;

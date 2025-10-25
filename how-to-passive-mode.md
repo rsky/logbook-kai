@@ -29,11 +29,7 @@ sequenceDiagram
 
 ### 実装
 
-[PassiveModeServlet.java](./src/main/java/logbook/internal/proxy/PassiveModeServlet.java)
-
-### 設定
-
-設定の通信タブで「パッシブモードを有効にする」をチェックする。
+[PassiveModeHandler.java](./src/main/java/logbook/internal/proxy/PassiveModeHandler.java)
 
 ### API仕様
 

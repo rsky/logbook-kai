@@ -1,16 +1,5 @@
 package logbook.internal.proxy;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.BindException;
-
-import org.eclipse.jetty.proxy.ConnectHandler;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -20,66 +9,127 @@ import logbook.bean.AppConfig;
 import logbook.internal.LoggerHolder;
 import logbook.internal.gui.InternalFXMLLoader;
 import logbook.proxy.ProxyServerSpi;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.BindException;
+import java.net.ServerSocket;
 
 /**
- * プロキシサーバーです
- *
+ * プロキシサーバー実装。
+ * パッシブモードのHTTPサーバーを起動し、必要に応じてmitmproxy(mitmdump)も起動します。
+ * mitmproxyを利用する際はmitmdumpがlistenPortで待ち受け、
+ * HTTPサーバーは内部通信用に空いているポートで待ち受けます。
  */
 public final class ProxyServerImpl implements ProxyServerSpi {
-
-    /** Server */
-    private Server server;
+    private final String LOCAL_ADDRESS = "127.0.0.1";
 
     @Override
     public void run() {
-        try {
-            this.server = new Server();
+        // TCPポートが使用中かチェック
+        final int listenPort = AppConfig.get().getListenPort();
+        if (!isPortAvailable(listenPort)) {
+            showPortAlreadyUsed(listenPort);
+            return;
+        }
 
-            boolean allowLocalOnly = AppConfig.get()
-                    .isAllowOnlyFromLocalhost();
-
-            ServerConnector connector = new ServerConnector(this.server);
-            connector.setPort(AppConfig.get().getListenPort());
-            if (allowLocalOnly) {
-                connector.setHost("localhost");
+        final boolean useMitmproxy = AppConfig.get().isUseMitmproxy();
+        // mitmproxyを使うとき、通信用に空きポートを確保
+        int internalPort = 0;
+        if (useMitmproxy) {
+            try {
+                internalPort = findAvailablePort();
+            } catch (IOException e) {
+                LoggerHolder.get().warn("Exception occurred while searching for available port", e);
+                internalPort = 8765; // 便宜上fallback。通常は到達しない。
             }
-            this.server.setConnectors(new Connector[] { connector });
+        }
 
-            // httpsをプロキシできるようにConnectHandlerを設定
-            ConnectHandler proxy = new ConnectHandler();
-            this.server.setHandler(proxy);
+        this.runServer(listenPort, internalPort, useMitmproxy);
+    }
 
-            // httpはこっちのハンドラでプロキシ
-            ServletContextHandler context = new ServletContextHandler(proxy, "/", ServletContextHandler.SESSIONS);
-            ServletHolder holder = new ServletHolder(new ReverseProxyServlet());
-            holder.setInitParameter("maxThreads", "256");
-            holder.setInitParameter("timeout", "600000");
-            context.addServlet(holder, "/*");
+    private void runServer(int listenPort, int internalPort, boolean useMitmproxy) {
+        final Server server = new Server();
 
-            if (AppConfig.get().isUsePassiveMode()) {
-                // パッシブモードのハンドラをセット
-                ServletHolder passive = new ServletHolder(new PassiveModeServlet());
-                passive.setInitParameter("maxThreads", "128");
-                passive.setInitParameter("timeout", "300000");
-                context.addServlet(passive, PassiveModeServlet.PATH_SPEC);
+        try (final ServerConnector connector = new ServerConnector(server)) {
+            if (useMitmproxy) {
+                connector.setPort(internalPort);
+                connector.setHost(LOCAL_ADDRESS);
+            } else {
+                connector.setPort(listenPort);
+                if (AppConfig.get().isAllowOnlyFromLocalhost()) {
+                    connector.setHost(LOCAL_ADDRESS);
+                }
+            }
+            server.setConnectors(new Connector[]{connector});
+            server.setHandler(new PassiveModeHandler());
+
+            final MitmLauncher mitmLauncher;
+            if (useMitmproxy) {
+                final String mitmdumpPath = AppConfig.get().getMitmdumpPath();
+                final String listenHost = AppConfig.get().isAllowOnlyFromLocalhost() ? LOCAL_ADDRESS : null;
+                final boolean outputEnabled = AppConfig.get().isEnableMitmdumpOutput();
+                mitmLauncher = new MitmLauncher(mitmdumpPath, listenPort, listenHost, internalPort, outputEnabled);
+            } else {
+                mitmLauncher = null;
             }
 
             try {
-                try {
-                    this.server.start();
-                    this.server.join();
-                } finally {
-                    try {
-                        this.server.stop();
-                    } catch (Exception ex) {
-                        LoggerHolder.get().warn("Proxyサーバーのシャットダウンで例外", ex);
-                    }
-                }
+                runAndWaitServer(server, mitmLauncher);
             } catch (Exception e) {
                 handleException(e);
             }
         } catch (Exception e) {
-            LoggerHolder.get().fatal("Proxyサーバーの起動に失敗しました", e);
+            LoggerHolder.get().fatal("Failed to start HTTP server", e);
+        }
+    }
+
+    private void runAndWaitServer(Server server, MitmLauncher mitmLauncher) throws Exception {
+        try {
+            server.start();
+            if (mitmLauncher != null) {
+                mitmLauncher.start();
+            }
+            server.join();
+        } finally {
+            if (mitmLauncher != null) {
+                try {
+                    mitmLauncher.stop();
+                } catch (Exception ex) {
+                    LoggerHolder.get().warn("Exception occurred during mitmproxy server shutdown", ex);
+                }
+            }
+            try {
+                server.stop();
+            } catch (Exception ex) {
+                LoggerHolder.get().warn("Exception occurred during HTTP server shutdown", ex);
+            }
+        }
+    }
+
+    private static boolean isPortAvailable(int port) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            serverSocket.setReuseAddress(true);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private static void showPortAlreadyUsed(int port) {
+        showAlert("ポートが使用中です",
+                "ポート " + port + " は既に使用されています。\n" +
+                        "設定画面でポート番号を変更するか、他のアプリケーションを終了してください。",
+                null);
+    }
+
+    private static int findAvailablePort() throws IOException {
+        try (ServerSocket socket = new ServerSocket(0)) {
+            return socket.getLocalPort();
         }
     }
 
@@ -98,19 +148,23 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         e.printStackTrace(new PrintWriter(w));
         String stackTrace = w.toString();
 
-        Runnable runnable = () -> {
+        showAlert(title, message, stackTrace);
+    }
+
+    private static void showAlert(String title, String message, String extraContent) {
+        Platform.runLater(() -> {
             Alert alert = new Alert(AlertType.WARNING);
             alert.getDialogPane().getStylesheets().add("logbook/gui/application.css");
             InternalFXMLLoader.setGlobal(alert.getDialogPane());
-            TextArea textArea = new TextArea(stackTrace);
-            alert.getDialogPane().setExpandableContent(textArea);
+            if (extraContent != null) {
+                TextArea textArea = new TextArea(extraContent);
+                alert.getDialogPane().setExpandableContent(textArea);
+            }
 
             alert.setTitle(title);
             alert.setHeaderText(title);
             alert.setContentText(message);
             alert.showAndWait();
-        };
-
-        Platform.runLater(runnable);
+        });
     }
 }

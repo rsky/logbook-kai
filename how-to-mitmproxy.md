@@ -10,7 +10,7 @@
 
 https://www.mitmproxy.org/ の案内に従ってmitmproxyをダウンロード、インストールしてください。
 
-WindowsではMicrosoft Storeからインストールしたもので動作確認しています。
+WindowsではMicrosoft Storeからインストールしたもので、macOSではmitmproxy v12, Python 3.13 で動作確認しています。
 
 ![Microsoft Store](./images/mitmproxy-microsoft-store.webp)
 

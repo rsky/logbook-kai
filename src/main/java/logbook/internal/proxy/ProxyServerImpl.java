@@ -26,6 +26,8 @@ import java.net.ServerSocket;
  * HTTPサーバーは内部通信用に空いているポートで待ち受けます。
  */
 public final class ProxyServerImpl implements ProxyServerSpi {
+    private final String LOCAL_ADDRESS = "127.0.0.1";
+
     @Override
     public void run() {
         // TCPポートが使用中かチェック
@@ -56,11 +58,11 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         try (final ServerConnector connector = new ServerConnector(server)) {
             if (useMitmproxy) {
                 connector.setPort(internalPort);
-                connector.setHost("localhost");
+                connector.setHost(LOCAL_ADDRESS);
             } else {
                 connector.setPort(listenPort);
                 if (AppConfig.get().isAllowOnlyFromLocalhost()) {
-                    connector.setHost("localhost");
+                    connector.setHost(LOCAL_ADDRESS);
                 }
             }
             server.setConnectors(new Connector[]{connector});
@@ -69,7 +71,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
             final MitmLauncher mitmLauncher;
             if (useMitmproxy) {
                 final String mitmdumpPath = AppConfig.get().getMitmdumpPath();
-                final String listenHost = AppConfig.get().isAllowOnlyFromLocalhost() ? "localhost" : null;
+                final String listenHost = AppConfig.get().isAllowOnlyFromLocalhost() ? LOCAL_ADDRESS : null;
                 final boolean outputEnabled = AppConfig.get().isEnableMitmdumpOutput();
                 mitmLauncher = new MitmLauncher(mitmdumpPath, listenPort, listenHost, internalPort, outputEnabled);
             } else {

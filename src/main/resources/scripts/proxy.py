@@ -4,11 +4,15 @@ logbook-kaiから起動するmitmdump用アドオン
 
 import asyncio
 import base64
+import enum
 import os
+import socket
+import time
 import urllib.request
 from dataclasses import dataclass
 from logging import getLogger
 
+import h11
 from mitmproxy import ctx
 from mitmproxy.addonmanager import Loader
 from mitmproxy.http import HTTPFlow, Request, Response
@@ -22,11 +26,13 @@ PATH_PREFIXES_TO_HANDLE: tuple[str, ...] = (
     "/kcs2/img/sally/",
 )
 
-LOGBOOK_SCHEME: str = "http"
-LOGBOOK_HOST: str = "localhost"
+LOGBOOK_HOST: str = "127.0.0.1"
 LOGBOOK_DEFAULT_PORT: int = 8888
 
 HTTP_OK: int = 200
+BUFF_SIZE: int = 1024
+KEEP_ALIVE_TIMEOUT: int = 15
+MAX_ATTEMPTS: int = 3
 
 logger = getLogger(__name__)
 
@@ -34,21 +40,42 @@ logger = getLogger(__name__)
 @dataclass(frozen=True, kw_only=True, slots=True, eq=False)
 class PassiveServerParams:
     path: str
-    headers: dict[str, str]
+    headers: list[tuple[str, str]]
     content: bytes | None
+    attempts: int = 1
+
+    def clone_for_retry(self) -> "PassiveServerParams":
+        return PassiveServerParams(
+            path=self.path,
+            headers=self.headers,
+            content=self.content,
+            attempts=self.attempts + 1,
+        )
 
 
 def create_params(req: Request, res: Response) -> PassiveServerParams:
     return PassiveServerParams(path=req.path, headers=create_headers(req, res), content=res.content)
 
 
-def create_headers(req: Request, res: Response) -> dict[str, str]:
-    headers = {
-        "X-Pasv-Request-Method": req.method,
-    }
+def create_headers(req: Request, res: Response) -> list[tuple[str, str]]:
+    # h11ではこれらの低水準なHTTPヘッダも自前で指定する必要がある
+    headers = [
+        ("Host", req.host),
+        # ("Connection", "keep-alive"),  # HTTP/1.1 ではデフォルトでKeep-Alive
+        ("Keep-Alive", f"timeout={KEEP_ALIVE_TIMEOUT}, max=1000"),
+    ]
 
     req_content_type = req.headers.get("content-type")
     res_content_type = res.headers.get("content-type")
+
+    # Content-Type & Content-Length
+    if res.content is not None:
+        if res_content_type is not None:
+            headers.append(("Content-Type", res_content_type))
+        headers.append(("Content-Length", str(len(res.content))))
+
+    # Passive Modeカスタムヘッダ
+    headers.append(("X-Pasv-Request-Method", req.method))
 
     if (
         req.content is not None
@@ -58,12 +85,9 @@ def create_headers(req: Request, res: Response) -> dict[str, str]:
             or req_content_type in {"application/json", "application/x-www-form-urlencoded"}
         )
     ):
-        headers["X-Pasv-Request-Content-Type"] = req_content_type
+        headers.append(("X-Pasv-Request-Content-Type", req_content_type))
         header_safe_body = base64.b64encode(req.content).decode("utf-8")
-        headers["X-Pasv-Request-Body"] = header_safe_body
-
-    if res.content is not None and res_content_type is not None:
-        headers["Content-Type"] = res_content_type
+        headers.append(("X-Pasv-Request-Body", header_safe_body))
 
     return headers
 
@@ -79,11 +103,12 @@ class LogbookKaiAddon:
     """
 
     queue: asyncio.Queue[PassiveServerParams]
-    task: asyncio.Task[None]
+    tasks: tuple[asyncio.Task[None], asyncio.Task[None]]
     logbook_port: int = LOGBOOK_DEFAULT_PORT
 
     def __init__(self) -> None:
         self.queue = asyncio.Queue()
+        self.session = urllib.request
 
     def load(self, loader: Loader) -> None:
         loader.add_option(
@@ -99,7 +124,10 @@ class LogbookKaiAddon:
             help="PID file path.",
         )
 
-        self.task = asyncio.create_task(self.worker())
+        self.tasks = (
+            asyncio.create_task(self.worker(1)),
+            asyncio.create_task(self.worker(2)),
+        )
 
     def configure(self, updated: set[str]) -> None:
         if "logbook_port" in updated:
@@ -120,8 +148,9 @@ class LogbookKaiAddon:
 
     async def done(self) -> None:
         await self.queue.join()
-        self.task.cancel()
-        await asyncio.gather(self.task, return_exceptions=True)
+        for task in self.tasks:
+            task.cancel()
+        await asyncio.gather(*self.tasks, return_exceptions=True)
 
     def response(self, flow: HTTPFlow) -> None:
         request = flow.request
@@ -134,27 +163,164 @@ class LogbookKaiAddon:
         if response is not None and response.status_code == HTTP_OK:
             self.queue.put_nowait(create_params(request, response))
 
-    async def worker(self) -> None:
+    async def worker(self, task_no: int) -> None:
         while True:
-            params = await self.queue.get()
             try:
-                # 依存関係を増やさないためあえて標準ライブラリを使用
-                # 通信頻度を考慮しても、単一タスクかつブロッキングI/Oで十分なはず
-                # もし非同期I/Oにしたいのならmitmproxyが依存するh11とasyncioの組み合わせを検討する
-                # httpxやaiohttpは別途インストールが必要になるので使わない
-                req = urllib.request.Request(
-                    url=f"{LOGBOOK_SCHEME}://{LOGBOOK_HOST}:{self.logbook_port}/pasv{params.path}",
-                    data=params.content,
-                    headers=params.headers,
-                    method="POST",
-                )
-                with urllib.request.urlopen(req) as res:
-                    if res.status != HTTP_OK:
-                        logger.error(f"[mitmproxy-logbook-kai addon] Unexpected response: {res.status}")
+                await self.keepalive_send_to_logbook()
+            except asyncio.CancelledError:
+                # タスクがキャンセルされたら正常終了
+                logger.info(f"[mitmproxy-logbook-kai addon] Worker#{task_no} cancelled")
+                raise  # CancelledErrorを再送出して確実に終了
             except Exception:
                 logger.exception("[mitmproxy-logbook-kai addon] Unexpected error")
-            finally:
-                self.queue.task_done()
+                continue
+
+    async def keepalive_send_to_logbook(self) -> None:
+        """
+        このメソッドのwhileループをbreakすることで処理が呼び出し元のworker()に戻り、
+        worker()のwhileループで再度このメソッドが呼び出されることでコネクションが作り直される。
+        """
+        loop = asyncio.get_running_loop()
+        with socket.create_connection((LOGBOOK_HOST, self.logbook_port)) as sock:
+            sock.setblocking(False)
+            client = AsyncKeepAliveClient(loop, sock)
+
+            while True:
+                params = await self.queue.get()
+                try:
+                    result = await client.send(params)
+                    match result:
+                        case SendResult.SUCCESS:
+                            pass
+                        case SendResult.MUST_DISCONNECT:
+                            break
+                        case SendResult.TIMEOUT | SendResult.MUST_RETRY:
+                            reason = "timeout" if result is SendResult.TIMEOUT else "error"
+                            if params.attempts < MAX_ATTEMPTS:
+                                logger.info(
+                                    f"[mitmproxy-logbook-kai addon] Retrying {params.path} "
+                                    f"(attempt {params.attempts + 1}/{MAX_ATTEMPTS}) due to connection {reason}"
+                                )
+                                await self.queue.put(params.clone_for_retry())
+                            else:
+                                logger.warning(
+                                    "[mitmproxy-logbook-kai addon] Max attempts "
+                                    f"({MAX_ATTEMPTS}) exceeded for {params.path}"
+                                )
+                            break
+                finally:
+                    self.queue.task_done()
+
+
+class SendResult(enum.Enum):
+    SUCCESS = enum.auto()
+    TIMEOUT = enum.auto()
+    MUST_DISCONNECT = enum.auto()
+    MUST_RETRY = enum.auto()
+
+
+class AsyncKeepAliveClient:
+    def __init__(
+        self,
+        loop: asyncio.AbstractEventLoop,
+        sock: socket.socket,
+        timeout: int = KEEP_ALIVE_TIMEOUT,
+    ) -> None:
+        self.conn = h11.Connection(our_role=h11.CLIENT)
+        self.loop = loop
+        self.sock = sock
+        self.timeout = timeout
+        self.last_used_time = time.time()
+
+    def is_timed_out(self) -> bool:
+        """タイムアウトしているかチェック"""
+        return time.time() - self.last_used_time > self.timeout
+
+    async def send(self, params: PassiveServerParams) -> SendResult:
+        if self.is_timed_out():
+            return SendResult.TIMEOUT
+
+        request_sent = False
+        try:
+            await self.send_request(params)
+            request_sent = True
+
+            events = await self.get_events()
+            if not self.verify_events(events):
+                return SendResult.MUST_DISCONNECT
+
+            self.conn.start_next_cycle()
+            self.last_used_time = time.time()  # 成功時に更新
+
+            return SendResult.SUCCESS
+
+        except (h11.RemoteProtocolError, ConnectionError) as e:
+            logger.error(f"[mitmproxy-logbook-kai addon] Connection error: {e}")
+            if not request_sent:
+                return SendResult.MUST_RETRY
+            else:
+                return SendResult.MUST_DISCONNECT
+
+    async def send_request(self, params: PassiveServerParams) -> None:
+        req = h11.Request(
+            method="POST",
+            headers=params.headers,
+            target=f"/pasv{params.path}",
+        )
+        await self.send_event(req)
+        if params.content is not None:
+            await self.send_event(h11.Data(params.content))
+        await self.send_event(h11.EndOfMessage())
+
+    async def send_event(self, event: h11.Event) -> None:
+        data = self.conn.send(event)
+        if data is not None:
+            await self.loop.sock_sendall(self.sock, data)
+
+    async def get_events(self) -> list[h11.Event]:
+        events: list[h11.Event] = []
+
+        while True:
+            event = self.conn.next_event()
+
+            if event is h11.NEED_DATA:
+                # 追加データが必要な場合は読み込む
+                data = await self.loop.sock_recv(self.sock, BUFF_SIZE)
+                if not data:
+                    # 接続が閉じられた
+                    break
+                self.conn.receive_data(data)
+                continue
+
+            if isinstance(event, (h11.Response, h11.Data, h11.EndOfMessage, h11.ConnectionClosed)):
+                events.append(event)
+
+                # EndOfMessageまたはConnectionClosedで終了
+                if isinstance(event, (h11.EndOfMessage, h11.ConnectionClosed)):
+                    break
+            else:
+                # PAUSED or unexpected event
+                break
+
+        return events
+
+    @staticmethod
+    def verify_events(events: list[h11.Event]) -> bool:
+        if not events:
+            logger.warning("[mitmproxy-logbook-kai addon] No response received")
+            return False
+
+        response = events[0]
+        if not isinstance(response, h11.Response):
+            logger.error("[mitmproxy-logbook-kai addon] First event is not Response")
+            return False
+
+        last_event = events[-1]
+        if isinstance(last_event, h11.ConnectionClosed):
+            logger.info("[mitmproxy-logbook-kai addon] Connection closed")
+            return False
+
+        return True
 
 
 addons = [LogbookKaiAddon()]

@@ -8,7 +8,6 @@ import enum
 import os
 import socket
 import time
-import urllib.request
 from dataclasses import dataclass
 from logging import getLogger
 
@@ -102,13 +101,9 @@ class LogbookKaiAddon:
     不要となる想定。必要に応じて将来的にリトライ機能の追加を検討する。
     """
 
-    queue: asyncio.Queue[PassiveServerParams]
-    tasks: tuple[asyncio.Task[None], asyncio.Task[None]]
-    logbook_port: int = LOGBOOK_DEFAULT_PORT
-
-    def __init__(self) -> None:
-        self.queue = asyncio.Queue()
-        self.session = urllib.request
+    _queue: asyncio.Queue[PassiveServerParams]
+    _tasks: tuple[asyncio.Task[None], asyncio.Task[None]]
+    _logbook_port: int = LOGBOOK_DEFAULT_PORT
 
     def load(self, loader: Loader) -> None:
         loader.add_option(
@@ -124,20 +119,21 @@ class LogbookKaiAddon:
             help="PID file path.",
         )
 
-        self.tasks = (
-            asyncio.create_task(self.worker(1)),
-            asyncio.create_task(self.worker(2)),
+        self._queue = asyncio.Queue()
+        self._tasks = (
+            asyncio.create_task(self._worker(1)),
+            asyncio.create_task(self._worker(2)),
         )
 
     def configure(self, updated: set[str]) -> None:
         if "logbook_port" in updated:
-            self.logbook_port = ctx.options.logbook_port
+            self._logbook_port = ctx.options.logbook_port
 
         if "pid_file" in updated:
-            self.write_pid(ctx.options.pid_file)
+            self._write_pid(ctx.options.pid_file)
 
     @staticmethod
-    def write_pid(pid_file: str) -> None:
+    def _write_pid(pid_file: str) -> None:
         if not pid_file:
             return
         try:
@@ -147,10 +143,10 @@ class LogbookKaiAddon:
             logger.error(f"Failed to write PID file: {e}")
 
     async def done(self) -> None:
-        await self.queue.join()
-        for task in self.tasks:
+        await self._queue.join()
+        for task in self._tasks:
             task.cancel()
-        await asyncio.gather(*self.tasks, return_exceptions=True)
+        await asyncio.gather(*self._tasks, return_exceptions=True)
 
     def response(self, flow: HTTPFlow) -> None:
         request = flow.request
@@ -161,12 +157,12 @@ class LogbookKaiAddon:
 
         response = flow.response
         if response is not None and response.status_code == HTTP_OK:
-            self.queue.put_nowait(create_params(request, response))
+            self._queue.put_nowait(create_params(request, response))
 
-    async def worker(self, task_no: int) -> None:
+    async def _worker(self, task_no: int) -> None:
         while True:
             try:
-                await self.keepalive_send_to_logbook()
+                await self._keepalive_send_to_logbook()
             except asyncio.CancelledError:
                 # タスクがキャンセルされたら正常終了
                 logger.info(f"[mitmproxy-logbook-kai addon] Worker#{task_no} cancelled")
@@ -175,18 +171,18 @@ class LogbookKaiAddon:
                 logger.exception("[mitmproxy-logbook-kai addon] Unexpected error")
                 continue
 
-    async def keepalive_send_to_logbook(self) -> None:
+    async def _keepalive_send_to_logbook(self) -> None:
         """
         このメソッドのwhileループをbreakすることで処理が呼び出し元のworker()に戻り、
         worker()のwhileループで再度このメソッドが呼び出されることでコネクションが作り直される。
         """
         loop = asyncio.get_running_loop()
-        with socket.create_connection((LOGBOOK_HOST, self.logbook_port)) as sock:
+        with socket.create_connection((LOGBOOK_HOST, self._logbook_port)) as sock:
             sock.setblocking(False)
             client = AsyncKeepAliveClient(loop, sock)
 
             while True:
-                params = await self.queue.get()
+                params = await self._queue.get()
                 try:
                     result = await client.send(params)
                     match result:
@@ -201,7 +197,7 @@ class LogbookKaiAddon:
                                     f"[mitmproxy-logbook-kai addon] Retrying {params.path} "
                                     f"(attempt {params.attempts + 1}/{MAX_ATTEMPTS}) due to connection {reason}"
                                 )
-                                await self.queue.put(params.clone_for_retry())
+                                await self._queue.put(params.clone_for_retry())
                             else:
                                 logger.warning(
                                     "[mitmproxy-logbook-kai addon] Max attempts "
@@ -209,7 +205,7 @@ class LogbookKaiAddon:
                                 )
                             break
                 finally:
-                    self.queue.task_done()
+                    self._queue.task_done()
 
 
 class SendResult(enum.Enum):
@@ -226,15 +222,15 @@ class AsyncKeepAliveClient:
         sock: socket.socket,
         timeout: int = KEEP_ALIVE_TIMEOUT,
     ) -> None:
-        self.conn = h11.Connection(our_role=h11.CLIENT)
-        self.loop = loop
-        self.sock = sock
-        self.timeout = timeout
-        self.last_used_time = time.time()
+        self._conn = h11.Connection(our_role=h11.CLIENT)
+        self._loop = loop
+        self._sock = sock
+        self._timeout = timeout
+        self._last_used_time = time.time()
 
     def is_timed_out(self) -> bool:
         """タイムアウトしているかチェック"""
-        return time.time() - self.last_used_time > self.timeout
+        return time.time() - self._last_used_time > self._timeout
 
     async def send(self, params: PassiveServerParams) -> SendResult:
         if self.is_timed_out():
@@ -249,8 +245,8 @@ class AsyncKeepAliveClient:
             if not self.verify_events(events):
                 return SendResult.MUST_DISCONNECT
 
-            self.conn.start_next_cycle()
-            self.last_used_time = time.time()  # 成功時に更新
+            self._conn.start_next_cycle()
+            self._last_used_time = time.time()  # 成功時に更新
 
             return SendResult.SUCCESS
 
@@ -273,23 +269,23 @@ class AsyncKeepAliveClient:
         await self.send_event(h11.EndOfMessage())
 
     async def send_event(self, event: h11.Event) -> None:
-        data = self.conn.send(event)
+        data = self._conn.send(event)
         if data is not None:
-            await self.loop.sock_sendall(self.sock, data)
+            await self._loop.sock_sendall(self._sock, data)
 
     async def get_events(self) -> list[h11.Event]:
         events: list[h11.Event] = []
 
         while True:
-            event = self.conn.next_event()
+            event = self._conn.next_event()
 
             if event is h11.NEED_DATA:
                 # 追加データが必要な場合は読み込む
-                data = await self.loop.sock_recv(self.sock, BUFF_SIZE)
+                data = await self._loop.sock_recv(self._sock, BUFF_SIZE)
                 if not data:
                     # 接続が閉じられた
                     break
-                self.conn.receive_data(data)
+                self._conn.receive_data(data)
                 continue
 
             if isinstance(event, (h11.Response, h11.Data, h11.EndOfMessage, h11.ConnectionClosed)):
@@ -314,6 +310,9 @@ class AsyncKeepAliveClient:
         if not isinstance(response, h11.Response):
             logger.error("[mitmproxy-logbook-kai addon] First event is not Response")
             return False
+
+        if response.status_code != 200:
+            logger.warning(f"[mitmproxy-logbook-kai addon] Response code: {response.status_code}")
 
         last_event = events[-1]
         if isinstance(last_event, h11.ConnectionClosed):

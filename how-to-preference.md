@@ -18,7 +18,7 @@
 
 航海日誌を起動後、[その他]-[自動プロキシ構成スクリプト]を選択します。
 
-※航海日誌が[スレッドが予期せず終了しました]というエラーメッセージを出した場合、ポートを8888から任意の別のポートに変更して下さい。
+※航海日誌が[ポートが使用中です]というエラーメッセージを出した場合、ポートを8888から任意の別のポートに変更して下さい。
 
 ![メイン画面](images/firefox_1.png)
 
@@ -41,14 +41,18 @@
 
 ## Chrome の場合
 
-Google Chrome単体ではプロキシの設定が出来ないため拡張機能のインストールが必要です。
-ここでは[SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)を例にして説明します。
+Google Chrome単体ではプロキシの設定が出来ないため拡張機能のインストールが必要です。[^1]
+
+ここではrsky作の[Tiny Proxy Configurator](https://chromewebstore.google.com/detail/tiny-proxy-configurator/ilgignoiaacgbcagkcmfmbgnjbemedam)を例にして説明します。
+
+プロキシ設定をする拡張機能は、他にも[プロキシーPACスイッチャー](https://chromewebstore.google.com/detail/%E3%83%97%E3%83%AD%E3%82%AD%E3%82%B7%E3%83%BCpac%E3%82%B9%E3%82%A4%E3%83%83%E3%83%81%E3%83%A3%E3%83%BC/dcokccgklilfbehagkdnmlpcdonfopeh)等、色々あります。
+[Proxy SwitchyOmega 3 (ZeroOmega)](https://chromewebstore.google.com/detail/proxy-switchyomega-3-zero/pfnededegaaopdmhkdmcofjmoldfiped)ではPACをそのまま貼り付けただけではうまく動かないようです。
 
 ### Chrome の場合 1/4
 
 航海日誌を起動後、[その他]-[自動プロキシ構成スクリプト]を選択します。
 
-※航海日誌が[スレッドが予期せず終了しました]というエラーメッセージを出した場合、ポートを8888から任意の別のポートに変更して下さい。
+※航海日誌が[ポートが使用中です]というエラーメッセージを出した場合、ポートを8888から任意の別のポートに変更して下さい。
 
 ![メイン画面](images/chrome_1.png)
 
@@ -71,3 +75,5 @@ Import PAC Fileを選択し、前の手順で作成したPACファイルを選�
 作成したプロファイルを有効にします。
 
 ![SwitchySharp](images/chrome_4.png)
+
+[^1] 以前ここで紹介していた[Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)はChrome拡張のManifest v3に対応せず利用できなくなりました。

@@ -55,10 +55,37 @@ class PassiveServerParams:
 
 
 def create_params(req: Request, res: Response) -> PassiveServerParams:
-    return PassiveServerParams(path=req.path, headers=create_headers_by_mitmproxy(req, res), content=res.content)
+    """
+    mitmproxyのリクエストとレスポンスからPassiveServerParamsを組み立てる
+    """
+    return PassiveServerParams(
+        path=create_path(req.path),
+        headers=create_headers_by_mitmproxy(req, res),
+        content=res.content,
+    )
+
+
+def create_path(path: str) -> str:
+    """
+    リクエストされたURLのパスをパッシブモードのパスに変換する
+
+    Args:
+        path: リクエストされたURLのパス ('/' で始まっていてもいなくてもよい)
+
+    Returns:
+        '/pasv/' プレフィクスつきのパス
+
+    Example:
+        >>> create_path('/kcsapi/api_start2/getData')
+        '/pasv/kcsapi/api_start2/getData'
+    """
+    return f"/pasv/{path.lstrip('/')}"
 
 
 def create_headers_by_mitmproxy(req: Request, res: Response) -> list[tuple[str, str]]:
+    """
+    mitmproxyのリクエストとレスポンスからパッシブモードのリクエストヘッダを組み立てる
+    """
     return create_headers(
         request_host=req.host,
         request_method=req.method,
@@ -77,6 +104,9 @@ def create_headers(
     response_content_type: Optional[str],
     response_content: Optional[bytes],
 ) -> list[tuple[str, str]]:
+    """
+    パッシブモードのリクエストヘッダを組み立てる
+    """
     # h11ではこれらの低水準なHTTPヘッダも自前で指定する必要がある
     headers = [
         ("Host", request_host),
@@ -109,10 +139,16 @@ def create_headers(
 
 
 def check_path(path: str) -> bool:
+    """
+    logbook-kaiに送るべきパスかを判定する
+    """
     return any(path.startswith(prefix) for prefix in PATH_PREFIXES_TO_HANDLE)
 
 
 def is_passive_mode_request(req: Request) -> bool:
+    """
+    パッシブモードのリクエストかを判定する
+    """
     return (
         req.method == "POST"
         and req.host in {"localhost", "127.0.0.1"}
@@ -122,6 +158,9 @@ def is_passive_mode_request(req: Request) -> bool:
 
 
 def is_proxy_pac_request(req: Request) -> bool:
+    """
+    proxy.pacへのリクエストかを判定する
+    """
     return req.method == "GET" and req.host in {"localhost", "127.0.0.1"} and req.path == "/logbook-kai/proxy.pac"
 
 
@@ -400,7 +439,7 @@ class AsyncKeepAliveClient:
         req = h11.Request(
             method="POST",
             headers=params.headers,
-            target=f"/pasv{params.path}",
+            target=params.path,
         )
         await self.send_event(req)
         if params.content is not None:

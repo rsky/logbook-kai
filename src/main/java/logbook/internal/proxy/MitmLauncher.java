@@ -1,6 +1,7 @@
 package logbook.internal.proxy;
 
 import logbook.internal.LoggerHolder;
+import logbook.plugin.PluginServices;
 import lombok.extern.slf4j.Slf4j;
 import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.StartedProcess;
@@ -12,7 +13,6 @@ import org.zeroturnaround.process.SystemProcess;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -126,9 +126,12 @@ final public class MitmLauncher {
         outfile.deleteOnExit();
 
         try (
-                InputStream inputStream = getClass().getClassLoader().getResourceAsStream("scripts/proxy.py");
-                FileOutputStream outputStream = new FileOutputStream(outfile)) {
-            Objects.requireNonNull(inputStream).transferTo(outputStream);
+                InputStream in = PluginServices.getResourceAsStream("scripts/proxy.py");
+                FileOutputStream out = new FileOutputStream(outfile)) {
+            if (in == null) {
+                throw new IOException("Cannot open resource: scripts/proxy.py");
+            }
+            in.transferTo(out);
         }
 
         return outfile.getCanonicalPath();

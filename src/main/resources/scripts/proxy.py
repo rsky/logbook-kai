@@ -121,6 +121,10 @@ def is_passive_mode_request(req: Request) -> bool:
     )
 
 
+def is_proxy_pac_request(req: Request) -> bool:
+    return req.method == "GET" and req.host in {"localhost", "127.0.0.1"} and req.path == "/logbook-kai/proxy.pac"
+
+
 class LogbookKaiAddon:
     """
     mitmproxyが取得したレスポンスデータをlogbook-kai passive serverに送信するaddon。
@@ -222,19 +226,12 @@ class LogbookKaiAddon:
 
     def request(self, flow: HTTPFlow) -> None:
         """
-        mitmproxyからlogbook-kaiへリクエストを転送し、クライアントにはダミーのレスポンスを返す
+        特殊なリクエストをlogbook-kaiに転送する
         """
-        if not is_passive_mode_request(flow.request):
-            return
-
-        self.enqueue(
-            PassiveServerParams(
-                path=flow.request.path,
-                headers=flow.request.headers.items(),  # type: ignore[no-untyped-call]
-                content=flow.request.content,
-            )
-        )
-        flow.response = Response.make(200, b"OK", {"Content-Type": "text/plain"})
+        if is_proxy_pac_request(flow.request) or is_passive_mode_request(flow.request):
+            # host:portを書き換えてmitmproxyがlogbook-kaiにリクエストするよう仕向ける
+            flow.request.host = self._logbook_host
+            flow.request.port = self._logbook_port
 
     def response(self, flow: HTTPFlow) -> None:
         """

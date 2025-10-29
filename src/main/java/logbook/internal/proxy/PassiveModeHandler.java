@@ -6,6 +6,7 @@ import logbook.plugin.PluginServices;
 import logbook.proxy.ContentListenerSpi;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpMethod;
+import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
@@ -15,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -46,10 +48,9 @@ final public class PassiveModeHandler extends Handler.Abstract {
         RequestParsingResult result = new RequestParser().parse(request);
         if (this.invoke(result.getRequestMetaDataWrapper(), result.getResponseMetaDataWrapper())) {
             response.setStatus(200);
-            callback.succeeded();
+            response.write(true, StandardCharsets.UTF_8.encode("OK"), callback);
         } else {
-            response.setStatus(500);
-            callback.failed(new Exception("Internal Server Error"));
+            Response.writeError(request, response, callback, HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
         return true;
     }

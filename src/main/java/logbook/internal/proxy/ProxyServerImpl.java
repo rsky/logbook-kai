@@ -10,6 +10,7 @@ import logbook.internal.LoggerHolder;
 import logbook.internal.gui.InternalFXMLLoader;
 import logbook.proxy.ProxyServerSpi;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 
@@ -18,7 +19,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 /**
  * プロキシサーバー実装。
@@ -67,7 +67,10 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                 }
             }
             server.setConnectors(new Connector[]{connector});
-            server.setHandler(new PassiveModeHandler());
+            server.setHandler(new Handler.Sequence(
+                new ProxyPacHandler(),
+                new PassiveModeHandler()
+            ));
 
             final MitmLauncher mitmLauncher;
             if (useMitmproxy) {
@@ -80,7 +83,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
             }
 
             try {
-                runAndWaitServer(server, mitmLauncher, internalPort);
+                runAndWaitServer(server, mitmLauncher);
             } catch (Exception e) {
                 handleException(e);
             }
@@ -89,11 +92,10 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         }
     }
 
-    private void runAndWaitServer(Server server, MitmLauncher mitmLauncher, int internalPort) throws Exception {
+    private void runAndWaitServer(Server server, MitmLauncher mitmLauncher) throws Exception {
         try {
             server.start();
             if (mitmLauncher != null) {
-                waitForInternalPortListeningOn(internalPort);
                 mitmLauncher.start();
             }
             server.join();
@@ -133,29 +135,6 @@ public final class ProxyServerImpl implements ProxyServerSpi {
         try (ServerSocket socket = new ServerSocket(0)) {
             return socket.getLocalPort();
         }
-    }
-
-    private static void waitForInternalPortListeningOn(int internalPort) {
-        // 100ms間隔で最大10回(合計1秒まで)LOCAL_ADDRESS:internalPortに接続できるのを待つ
-        final int maxAttempts = 10;
-        final int intervalMs = 100;
-
-        for (int i = 0; i < maxAttempts; i++) {
-            try (Socket socket = new Socket(LOCAL_ADDRESS, internalPort)) {
-                // 接続成功 - サーバーがリッスンしている
-                return;
-            } catch (IOException e) {
-                // 接続失敗 - まだサーバーが起動していない
-                try {
-                    Thread.sleep(intervalMs);
-                } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                    LoggerHolder.get().warn("Interrupted while waiting for internal port", ie);
-                    return;
-                }
-            }
-        }
-        LoggerHolder.get().warn("Internal port {} did not start listening within timeout", internalPort);
     }
 
     private static void handleException(Exception e) {

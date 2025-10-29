@@ -80,8 +80,10 @@ Tiny Proxy Configuratorのメニューから「Options...」を選択します�
 
 ## v25.10.2 以降の場合
 
-`http://127.0.0.1:8888/logbook-kai/proxy.pac` でプロキシ自動構成スクリプトを配信できるようになったので、システムのプロキシ設定やFirefoxの「自動プロキシ設定スクリプトURL」、Tiny Proxy Configuratorの「PAC Script URL」等にそのURLを指定することでも設定可能です。 （ポート`8888`は適宜設定したポート番号に読み替えてください）
+`http://127.0.0.1:8888/logbook-kai/proxy.pac` でプロキシ自動構成スクリプトを配信できるようになったので、システムのプロキシ設定やFirefoxの「自動プロキシ設定スクリプトURL」、Tiny Proxy Configuratorの「PAC Script URL」等にそのURLを指定することでも設定可能です。 （ポート`8888`は適宜設定したポート番号に読み替えてください）[^2]
 
 ![Tiny Proxy Configurator 設定（PAC Script URL）](./images/tiny-proxy-configurator-2b.webp)
 
 [^1] 以前ここで紹介していた[Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)はChrome拡張のManifest v3に対応せず利用できなくなりました。
+
+[^2] 航海日誌を起動後、Webブラウザで `http://127.0.0.1:8888/logbook-kai/proxy.pac` にアクセスしてproxy.pacがダウンロードされることで、確認できます。

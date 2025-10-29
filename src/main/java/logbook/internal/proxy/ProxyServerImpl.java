@@ -10,6 +10,7 @@ import logbook.internal.LoggerHolder;
 import logbook.internal.gui.InternalFXMLLoader;
 import logbook.proxy.ProxyServerSpi;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 
@@ -67,7 +68,10 @@ public final class ProxyServerImpl implements ProxyServerSpi {
                 }
             }
             server.setConnectors(new Connector[]{connector});
-            server.setHandler(new PassiveModeHandler());
+            server.setHandler(new Handler.Sequence(
+                new ProxyPacHandler(),
+                new PassiveModeHandler()
+            ));
 
             final MitmLauncher mitmLauncher;
             if (useMitmproxy) {

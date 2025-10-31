@@ -30,6 +30,8 @@ dependencies {
     api(libs.org.slf4j.slf4j.api)
     api(libs.ch.qos.logback.logback.classic)
     api(libs.ch.qos.logback.logback.core)
+    implementation(libs.commons.io.commons.io)
+    implementation(libs.org.apache.commons.commons.lang3)
     implementation(libs.org.zeroturnaround.zt.exec)
     implementation(libs.org.zeroturnaround.zt.process.killer)
     testImplementation(libs.junit.junit)

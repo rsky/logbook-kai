@@ -1,6 +1,6 @@
 group = "logbook"
 description = "logbook-kai"
-version = "25.10.2"
+version = "25.10.3"
 
 // UpgradeCode (GUID) for Windows Installer
 val windowsUpgradeUUID = "880e4493-20fc-4c89-8c5b-01e4b2479b77"
@@ -30,6 +30,8 @@ dependencies {
     api(libs.org.slf4j.slf4j.api)
     api(libs.ch.qos.logback.logback.classic)
     api(libs.ch.qos.logback.logback.core)
+    implementation(libs.commons.io.commons.io)
+    implementation(libs.org.apache.commons.commons.lang3)
     implementation(libs.org.zeroturnaround.zt.exec)
     implementation(libs.org.zeroturnaround.zt.process.killer)
     testImplementation(libs.junit.junit)

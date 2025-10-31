@@ -6,6 +6,8 @@ ch-qos-logback-logback-classic = "1.5.20"
 ch-qos-logback-logback-core = "1.5.20"
 com-fasterxml-jackson-core-jackson-databind = "2.20.0"
 junit-junit = "4.13.2"
+commons-io-commons-io = "2.20.0" # Apache Commonsのライブラリを直接利用していないが、zt-process-killerが
+org-apache-commons-commons-lang3 = "3.19.0" # 脆弱性のあるバージョンに依存しているので互換性のある最新版を使う。
 org-controlsfx-controlsfx = "11.2.2"
 org-eclipse-jetty-jetty-server = "12.1.3"
 org-glassfish-javax-json = "1.1.4"
@@ -26,6 +28,8 @@ ch-qos-logback-logback-classic = { module = "ch.qos.logback:logback-classic", ve
 ch-qos-logback-logback-core = { module = "ch.qos.logback:logback-core", version.ref = "ch-qos-logback-logback-core" }
 com-fasterxml-jackson-core-jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "com-fasterxml-jackson-core-jackson-databind" }
 junit-junit = { module = "junit:junit", version.ref = "junit-junit" }
+commons-io-commons-io = { module = "commons-io:commons-io", version.ref = "commons-io-commons-io" }
+org-apache-commons-commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "org-apache-commons-commons-lang3" }
 org-controlsfx-controlsfx = { module = "org.controlsfx:controlsfx", version.ref = "org-controlsfx-controlsfx" }
 org-eclipse-jetty-jetty-server = { module = "org.eclipse.jetty:jetty-server", version.ref = "org-eclipse-jetty-jetty-server" }
 org-glassfish-javax-json = { module = "org.glassfish:javax.json", version.ref = "org-glassfish-javax-json" }

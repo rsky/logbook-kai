@@ -1834,7 +1834,7 @@ public class BattleTypes {
      */
     public enum SortieAtType implements AtType {
         通常攻撃("通常攻撃"),
-        レーザー攻撃("レーザー攻撃"),
+        レーザー攻撃("レーザー攻撃"), // アルペジオ勢の超重力砲が該当すると思われる
         連撃("連撃"),
         主砲副砲CI("主砲副砲CI"),
         主砲電探CI("主砲電探CI"),
@@ -1845,7 +1845,6 @@ public class BattleTypes {
         胸熱CI("一斉射かッ…胸が熱いな！"),
         陸奥タッチ("長門、いい？ いくわよ！ 主砲一斉射ッ！"),
         ColoradoTouch("特殊砲撃(Colorado級)"),
-        僚艦夜戦突撃("僚艦夜戦突撃"),   // 夜戦専用だが念のため
         RichelieuTouch("特殊砲撃(Richelieu級)"),
         QE級姉妹艦連携砲撃("特殊砲撃(Queen Elizabeth級)"),
         瑞雲立体攻撃("瑞雲立体攻撃"),
@@ -1879,12 +1878,13 @@ public class BattleTypes {
                 case 101 -> 胸熱CI;
                 case 102 -> 陸奥タッチ;
                 case 103 -> ColoradoTouch;
-                case 104 -> 僚艦夜戦突撃;
                 case 105 -> RichelieuTouch;
                 case 106 -> QE級姉妹艦連携砲撃;
                 case 200 -> 瑞雲立体攻撃;
                 case 201 -> 海空立体攻撃;
                 case 300 -> 潜水艦隊攻撃;
+                case 301 -> 潜水艦隊攻撃;
+                case 302 -> 潜水艦隊攻撃;
                 case 400 -> 大和改二特殊砲撃_3隻;
                 case 401 -> 大和改二特殊砲撃_2隻;
                 default -> 通常攻撃;
@@ -1919,8 +1919,8 @@ public class BattleTypes {
         主砲電探魚雷CI2("主砲電探魚雷CI(2回判定)"),
         魚雷見張員電探CI2("魚雷見張員電探CI(2回判定)"),
         魚雷魚雷CI2("魚雷魚雷CI(2回判定)"),
-        CI_14("夜戦CI(14種)"),
-        CI_15("夜戦CI(15種)"),
+        ドラム缶CI2("ドラム缶CI(2回判定)"),
+        CI_15("夜戦CI(15種)"), // reserved
         NelsonTouch("NelsonTouch"),
         胸熱CI("一斉射かッ…胸が熱いな！"),
         陸奥タッチ("長門、いい？ いくわよ！ 主砲一斉射ッ！"),
@@ -1928,11 +1928,11 @@ public class BattleTypes {
         僚艦夜戦突撃("僚艦夜戦突撃"),
         RichelieuTouch("特殊砲撃(Richelieu級)"),
         QE級姉妹艦連携砲撃("特殊砲撃(Queen Elizabeth級)"),
-        夜間瑞雲CI("夜間瑞雲CI"),       // ID: 200 瑞雲立体攻撃と同じID
-        海空立体攻撃("海空立体攻撃"),   // 夜戦では発動しないと思われるが念のため
+        夜間瑞雲CI("夜間瑞雲CI"), // ID: 200 瑞雲立体攻撃と同じID
         潜水艦隊攻撃("潜水艦隊攻撃"),
         大和改二特殊砲撃_3隻("大和改二特殊砲撃(3隻)"),
-        大和改二特殊砲撃_2隻("大和改二特殊砲撃(2隻)");
+        大和改二特殊砲撃_2隻("大和改二特殊砲撃(2隻)"),
+        特四式内火艇雷撃("特四式内火艇雷撃");
 
         private final String name;
 
@@ -1961,7 +1961,7 @@ public class BattleTypes {
                 case 11 -> 主砲電探魚雷CI2;
                 case 12 -> 魚雷見張員電探CI2;
                 case 13 -> 魚雷魚雷CI2;
-                case 14 -> CI_14;
+                case 14 -> ドラム缶CI2;
                 case 15 -> CI_15;
                 case 100 -> NelsonTouch;
                 case 101 -> 胸熱CI;
@@ -1971,10 +1971,12 @@ public class BattleTypes {
                 case 105 -> RichelieuTouch;
                 case 106 -> QE級姉妹艦連携砲撃;
                 case 200 -> 夜間瑞雲CI;
-                case 201 -> 海空立体攻撃;
                 case 300 -> 潜水艦隊攻撃;
+                case 301 -> 潜水艦隊攻撃;
+                case 302 -> 潜水艦隊攻撃;
                 case 400 -> 大和改二特殊砲撃_3隻;
                 case 401 -> 大和改二特殊砲撃_2隻;
+                case 1000 -> 特四式内火艇雷撃;
                 default -> 通常攻撃;
             };
         }

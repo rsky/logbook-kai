@@ -151,14 +151,12 @@ public class BouyomiChan {
     }
 
     private void send(ByteBuffer data) throws IOException {
-        Socket socket = new Socket();
-        socket.connect(this.addr, (int) TimeUnit.SECONDS.toMillis(1));
-        try (OutputStream out = socket.getOutputStream()) {
-            try (WritableByteChannel channel = Channels.newChannel(out)) {
+        try (Socket socket = new Socket()) {
+            socket.connect(this.addr, (int) TimeUnit.SECONDS.toMillis(1));
+            try (OutputStream out = socket.getOutputStream();
+                 WritableByteChannel channel = Channels.newChannel(out)) {
                 channel.write(data);
             }
-        } finally {
-            socket.close();
         }
     }
 

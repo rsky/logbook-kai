@@ -69,8 +69,6 @@ tasks.register("prePackage", Copy::class) {
 
 tasks.register("package", Zip::class) {
     dependsOn("prePackage")
-    // Java8版を廃止したら下の行は削除し、デフォルトのファイル名に戻す
-    archiveFileName.set("logbook-kai-java21_${version}.zip")
     from("dist-includes").exclude("*/.gitkeep")
     from("build/tmp/pkg-input/logbook-kai.jar")
 }

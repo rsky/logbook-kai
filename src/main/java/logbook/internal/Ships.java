@@ -197,15 +197,11 @@ public class Ships {
         InputStream is = PluginServices.getResourceAsStream("logbook/supplemental/ships.json");
         Optional<Map<Integer, ShipSupplementalInfo>> map = Optional.empty();
         if (is != null) {
-            try {
-                try {
-                    ObjectMapper mapper = new ObjectMapper();
-                    mapper.enable(Feature.ALLOW_COMMENTS);
-                    Map<String, List<ShipSupplementalInfo>> json = mapper.readValue(is, new TypeReference<Map<String, List<ShipSupplementalInfo>>>() {});
-                    map = Optional.ofNullable(json.get("ships")).map(list -> list.stream().collect(Collectors.toMap(ship -> ship.getId(), ship -> ship)));
-                } finally {
-                    is.close();
-                }
+            try (is) {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(Feature.ALLOW_COMMENTS);
+                Map<String, List<ShipSupplementalInfo>> json = mapper.readValue(is, new TypeReference<Map<String, List<ShipSupplementalInfo>>>() {});
+                map = Optional.ofNullable(json.get("ships")).map(list -> list.stream().collect(Collectors.toMap(ship -> ship.getId(), ship -> ship)));
             } catch (Exception e) {
                 LoggerHolder.get().error("艦娘付加情報の初期化に失敗しました", e);
             }

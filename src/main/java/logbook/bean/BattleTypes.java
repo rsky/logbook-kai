@@ -1738,30 +1738,19 @@ public class BattleTypes {
          * @return 陣形
          */
         public static Formation toFormation(int f) {
-            switch (f) {
-            case 1:
-                return 単縦陣;
-            case 2:
-                return 複縦陣;
-            case 3:
-                return 輪形陣;
-            case 4:
-                return 梯形陣;
-            case 5:
-                return 単横陣;
-            case 6:
-                return 警戒陣;
-            case 11:
-                return 第一警戒航行序列;
-            case 12:
-                return 第二警戒航行序列;
-            case 13:
-                return 第三警戒航行序列;
-            case 14:
-                return 第四警戒航行序列;
-            default:
-                return 単縦陣;
-            }
+            return switch (f) {
+                case 1 -> 単縦陣;
+                case 2 -> 複縦陣;
+                case 3 -> 輪形陣;
+                case 4 -> 梯形陣;
+                case 5 -> 単横陣;
+                case 6 -> 警戒陣;
+                case 11 -> 第一警戒航行序列;
+                case 12 -> 第二警戒航行序列;
+                case 13 -> 第三警戒航行序列;
+                case 14 -> 第四警戒航行序列;
+                default -> 単縦陣;
+            };
         }
     }
 
@@ -1778,18 +1767,13 @@ public class BattleTypes {
          * @return 艦隊行動
          */
         public static Intercept toIntercept(int i) {
-            switch (i) {
-            case 1:
-                return 同航戦;
-            case 2:
-                return 反航戦;
-            case 3:
-                return Ｔ字戦有利;
-            case 4:
-                return Ｔ字戦不利;
-            default:
-                return 同航戦;
-            }
+            return switch (i) {
+                case 1 -> 同航戦;
+                case 2 -> 反航戦;
+                case 3 -> Ｔ字戦有利;
+                case 4 -> Ｔ字戦不利;
+                default -> 同航戦;
+            };
         }
     }
 
@@ -1806,20 +1790,14 @@ public class BattleTypes {
          * @return 制空権表示
          */
         public static DispSeiku toDispSeiku(int i) {
-            switch (i) {
-            case 0:
-                return 制空均衡;
-            case 1:
-                return 制空権確保;
-            case 2:
-                return 航空優勢;
-            case 3:
-                return 航空劣勢;
-            case 4:
-                return 制空権喪失;
-            default:
-                return 制空均衡;
-            }
+            return switch (i) {
+                case 0 -> 制空均衡;
+                case 1 -> 制空権確保;
+                case 2 -> 航空優勢;
+                case 3 -> 航空劣勢;
+                case 4 -> 制空権喪失;
+                default -> 制空均衡;
+            };
         }
     }
 
@@ -1831,22 +1809,15 @@ public class BattleTypes {
         未結成, 機動部隊, 水上部隊, 輸送部隊, 連合艦隊タイプ4, 連合艦隊タイプ5;
 
         public static CombinedType toCombinedType(int i) {
-            switch (i) {
-            case 0:
-                return 未結成;
-            case 1:
-                return 機動部隊;
-            case 2:
-                return 水上部隊;
-            case 3:
-                return 輸送部隊;
-            case 4:
-                return 連合艦隊タイプ4;
-            case 5:
-                return 連合艦隊タイプ5;
-            default:
-                return 未結成;
-            }
+            return switch (i) {
+                case 0 -> 未結成;
+                case 1 -> 機動部隊;
+                case 2 -> 水上部隊;
+                case 3 -> 輸送部隊;
+                case 4 -> 連合艦隊タイプ4;
+                case 5 -> 連合艦隊タイプ5;
+                default -> 未結成;
+            };
         }
     }
 
@@ -1893,46 +1864,27 @@ public class BattleTypes {
         }
 
         public static SortieAtType toSortieAtType(int i) {
-            switch (i) {
-            case 0:
-                return 通常攻撃;
-            case 1:
-                return レーザー攻撃;
-            case 2:
-                return 連撃;
-            case 3:
-                return 主砲副砲CI;
-            case 4:
-                return 主砲電探CI;
-            case 5:
-                return 主砲徹甲弾CI;
-            case 6:
-                return 主砲主砲CI;
-            case 7:
-                return 戦爆連合CI;
-            case 100:
-                return NelsonTouch;
-            case 101:
-                return 胸熱CI;
-            case 102:
-                return 陸奥タッチ;
-            case 103:
-                return ColoradoTouch;
-            case 104:
-                return 僚艦夜戦突撃;
-            case 200:
-                return 瑞雲立体攻撃;
-            case 201:
-                return 海空立体攻撃;
-            case 300:
-                return 潜水艦隊攻撃;
-            case 400:
-                return 大和改二特殊砲撃_3隻;
-            case 401:
-                return 大和改二特殊砲撃_2隻;
-            default:
-                return 通常攻撃;
-            }
+            return switch (i) {
+                case 0 -> 通常攻撃;
+                case 1 -> レーザー攻撃;
+                case 2 -> 連撃;
+                case 3 -> 主砲副砲CI;
+                case 4 -> 主砲電探CI;
+                case 5 -> 主砲徹甲弾CI;
+                case 6 -> 主砲主砲CI;
+                case 7 -> 戦爆連合CI;
+                case 100 -> NelsonTouch;
+                case 101 -> 胸熱CI;
+                case 102 -> 陸奥タッチ;
+                case 103 -> ColoradoTouch;
+                case 104 -> 僚艦夜戦突撃;
+                case 200 -> 瑞雲立体攻撃;
+                case 201 -> 海空立体攻撃;
+                case 300 -> 潜水艦隊攻撃;
+                case 400 -> 大和改二特殊砲撃_3隻;
+                case 401 -> 大和改二特殊砲撃_2隻;
+                default -> 通常攻撃;
+            };
         }
     }
 
@@ -1988,62 +1940,35 @@ public class BattleTypes {
         }
 
         public static MidnightSpList toMidnightSpList(int i) {
-            switch (i) {
-            case 0:
-                return 通常攻撃;
-            case 1:
-                return 連撃;
-            case 2:
-                return 主砲魚雷CI;
-            case 3:
-                return 魚雷魚雷CI;
-            case 4:
-                return 主砲副砲CI;
-            case 5:
-                return 主砲主砲CI;
-            case 6:
-                return 夜襲CI;
-            case 7:
-                return 主砲魚雷電探CI;
-            case 8:
-                return 魚雷見張員電探CI;
-            case 9:
-                return 魚雷魚雷見張員CI;
-            case 10:
-                return ドラム缶CI;
-            case 11:
-                return 主砲電探魚雷CI2;
-            case 12:
-                return 魚雷見張員電探CI2;
-            case 13:
-                return 魚雷魚雷CI2;
-            case 14:
-                return CI_14;
-            case 15:
-                return CI_15;
-            case 100:
-                return NelsonTouch;
-            case 101:
-                return 胸熱CI;
-            case 102:
-                return 陸奥タッチ;
-            case 103:
-                return ColoradoTouch;
-            case 104:
-                return 僚艦夜戦突撃;
-            case 200:
-                return 夜間瑞雲CI;
-            case 201:
-                return 海空立体攻撃;
-            case 300:
-                return 潜水艦隊攻撃;
-            case 400:
-                return 大和改二特殊砲撃_3隻;
-            case 401:
-                return 大和改二特殊砲撃_2隻;
-            default:
-                return 通常攻撃;
-            }
+            return switch (i) {
+                case 0 -> 通常攻撃;
+                case 1 -> 連撃;
+                case 2 -> 主砲魚雷CI;
+                case 3 -> 魚雷魚雷CI;
+                case 4 -> 主砲副砲CI;
+                case 5 -> 主砲主砲CI;
+                case 6 -> 夜襲CI;
+                case 7 -> 主砲魚雷電探CI;
+                case 8 -> 魚雷見張員電探CI;
+                case 9 -> 魚雷魚雷見張員CI;
+                case 10 -> ドラム缶CI;
+                case 11 -> 主砲電探魚雷CI2;
+                case 12 -> 魚雷見張員電探CI2;
+                case 13 -> 魚雷魚雷CI2;
+                case 14 -> CI_14;
+                case 15 -> CI_15;
+                case 100 -> NelsonTouch;
+                case 101 -> 胸熱CI;
+                case 102 -> 陸奥タッチ;
+                case 103 -> ColoradoTouch;
+                case 104 -> 僚艦夜戦突撃;
+                case 200 -> 夜間瑞雲CI;
+                case 201 -> 海空立体攻撃;
+                case 300 -> 潜水艦隊攻撃;
+                case 400 -> 大和改二特殊砲撃_3隻;
+                case 401 -> 大和改二特殊砲撃_2隻;
+                default -> 通常攻撃;
+            };
         }
     }
 }

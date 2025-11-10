@@ -492,8 +492,8 @@ public class FleetTabPane extends ScrollPane {
     private void initializeRemarkPlugin() {
         for (Updateable<DeckPort> plugin : Plugin.getContent(FleetTabRemark.class)) {
             Node node;
-            if (plugin instanceof Node) {
-                node = ((Node) plugin);
+            if (plugin instanceof Node n) {
+                node = n;
             } else {
                 node = new RemarkLabel(plugin);
             }
@@ -509,8 +509,8 @@ public class FleetTabPane extends ScrollPane {
     @SuppressWarnings("unchecked")
     private void updateRemarkPlugin(DeckPort port) {
         for (Node node : this.remark.getChildren()) {
-            if (node instanceof Updateable) {
-                ((Updateable<DeckPort>) node).updateItem(port);
+            if (node instanceof Updateable<?> updateable) {
+                ((Updateable<DeckPort>) updateable).updateItem(port);
             }
         }
     }

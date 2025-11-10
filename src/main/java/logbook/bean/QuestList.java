@@ -80,9 +80,9 @@ public class QuestList implements Serializable {
          * @return {@link Quest}
          */
         public static Quest toQuest(JsonValue value) {
-            if (value instanceof JsonObject) {
+            if (value instanceof JsonObject obj) {
                 Quest bean = new Quest();
-                JsonHelper.bind((JsonObject) value)
+                JsonHelper.bind(obj)
                         .setInteger("api_no", bean::setNo)
                         .setInteger("api_category", bean::setCategory)
                         .setInteger("api_type", bean::setType)

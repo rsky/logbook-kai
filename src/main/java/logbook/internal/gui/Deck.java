@@ -214,8 +214,7 @@ public class Deck extends WindowController {
             deck.setName(this.deckName.getText());
             deck.getFleets().clear();
             for (Node node : this.fleets.getChildren()) {
-                if (node instanceof DeckFleetPane) {
-                    DeckFleetPane fleet = (DeckFleetPane) node;
+                if (node instanceof DeckFleetPane fleet) {
                     deck.getFleets().add(fleet.getBean());
                 }
             }
@@ -292,8 +291,7 @@ public class Deck extends WindowController {
     private void changeDeckFleet(Change<?> change) {
         this.fleetList.getItems().clear();
         for (Node node : this.fleets.getChildren()) {
-            if (node instanceof DeckFleetPane) {
-                DeckFleetPane fleet = (DeckFleetPane) node;
+            if (node instanceof DeckFleetPane fleet) {
                 this.fleetList.getItems().add(fleet);
             }
         }

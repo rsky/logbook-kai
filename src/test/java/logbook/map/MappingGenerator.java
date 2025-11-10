@@ -19,10 +19,11 @@ public class MappingGenerator {
     public static void main(String[] args) throws DatabindException, IOException, URISyntaxException {
         ObjectMapper mapper = new ObjectMapper();
         URI u = new URI(SOURCE_URL).parseServerAuthority();
-        Map<String, Map<String, List<String>>> json = mapper.readValue(u.toURL(), Map.class);
-        try (FileOutputStream fos = new FileOutputStream(new File("src/main/resources/logbook/map/mapping.json"));
-                PrintWriter pw = new PrintWriter(fos)) {
+        try (InputStream is = u.toURL().openStream();
+             FileOutputStream fos = new FileOutputStream(new File("src/main/resources/logbook/map/mapping.json"));
+             PrintWriter pw = new PrintWriter(fos)) {
             // generate the JSON on our own to keep the order in the original JSON file
+            Map<String, Map<String, List<String>>> json = mapper.readValue(is, Map.class);
             pw.println("{");
             json.keySet().stream()
                 .filter(key -> key.startsWith(KEY_PREFIX))

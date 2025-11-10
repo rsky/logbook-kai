@@ -33,20 +33,20 @@ public class ShipController extends WindowController {
     void initialize() {
         try {
             this.tab.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> {
-                if (o instanceof Tab) {
-                    Node node = o.getContent();
-                    if (node instanceof ShipTablePane) {
-                        ((ShipTablePane) node).disable();
+                if (o instanceof Tab tab) {
+                    Node node = tab.getContent();
+                    if (node instanceof ShipTablePane pane) {
+                        pane.disable();
                     }
                 }
-                if (n instanceof Tab) {
-                    Node node = n.getContent();
-                    if (node instanceof ShipTablePane) {
-                        ((ShipTablePane) node).enable();
-                        ((ShipTablePane) node).update();
+                if (n instanceof Tab tab) {
+                    Node node = tab.getContent();
+                    if (node instanceof ShipTablePane pane) {
+                        pane.enable();
+                        pane.update();
                     }
-                    if (node instanceof StatisticsPane) {
-                        ((StatisticsPane) node).update();
+                    if (node instanceof StatisticsPane pane) {
+                        pane.update();
                     }
                 }
             });
@@ -224,8 +224,8 @@ public class ShipController extends WindowController {
                 .getSelectedItem();
         if (selectedTab != null) {
             Node content = selectedTab.getContent();
-            if (content instanceof ShipTablePane) {
-                ((ShipTablePane) content).update();
+            if (content instanceof ShipTablePane pane) {
+                pane.update();
             }
         }
     }

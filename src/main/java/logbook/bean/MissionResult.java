@@ -112,8 +112,8 @@ public class MissionResult implements Serializable {
                 .setInteger("api_get_exp", bean::setGetExp)
                 .set("api_get_exp_lvup", bean::setGetExpLvup, JsonHelper.toList(JsonHelper::toIntegerList))
                 .set("api_get_material", bean::setGetMaterial, val -> {
-                    if (val instanceof JsonArray) {
-                        return JsonHelper.toIntegerList((JsonArray) val);
+                    if (val instanceof JsonArray array) {
+                        return JsonHelper.toIntegerList(array);
                     } else {
                         return Arrays.asList(0, 0, 0, 0);
                     }

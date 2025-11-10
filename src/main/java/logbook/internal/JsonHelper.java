@@ -34,8 +34,8 @@ public final class JsonHelper {
      * @return Long
      */
     public static Long toLong(JsonValue val) {
-        if (val instanceof JsonNumber) {
-            return ((JsonNumber) val).longValue();
+        if (val instanceof JsonNumber number) {
+            return number.longValue();
         }
         return new BigDecimal(toString(val)).longValue();
     }
@@ -49,8 +49,8 @@ public final class JsonHelper {
      * @return Integer
      */
     public static Integer toInteger(JsonValue val) {
-        if (val instanceof JsonNumber) {
-            return ((JsonNumber) val).intValue();
+        if (val instanceof JsonNumber number) {
+            return number.intValue();
         }
         return new BigDecimal(toString(val)).intValue();
     }
@@ -63,8 +63,8 @@ public final class JsonHelper {
      * @return Integer
      */
     public static Integer toIntegerEnemyHp(JsonValue val) {
-        if (val instanceof JsonString) {
-            if (((JsonString) val).getString().equals(EnemyHp.NOT_AVAILABLE)) {
+        if (val instanceof JsonString str) {
+            if (str.getString().equals(EnemyHp.NOT_AVAILABLE)) {
                 return EnemyHp.NOT_AVAILABLE_VALUE;
             }
         }
@@ -80,8 +80,8 @@ public final class JsonHelper {
      * @return Double
      */
     public static Double toDouble(JsonValue val) {
-        if (val instanceof JsonNumber) {
-            return ((JsonNumber) val).doubleValue();
+        if (val instanceof JsonNumber number) {
+            return number.doubleValue();
         }
         return new BigDecimal(toString(val)).doubleValue();
     }
@@ -94,8 +94,8 @@ public final class JsonHelper {
      * @return BigDecimal
      */
     public static BigDecimal toBigDecimal(JsonValue val) {
-        if (val instanceof JsonNumber) {
-            return ((JsonNumber) val).bigDecimalValue();
+        if (val instanceof JsonNumber number) {
+            return number.bigDecimalValue();
         }
         return new BigDecimal(toString(val));
     }
@@ -109,8 +109,8 @@ public final class JsonHelper {
      * @return String
      */
     public static String toString(JsonValue val) {
-        if (val instanceof JsonString) {
-            return ((JsonString) val).getString();
+        if (val instanceof JsonString str) {
+            return str.getString();
         }
         return toObject(val, Object::toString);
     }
@@ -124,9 +124,9 @@ public final class JsonHelper {
      */
     public static Boolean toBoolean(JsonValue val) {
         return toObject(val, v -> {
-            if (v instanceof JsonNumber) {
+            if (v instanceof JsonNumber number) {
                 // JsonNumber の場合、 BigDecimal.ZEROと等しくない場合 true、それ以外はfalse
-                return BigDecimal.ZERO.compareTo(((JsonNumber) v).bigDecimalValue()) != 0;
+                return BigDecimal.ZERO.compareTo(number.bigDecimalValue()) != 0;
             }
             return v != JsonValue.FALSE;
         });
@@ -205,8 +205,8 @@ public final class JsonHelper {
      * @return IntegerのList
      */
     public static List<Integer> checkedToIntegerList(JsonValue val) {
-        if (val instanceof JsonArray) {
-            return toList((JsonArray) val, JsonHelper::toInteger);
+        if (val instanceof JsonArray array) {
+            return toList(array, JsonHelper::toInteger);
         }
         return Collections.emptyList();
     }
@@ -231,8 +231,8 @@ public final class JsonHelper {
      * @return DoubleのList
      */
     public static List<Double> checkedToDoubleList(JsonValue val) {
-        if (val instanceof JsonArray) {
-            return toList((JsonArray) val, JsonHelper::toDouble);
+        if (val instanceof JsonArray array) {
+            return toList(array, JsonHelper::toDouble);
         }
         return Collections.emptyList();
     }
@@ -257,8 +257,8 @@ public final class JsonHelper {
      * @return BigDecimalのList
      */
     public static List<BigDecimal> checkedToBigDecimalList(JsonValue val) {
-        if (val instanceof JsonArray) {
-            return toList((JsonArray) val, JsonHelper::toBigDecimal);
+        if (val instanceof JsonArray array) {
+            return toList(array, JsonHelper::toBigDecimal);
         }
         return Collections.emptyList();
     }
@@ -281,8 +281,8 @@ public final class JsonHelper {
      * @return StringのList
      */
     public static List<String> checkedToStringList(JsonValue val) {
-        if (val instanceof JsonArray) {
-            return toList((JsonArray) val, JsonHelper::toString);
+        if (val instanceof JsonArray array) {
+            return toList(array, JsonHelper::toString);
         }
         return Collections.emptyList();
     }
@@ -307,8 +307,8 @@ public final class JsonHelper {
      * @return LongのSet
      */
     public static Set<Long> checkedToLongSet(JsonValue val) {
-        if (val instanceof JsonArray) {
-            return toSet((JsonArray) val, JsonHelper::toLong);
+        if (val instanceof JsonArray array) {
+            return toSet(array, JsonHelper::toLong);
         }
         return Collections.emptySet();
     }
@@ -333,8 +333,8 @@ public final class JsonHelper {
      * @return IntegerのSet
      */
     public static Set<Integer> checkedToIntegerSet(JsonValue val) {
-        if (val instanceof JsonArray) {
-            return toSet((JsonArray) val, JsonHelper::toInteger);
+        if (val instanceof JsonArray array) {
+            return toSet(array, JsonHelper::toInteger);
         }
         return Collections.emptySet();
     }
@@ -359,8 +359,8 @@ public final class JsonHelper {
      * @return DoubleのSet
      */
     public static Set<Double> checkedToDoubleSet(JsonValue val) {
-        if (val instanceof JsonArray) {
-            return toSet((JsonArray) val, JsonHelper::toDouble);
+        if (val instanceof JsonArray array) {
+            return toSet(array, JsonHelper::toDouble);
         }
         return Collections.emptySet();
     }
@@ -385,8 +385,8 @@ public final class JsonHelper {
      * @return BigDecimalのSet
      */
     public static Set<BigDecimal> checkedToBigDecimalSet(JsonValue val) {
-        if (val instanceof JsonArray) {
-            return toSet((JsonArray) val, JsonHelper::toBigDecimal);
+        if (val instanceof JsonArray array) {
+            return toSet(array, JsonHelper::toBigDecimal);
         }
         return Collections.emptySet();
     }
@@ -409,8 +409,8 @@ public final class JsonHelper {
      * @return StringのSet
      */
     public static Set<String> checkedToStringSet(JsonValue val) {
-        if (val instanceof JsonArray) {
-            return toSet((JsonArray) val, JsonHelper::toString);
+        if (val instanceof JsonArray array) {
+            return toSet(array, JsonHelper::toString);
         }
         return Collections.emptySet();
     }
@@ -431,8 +431,8 @@ public final class JsonHelper {
     public static <T extends JsonValue, C extends Collection<R>, R> C toCollection(JsonValue value,
             Function<T, R> function, Supplier<C> supplier) {
         C collection = supplier.get();
-        if (value instanceof JsonArray) {
-            for (JsonValue val : (JsonArray) value) {
+        if (value instanceof JsonArray array) {
+            for (JsonValue val : array) {
                 if (val == null || val == JsonValue.NULL) {
                     collection.add(null);
                 } else {

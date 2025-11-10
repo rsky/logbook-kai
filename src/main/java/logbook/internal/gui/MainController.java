@@ -370,8 +370,7 @@ public class MainController extends WindowController {
         } else {
             for (Tab tab : tabs) {
                 Node node = tab.getContent();
-                if (node instanceof FleetTabPane) {
-                    FleetTabPane pane = (FleetTabPane) node;
+                if (node instanceof FleetTabPane pane) {
                     pane.update();
                     tab.getStyleClass().removeIf(s -> !s.equals("tab"));
                     Optional.ofNullable(pane.tabStyle())
@@ -402,8 +401,8 @@ public class MainController extends WindowController {
                     .forEach(mission::add);
         } else {
             for (Node node : mission) {
-                if (node instanceof MissionPane) {
-                    ((MissionPane) node).update();
+                if (node instanceof MissionPane pane) {
+                    pane.update();
                 }
             }
         }

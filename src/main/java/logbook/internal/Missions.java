@@ -67,12 +67,10 @@ public class Missions {
             return Optional.empty();
         }
         MissionCondition condition;
-        try {
+        try (is) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.enable(Feature.ALLOW_COMMENTS);
             condition = mapper.readValue(is, MissionCondition.class);
-        } finally {
-            is.close();
         }
 
         return Optional.ofNullable(condition);

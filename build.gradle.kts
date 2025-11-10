@@ -1,6 +1,6 @@
 group = "logbook"
 description = "logbook-kai"
-version = "25.10.3"
+version = "25.11.1"
 
 // UpgradeCode (GUID) for Windows Installer
 val windowsUpgradeUUID = "880e4493-20fc-4c89-8c5b-01e4b2479b77"
@@ -69,8 +69,6 @@ tasks.register("prePackage", Copy::class) {
 
 tasks.register("package", Zip::class) {
     dependsOn("prePackage")
-    // Java8版を廃止したら下の行は削除し、デフォルトのファイル名に戻す
-    archiveFileName.set("logbook-kai-java21_${version}.zip")
     from("dist-includes").exclude("*/.gitkeep")
     from("build/tmp/pkg-input/logbook-kai.jar")
 }

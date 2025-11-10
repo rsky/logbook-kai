@@ -90,18 +90,17 @@ public class BattleLogs {
             List<Path> paths = tryReadPaths(dateString);
             for (Path path : paths) {
                 if (Files.isReadable(path)) {
-                    InputStream in = new BufferedInputStream(Files.newInputStream(path));
-                    try {
+                    try (InputStream baseIn = new BufferedInputStream(Files.newInputStream(path))) {
                         // Check header
-                        in.mark(1024);
-                        int header = (in.read() | (in.read() << 8));
-                        in.reset();
+                        baseIn.mark(1024);
+                        int header = (baseIn.read() | (baseIn.read() << 8));
+                        baseIn.reset();
                         if (header == GZIPInputStream.GZIP_MAGIC) {
-                            in = new GZIPInputStream(in);
+                            try (InputStream in = new GZIPInputStream(baseIn)) {
+                                return mapper.readValue(in, BattleLog.class);
+                            }
                         }
-                        return mapper.readValue(in, BattleLog.class);
-                    } finally {
-                        in.close();
+                        return mapper.readValue(baseIn, BattleLog.class);
                     }
                 }
             }
@@ -140,14 +139,14 @@ public class BattleLogs {
             if (parent != null && !Files.exists(parent)) {
                 Files.createDirectories(parent);
             }
-            OutputStream out = new BufferedOutputStream(Files.newOutputStream(path));
-            try {
+            try (OutputStream baseOut = new BufferedOutputStream(Files.newOutputStream(path))) {
                 if (AppConfig.get().isCompressBattleLogs()) {
-                    out = new GZIPOutputStream(out);
+                    try (OutputStream out = new GZIPOutputStream(baseOut)) {
+                        mapper.writeValue(out, log);
+                    }
+                } else {
+                    mapper.writeValue(baseOut, log);
                 }
-                mapper.writeValue(out, log);
-            } finally {
-                out.close();
             }
         } catch (Exception e) {
             LoggerHolder.get().warn("戦闘ログの書き込み中に例外", e);

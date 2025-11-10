@@ -92,14 +92,14 @@ public final class APIListener implements ContentListenerSpi {
                 if (responseMetaData != null) {
                     InputStream in = responseMetaData.getResponseBody().orElse(null);
                     if (in != null) {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        byte[] buf = new byte[1024];
-                        int len;
-                        while ((len = in.read(buf)) > 0) {
-                            out.write(buf, 0, len);
+                        try (in; ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                            byte[] buf = new byte[1024];
+                            int len;
+                            while ((len = in.read(buf)) > 0) {
+                                out.write(buf, 0, len);
+                            }
+                            sb.append(new String(out.toByteArray(), StandardCharsets.UTF_8));
                         }
-                        sb.append(new String(out.toByteArray(), StandardCharsets.UTF_8));
-                        in.close();
                     }
                 }
             } catch (Exception e2) {

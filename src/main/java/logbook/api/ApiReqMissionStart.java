@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.json.JsonObject;
 
@@ -51,7 +50,7 @@ public class ApiReqMissionStart implements APIListenerSpi {
                             .stream()
                             .map(shipMap::get)
                             .filter(Objects::nonNull)
-                            .collect(Collectors.toList());
+                            .toList();
 
                     if (!condition.get().test(fleet)) {
                         Integer id = missionId;

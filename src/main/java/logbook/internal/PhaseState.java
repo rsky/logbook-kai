@@ -593,8 +593,8 @@ public class PhaseState {
             int at = hougeki.getAtList().get(i);
             // 攻撃種別
             AtType atType;
-            if (hougeki instanceof MidnightHougeki) {
-                atType = Optional.ofNullable(((MidnightHougeki) hougeki).getSpList())
+            if (hougeki instanceof MidnightHougeki midnight) {
+                atType = Optional.ofNullable(midnight.getSpList())
                         .map(l -> l.get(index))
                         .map(MidnightSpList::toMidnightSpList)
                         .orElse(MidnightSpList.toMidnightSpList(0));

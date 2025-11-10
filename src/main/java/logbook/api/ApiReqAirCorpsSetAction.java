@@ -2,7 +2,6 @@ package logbook.api;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.json.JsonObject;
 
@@ -23,10 +22,10 @@ public class ApiReqAirCorpsSetAction implements APIListenerSpi {
         int areaId = Integer.parseInt(req.getParameter("api_area_id"));
         List<Integer> baseIds = Arrays.stream(req.getParameter("api_base_id").split(","))
                 .map(Integer::valueOf)
-                .collect(Collectors.toList());
+                .toList();
         List<Integer> kinds = Arrays.stream(req.getParameter("api_action_kind").split(","))
                 .map(Integer::valueOf)
-                .collect(Collectors.toList());
+                .toList();
 
         for (int i = 0; i < baseIds.size(); i++) {
             int index = i;

@@ -100,8 +100,11 @@ Java21がインストールされたWindows,LinuxまたはmacOSが必要です�
 
 #### プラグイン
 
-- [Pushbullet Plugin](https://github.com/rsky/logbook-kai-plugins)
-  - 遠征・入渠の通知をiPhone/Android端末へプッシュ通知することが可能になります。
+- [rsky作のプラグイン集](https://github.com/rsky/logbook-kai-plugins)
+  - Slack Plugin & Discord Plugin
+    - SlackまたはDiscordのWebhookに遠征・入渠の完了を通知します。
+  - 戦果チャート Plugin
+    - 自分とボーダーの戦果をデータベースに記録し、チャート表示します。
 
 ### スクリーンショット
 

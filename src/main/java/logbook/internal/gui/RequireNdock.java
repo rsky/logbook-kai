@@ -26,25 +26,25 @@ import logbook.internal.Time;
 public class RequireNdock {
 
     /** 艦隊 */
-    private StringProperty deck = new SimpleStringProperty();
+    private final StringProperty deck = new SimpleStringProperty();
 
     /** 艦娘 */
-    private ObjectProperty<Ship> ship = new SimpleObjectProperty<Ship>();
+    private final ObjectProperty<Ship> ship = new SimpleObjectProperty<>();
 
     /** Lv */
-    private IntegerProperty lv = new SimpleIntegerProperty();
+    private final IntegerProperty lv = new SimpleIntegerProperty();
 
     /** 時間 */
-    private ObjectProperty<Duration> time = new SimpleObjectProperty<Duration>();
+    private final ObjectProperty<Duration> time = new SimpleObjectProperty<>();
 
     /** 今から */
-    private StringProperty end = new SimpleStringProperty();
+    private final StringProperty end = new SimpleStringProperty();
 
     /** 燃料 */
-    private IntegerProperty fuel = new SimpleIntegerProperty();
+    private final IntegerProperty fuel = new SimpleIntegerProperty();
 
     /** 鋼材 */
-    private IntegerProperty metal = new SimpleIntegerProperty();
+    private final IntegerProperty metal = new SimpleIntegerProperty();
 
     /**
      * 艦隊を取得します。

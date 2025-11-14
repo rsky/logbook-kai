@@ -135,7 +135,7 @@ public class QuestProgress extends WindowController {
         setFilterListIcon(item);
         if (condition.getConditions() != null) {
             if (condition.getConditions().size() == 1 && !condition.getOperator().startsWith("N")) {
-                item.setValue(condition.getConditions().get(0).toString());
+                item.setValue(condition.getConditions().getFirst().toString());
             } else {
                 for (FleetCondition subcondition : condition.getConditions()) {
                     item.getChildren().add(this.buildFilterLeaf(subcondition));

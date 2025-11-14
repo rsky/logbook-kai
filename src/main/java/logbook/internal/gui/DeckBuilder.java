@@ -114,7 +114,7 @@ public class DeckBuilder {
         Map<String, Object> data = new TreeMap<>();
         data.put("version", 4);
         Optional.ofNullable(Basic.get().getLevel()).ifPresent(lv -> data.put("hqlv", lv));
-        DeckPortCollection.get().getDeckPortMap().values().stream().forEach(port -> {
+        DeckPortCollection.get().getDeckPortMap().values().forEach(port -> {
             Map<String, DeckBuilder.Kanmusu> fleet = new TreeMap<>();
             Optional.ofNullable(port.getShip()).ifPresent(list -> {
                 for (int i = 0; i < list.size(); i++) {
@@ -131,7 +131,7 @@ public class DeckBuilder {
         Optional.ofNullable(airbase).ifPresent(list -> {
             for (int a = 0; a < airbase.size(); a++) {
                 Airbase ab = airbase.get(a);
-                if (ab.getList() != null && ab.getList().size() > 0) {
+                if (ab.getList() != null && !ab.getList().isEmpty()) {
                     data.put("a" + (a+1), ab);
                     List<AirBaseItem> planes = ab.getList();
                     for (int i = 0; i < planes.size(); i++) {
@@ -181,7 +181,7 @@ public class DeckBuilder {
         Kanmusu(Ship ship) {
             this.id = ship.getShipId();
             this.lv = ship.getLv();
-            this.luck = ship.getLucky().get(0);
+            this.luck = ship.getLucky().getFirst();
             this.items = new TreeMap<>();
             Map<Integer, SlotItem> slotitemMap = SlotItemCollection.get().getSlotitemMap();
             Optional.ofNullable(ship.getSlot())

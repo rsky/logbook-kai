@@ -57,13 +57,7 @@ public class AppQuestDuration {
         }
         // 期限切れの削除
         String now = Logs.nowString();
-        val iterator = this.map.entrySet().iterator();
-        for (; iterator.hasNext();) {
-            val entry = iterator.next();
-            if (now.compareTo(entry.getKey()) > 0) {
-                iterator.remove();
-            }
-        }
+        this.map.entrySet().removeIf(entry -> now.compareTo(entry.getKey()) > 0);
     }
 
     /**
@@ -91,7 +85,7 @@ public class AppQuestDuration {
     /**
      * 受託を完了します。
      * 
-     * @param questId
+     * @param questId 任務ID
      */
     @JsonIgnore
     public void remove(Integer questId) {

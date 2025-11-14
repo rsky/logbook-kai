@@ -69,8 +69,8 @@ public class MissionResultLogFormat extends LogFormatBase<MissionResult> {
         // アイテム1個数
         if (result.getGetItem1() != null) {
             Optional<UseitemMst> item;
-            if (result.getUseitemFlag().get(0) != 4) {
-                item = Optional.ofNullable(useitemMap.get(result.getUseitemFlag().get(0)));
+            if (result.getUseitemFlag().getFirst() != 4) {
+                item = Optional.ofNullable(useitemMap.get(result.getUseitemFlag().getFirst()));
             } else {
                 item = Optional.ofNullable(useitemMap.get(result.getGetItem1().getUseitemId()));
             }

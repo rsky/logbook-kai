@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -113,28 +112,25 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
     }
 
     private boolean testShip0(Ship ship) {
-        boolean result = true;
-        if (ship == null) {
-            result = false;
-        }
+        boolean result = ship != null;
         // 艦種条件
         if (result && this.shipType != null) {
             String stype = Ships.stype(ship)
                     .map(Stype::getName)
                     .orElse(null);
-            result &= this.shipType.contains(stype)
+            result = this.shipType.contains(stype)
                     || (this.shipType.contains("護衛空母")
-                            && Ships.shipMst(ship).map(ShipMst::getTais).orElse(null) != null);
+                    && Ships.shipMst(ship).map(ShipMst::getTais).orElse(null) != null);
         }
         // レベル条件
         if (result && this.level != null) {
-            result &= ship.getLv() >= this.level;
+            result = ship.getLv() >= this.level;
         }
         // 装備条件
         if (result && this.item != null) {
             Map<Integer, SlotItem> itemMap = SlotItemCollection.get()
                     .getSlotitemMap();
-            result &= ship.getSlot().stream()
+            result = ship.getSlot().stream()
                     .map(itemMap::get)
                     .map(Items::slotitemMst)
                     .map(i -> i.orElse(null))
@@ -157,7 +153,7 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
             current = this.fleetStatus(ships, Ship::getLv);
         }
         if ("火力".equals(this.countType)) {
-            current = this.fleetStatus(ships, ship -> ship.getKaryoku().get(0));
+            current = this.fleetStatus(ships, ship -> ship.getKaryoku().getFirst());
         }
         if ("対潜".equals(this.countType)) {
             // 遠征のときは艦載機の対潜値は複雑な式となるので、最小見積もりとして0.65倍する（ことによって false positive をなくす）
@@ -165,10 +161,10 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
                     + Ships.sumItemParam(ship, (item) -> Items.isAircraft(item) ? (int)(item.getTais()*0.65) : item.getTais(), true));
         }
         if ("対空".equals(this.countType)) {
-            current = this.fleetStatus(ships, ship -> ship.getTaiku().get(0));
+            current = this.fleetStatus(ships, ship -> ship.getTaiku().getFirst());
         }
         if ("索敵".equals(this.countType)) {
-            current = this.fleetStatus(ships, ship -> ship.getSakuteki().get(0));
+            current = this.fleetStatus(ships, ship -> ship.getSakuteki().getFirst());
         }
         if ("装備".equals(this.countType)) {
             Map<Integer, SlotItem> itemMap = SlotItemCollection.get()
@@ -197,8 +193,8 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
                     .filter(ship -> ship.getCond() > 49)
                     .count();
             this.value = 6;
-            if (ships.size() > 0) {
-                int lv = ships.get(0).getLv();
+            if (!ships.isEmpty()) {
+                int lv = ships.getFirst().getLv();
                 if (lv >= 128) {
                     this.value = 4;
                 } else if (lv >= 33) {
@@ -238,10 +234,10 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
     private String toStringShip() {
         StringBuilder sb = new StringBuilder();
         if (this.level != null) {
-            sb.append("レベル" + this.level + "以上の");
+            sb.append("レベル").append(this.level).append("以上の");
         }
         if (this.shipType != null) {
-            sb.append(this.shipType.stream().collect(Collectors.joining("または")));
+            sb.append(String.join("または", this.shipType));
         } else {
             sb.append("任意の艦種");
         }
@@ -250,17 +246,17 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
             if (this.order == 1) {
                 sb.append("旗艦");
             } else {
-                sb.append("序列" + this.order + "位");
+                sb.append("序列").append(this.order).append("位");
             }
         }
         if (this.item != null) {
-            sb.append("かつ" + this.item + "を装備");
+            sb.append("かつ").append(this.item).append("を装備");
         }
         if (this.current != null) {
-            sb.append("(現在の値:" + this.current + ")");
+            sb.append("(現在の値:").append(this.current).append(")");
         }
         if (this.description != null) {
-            sb.append("(" + this.description + ")");
+            sb.append("(").append(this.description).append(")");
         }
         return sb.toString();
     }
@@ -278,15 +274,15 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
                 sb.append("(旗艦レベル33未満)キラキラ");
             }
         } else {
-            sb.append("艦隊" + this.countType + "合計");
+            sb.append("艦隊").append(this.countType).append("合計");
         }
         sb.append(this.value);
         sb.append("以上");
         if (this.current != null) {
-            sb.append("(現在の値:" + this.current + ")");
+            sb.append("(現在の値:").append(this.current).append(")");
         }
         if (this.description != null) {
-            sb.append("(" + this.description + ")");
+            sb.append("(").append(this.description).append(")");
         }
         return sb.toString();
     }

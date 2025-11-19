@@ -22,6 +22,8 @@ public class SeaAreaNameConfig implements Serializable {
     private String area10 = SeaArea.識別札10.getName();
     private String area11 = SeaArea.識別札11.getName();
     private String area12 = SeaArea.識別札12.getName();
+    private String area13 = SeaArea.識別札13.getName();
+    private String area14 = SeaArea.識別札14.getName();
 
     public String getAreaName(int area) {
         return switch (area) {
@@ -37,6 +39,8 @@ public class SeaAreaNameConfig implements Serializable {
             case 10 -> this.area10;
             case 11 -> this.area11;
             case 12 -> this.area12;
+            case 13 -> this.area13;
+            case 14 -> this.area14;
             default -> null;
         };
     }

@@ -35,9 +35,8 @@ public class ApiGetMemberNdock implements APIListenerSpi {
             Set<Integer> before = NdockCollection.get().getNdockSet();
             // 入渠中の艦娘
             NdockCollection.get()
-                    .setNdockSet(map.entrySet()
+                    .setNdockSet(map.values()
                             .stream()
-                            .map(Map.Entry::getValue)
                             .map(Ndock::getShipId)
                             .collect(Collectors.toCollection(LinkedHashSet::new)));
             // 差し替え前と異なっていたら補正

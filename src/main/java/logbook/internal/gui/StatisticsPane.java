@@ -262,7 +262,7 @@ public class StatisticsPane extends VBox {
     }
 
     private long getExp(Ship ship) {
-        return ship.getExp().get(0);
+        return ship.getExp().getFirst();
     }
 
     private int tickLevel(Ship ship) {
@@ -283,9 +283,9 @@ public class StatisticsPane extends VBox {
         潜水艦("潜水艦", "潜水空母"),
         特殊艦("水上機母艦", "揚陸艦", "工作艦", "潜水母艦", "補給艦");
 
-        private String[] group;
+        private final String[] group;
 
-        private TypeGroup(String... shipTypes) {
+        TypeGroup(String... shipTypes) {
             this.group = shipTypes;
         }
 

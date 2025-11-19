@@ -58,7 +58,7 @@ public class ApiGetMemberShip2 implements APIListenerSpi {
         DeckPortCollection.get()
                 .setMissionShips(deckMap.values()
                         .stream()
-                        .filter(d -> d.getMission().get(0) != 0)
+                        .filter(d -> d.getMission().getFirst() != 0)
                         .map(DeckPort::getShip)
                         .flatMap(List::stream)
                         .collect(Collectors.toCollection(LinkedHashSet::new)));

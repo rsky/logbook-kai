@@ -49,7 +49,7 @@ public interface RequestMetaData {
     default String getParameter(String key, String def) {
         List<String> v = this.getParameterMap().get(key);
         if (v != null && !v.isEmpty())
-            return v.get(0);
+            return v.getFirst();
         return def;
     }
 

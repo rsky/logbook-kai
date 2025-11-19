@@ -37,12 +37,12 @@ public class ApiReqCombinedBattleGobackPort implements APIListenerSpi {
 
             // 退避
             Optional.of(escape.getEscapeIdx())
-                    .map(e -> e.get(0))
+                    .map(List::getFirst)
                     .map(i -> this.getShipId(log.getDeckMap(), i))
                     .ifPresent(escapeSet::add);
             // 護衛
             Optional.ofNullable(escape.getTowIdx())
-                    .map(e -> e.get(0))
+                    .map(List::getFirst)
                     .map(i -> this.getShipId(log.getDeckMap(), i))
                     .ifPresent(escapeSet::add);
         }
@@ -61,7 +61,7 @@ public class ApiReqCombinedBattleGobackPort implements APIListenerSpi {
 
         Ship ship;
         if ((index - 1) < Math.max(deckMap.get(decks.get(0)).size(), 6)) {
-            ship = deckMap.get(decks.get(0)).get(index - 1);
+            ship = deckMap.get(decks.getFirst()).get(index - 1);
         } else {
             ship = deckMap.get(decks.get(1)).get(index - 6 - 1);
         }

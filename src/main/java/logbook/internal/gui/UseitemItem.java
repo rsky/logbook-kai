@@ -23,16 +23,16 @@ import logbook.bean.UseitemMst;
 public class UseitemItem {
 
     /** ID */
-    private IntegerProperty id = new SimpleIntegerProperty();
+    private final IntegerProperty id = new SimpleIntegerProperty();
 
     /** 名前 */
-    private StringProperty name = new SimpleStringProperty();
+    private final StringProperty name = new SimpleStringProperty();
 
     /** 個数 */
-    private IntegerProperty count = new SimpleIntegerProperty();
+    private final IntegerProperty count = new SimpleIntegerProperty();
 
     /** 説明 */
-    private StringProperty description = new SimpleStringProperty();
+    private final StringProperty description = new SimpleStringProperty();
 
     public Integer getId() {
         return this.id.get();
@@ -109,10 +109,10 @@ public class UseitemItem {
         UseitemItem ret = new UseitemItem();
         ret.setId(item.getId());
         ret.setName(item.getName());
-        if (item.getDescription().size() > 0) {
+        if (!item.getDescription().isEmpty()) {
             StringBuilder sb = new StringBuilder(256);
             sb.append(item.getDescription().get(0).replaceAll("<br>", ""));
-            if (item.getDescription().size() > 1 && item.getDescription().get(1).trim().length() > 0) {
+            if (item.getDescription().size() > 1 && !item.getDescription().get(1).trim().isEmpty()) {
                 sb.append(" (").append(item.getDescription().get(1)).append(")");
             }
             ret.setDescription(sb.toString());
@@ -147,7 +147,7 @@ public class UseitemItem {
         return new StringJoiner("\t")
                 .add(Integer.toString(this.id.get()))
                 .add(this.name.get())
-                .add(Optional.ofNullable(this.count.get()).map(c -> Integer.toString(c)).orElse("-"))
+                .add(Optional.of(this.count.get()).map(c -> Integer.toString(c)).orElse("-"))
                 .add(this.description.get())
                 .toString();
     }

@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -53,7 +52,7 @@ import lombok.Getter;
 public class DeckShipPane extends VBox {
 
     /** 装備のStringConverter */
-    private static StringConverter<SlotitemMst> itemNameStringConverter = ToStringConverter.of(SlotitemMst::getName);
+    private static final StringConverter<SlotitemMst> itemNameStringConverter = ToStringConverter.of(SlotitemMst::getName);
 
     /** 艦娘画像 */
     @FXML
@@ -188,10 +187,10 @@ public class DeckShipPane extends VBox {
     private ComboBox<Integer> itemLvList6;
 
     /** 選択した艦娘 */
-    private ObjectProperty<Integer> selectedShip = new SimpleObjectProperty<>(0);
+    private final ObjectProperty<Integer> selectedShip = new SimpleObjectProperty<>(0);
 
     /** 艦娘 */
-    private AppDeckShip ship = new AppDeckShip();
+    private final AppDeckShip ship;
 
     /** 変更検知 */
     @Getter
@@ -289,7 +288,7 @@ public class DeckShipPane extends VBox {
     /**
      * 艦娘選択
      *
-     * @param event
+     * @param event ActionEvent
      */
     @FXML
     void shipChange(ActionEvent event) {
@@ -304,7 +303,7 @@ public class DeckShipPane extends VBox {
                 .sorted(Comparator.comparing(Ship::getShipId))
                 .sorted(Comparator.comparing(Ship::getLv).reversed())
                 .map(ShipItem::toShipItem)
-                .collect(Collectors.toList()));
+                .toList());
 
         FilteredList<ShipItem> filtered = new FilteredList<>(ships);
         TextFlow textFlow = new TextFlow();
@@ -336,9 +335,7 @@ public class DeckShipPane extends VBox {
         box.getHeaderContents().add(accordion);
         box.setItems(filtered);
         box.setCellFactory(new ShipCell());
-        box.selectedItemProperty().addListener((ov, o, n) -> {
-            this.selectedShip.setValue(n != null && n.idProperty() != null ? n.getId() : 0);
-        });
+        box.selectedItemProperty().addListener((ov, o, n) -> this.selectedShip.setValue(n != null && n.idProperty() != null ? n.getId() : 0));
         box.getStylesheets().add("logbook/gui/deck.css");
         box.show(this.shipButton);
     }
@@ -434,7 +431,7 @@ public class DeckShipPane extends VBox {
                 .map(itemMstMap::get)
                 .sorted(Comparator.comparing(SlotitemMst::getName))
                 .sorted(Comparator.comparing(m -> m.getType().get(3)))
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     /**
@@ -445,9 +442,7 @@ public class DeckShipPane extends VBox {
      */
     private void installItemLevel(ComboBox<Integer> list, Label label) {
         list.setConverter(ItemLevelStringConverter.instance);
-        list.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> {
-            label.setText(ItemLevelStringConverter.instance.toString(n));
-        });
+        list.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> label.setText(ItemLevelStringConverter.instance.toString(n)));
         list.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     }
 

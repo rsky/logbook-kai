@@ -71,7 +71,7 @@ public class Createitem implements Serializable {
         if (port != null) {
             List<Integer> ships = port.getShip();
             if (ships != null) {
-                Integer id = ships.get(0);
+                Integer id = ships.getFirst();
                 secretary = ShipCollection.get()
                         .getShipMap()
                         .get(id);

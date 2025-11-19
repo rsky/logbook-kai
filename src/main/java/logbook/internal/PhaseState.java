@@ -120,7 +120,7 @@ public class PhaseState {
             List<Ship> ships;
             if (b.isICombinedEcMidnightBattle()) {
                 ICombinedEcMidnightBattle ecmb = b.asICombinedEcMidnightBattle();
-                ships = deckMap.get(ecmb.getActiveDeck().get(0));
+                ships = deckMap.get(ecmb.getActiveDeck().getFirst());
             } else {
                 ships = deckMap.get(b.getDockId());
             }

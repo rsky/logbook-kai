@@ -12,7 +12,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -38,7 +37,6 @@ public class AppQuestDurationTest {
                 Assert.assertNotNull(list);
                 list.getList().stream()
                     .map(AppQuest::toAppQuest)
-                    .filter(Objects::nonNull)
                     .forEach(q -> {
                         if (q.isActive()) {
                             duration.set(q);
@@ -47,7 +45,7 @@ public class AppQuestDurationTest {
                         }
                     });
                 duration.unset(218);
-                list.getList().get(0).setState(0);
+                list.getList().getFirst().setState(0);
                 System.out.println(duration.getMap().keySet());
                 /// Asia/Tokyo (GMT+09:00) - 5 (5amに任務リセット) = GMT+04:00
                 ZonedDateTime today = ZonedDateTime.now(ZoneId.of("GMT+04:00")).truncatedTo(ChronoUnit.DAYS);
@@ -57,25 +55,25 @@ public class AppQuestDurationTest {
                 Assert.assertNotNull(duration.getMap().get(daily));
                 Map<Integer, List<Duration>> value = duration.getMap().get(daily);
                 Assert.assertNotNull(value.get(218));
-                Assert.assertNotNull(value.get(218).get(0).getTo());
+                Assert.assertNotNull(value.get(218).getFirst().getTo());
 
                 String weekly = today.plusDays(8-today.getDayOfWeek().getValue()).withZoneSameInstant(ZoneId.of("Asia/Tokyo")).format(DateTimeFormatter.ofPattern(dtf));
                 Assert.assertNotNull(duration.getMap().get(weekly));
                 value = duration.getMap().get(weekly);
                 Assert.assertNotNull(value.get(220));
-                Assert.assertNull(value.get(220).get(0).getTo());
+                Assert.assertNull(value.get(220).getFirst().getTo());
 
                 String monthly = today.minusDays(today.getDayOfMonth()-1).plusMonths(1).withZoneSameInstant(ZoneId.of("Asia/Tokyo")).format(DateTimeFormatter.ofPattern(dtf));
                 Assert.assertNotNull(duration.getMap().get(monthly));
                 value = duration.getMap().get(monthly);
                 Assert.assertNotNull(value.get(249));
-                Assert.assertNull(value.get(249).get(0).getTo());
+                Assert.assertNull(value.get(249).getFirst().getTo());
 
                 String quarterly = today.plusMonths(3-today.getMonthValue()%3).withDayOfMonth(1).withZoneSameInstant(ZoneId.of("Asia/Tokyo")).format(DateTimeFormatter.ofPattern(dtf));
                 Assert.assertNotNull(duration.getMap().get(quarterly));
                 value = duration.getMap().get(quarterly);
                 Assert.assertNotNull(value.get(861));
-                Assert.assertNull(value.get(861).get(0).getTo());
+                Assert.assertNull(value.get(861).getFirst().getTo());
 
                 ZonedDateTime tmp = today.plusMonths(1).withDayOfMonth(1);
                 while (tmp.getMonthValue() != 8) {
@@ -85,13 +83,13 @@ public class AppQuestDurationTest {
                 Assert.assertNotNull(duration.getMap().get(yearly8));
                 value = duration.getMap().get(yearly8);
                 Assert.assertNotNull(value.get(438));
-                Assert.assertNull(value.get(438).get(0).getTo());
+                Assert.assertNull(value.get(438).getFirst().getTo());
                 
                 String once = "9999-12-31 05:00:00";
                 Assert.assertNotNull(duration.getMap().get(once));
                 value = duration.getMap().get(once);
                 Assert.assertNotNull(value.get(924));
-                Assert.assertNull(value.get(924).get(0).getTo());
+                Assert.assertNull(value.get(924).getFirst().getTo());
             }
         }
     }

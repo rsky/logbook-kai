@@ -113,7 +113,7 @@ public class MissionCheck extends WindowController {
                 subTree.setExpanded(true);
 
                 List<Mission> missions = missionEntry.getValue();
-                Integer mapareaId = missions.get(0).getMapareaId();
+                Integer mapareaId = missions.getFirst().getMapareaId();
 
                 String area = Optional.ofNullable(MapareaCollection.get().getMaparea().get(mapareaId))
                         .filter(map -> map.getId() != null && map.getId() <= 40)
@@ -172,26 +172,19 @@ public class MissionCheck extends WindowController {
                 return null;
             }
             
-            item.setValue(mission.toString()+" ["+Missions.getDurationText(mission) + "]");
-            if (mission.getDamageType() != null && mission.getDamageType().intValue() > 0) {
-                String label;
-                switch (mission.getDamageType()) {
-                case 1:
-                    label = "交戦型";
-                    break;
-                case 2:
-                    label = "交戦II型";
-                    break;
-                default:
-                    label = "交戦型(" + mission.getDamageType() + ")";
-                    break;
-                }
+            item.setValue(mission+" ["+Missions.getDurationText(mission) + "]");
+            if (mission.getDamageType() != null && mission.getDamageType() > 0) {
+                String label = switch (mission.getDamageType()) {
+                    case 1 -> "交戦型";
+                    case 2 -> "交戦II型";
+                    default -> "交戦型(" + mission.getDamageType() + ")";
+                };
                 TreeItem<String> battle = new TreeItem<>(label);
                 ImageView image = new ImageView(Missions.damageTypeIcon(mission.getDamageType()));
                 image.setFitWidth(18);
                 image.setFitHeight(18);
                 battle.setGraphic(image);
-                item.getChildren().add(0, battle);
+                item.getChildren().addFirst(battle);
             }
             if (mission.getSampleFleet() != null) {
                 TreeItem<String> sample = new TreeItem<>("サンプル編成");
@@ -238,7 +231,7 @@ public class MissionCheck extends WindowController {
 
         if (condition.getConditions() != null) {
             if (condition.getConditions().size() == 1 && !condition.getOperator().startsWith("N")) {
-                item.setValue(condition.getConditions().get(0).toString());
+                item.setValue(condition.getConditions().getFirst().toString());
             } else {
                 for (MissionCondition subcondition : condition.getConditions()) {
                     item.getChildren().add(this.buildLeaf(subcondition));

@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javafx.scene.media.AudioClip;
@@ -31,8 +30,8 @@ public final class Audios {
         if (Files.isDirectory(dir)) {
             try (DirectoryStream<Path> ds = Files.newDirectoryStream(dir, SUPPORTED_FILES)) {
                 List<Path> paths = StreamSupport.stream(ds.spliterator(), false)
-                        .collect(Collectors.toList());
-                if (paths.size() > 0) {
+                        .toList();
+                if (!paths.isEmpty()) {
                     return paths.get((int) Math.floor(Math.random() * paths.size()));
                 }
             }
@@ -44,9 +43,8 @@ public final class Audios {
      * デフォルトサウンドを取得します。
      * 
      * @return デフォルトサウンドのパス、存在しない場合null
-     * @throws IOException 入出力エラーが発生した場合
      */
-    public static Path defaultNotifySound() throws IOException {
+    public static Path defaultNotifySound() {
         String soundPath = AppConfig.get().getDefaultNotifySound();
         if (soundPath != null && !soundPath.isEmpty()) {
             Path path = Paths.get(soundPath);

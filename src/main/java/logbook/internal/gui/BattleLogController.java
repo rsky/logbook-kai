@@ -1,23 +1,5 @@
 package logbook.internal.gui;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import org.controlsfx.control.CheckComboBox;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
@@ -30,24 +12,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.TreeTableColumn.SortType;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.FlowPane;
@@ -65,6 +31,17 @@ import logbook.internal.LoggerHolder;
 import logbook.internal.ToStringConverter;
 import logbook.internal.Tuple;
 import logbook.internal.Tuple.Triplet;
+import org.controlsfx.control.CheckComboBox;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * 戦闘ログのUIコントローラー
@@ -227,19 +204,19 @@ public class BattleLogController extends WindowController {
     private PieChart chart;
 
     /** ユーザー追加単位 */
-    private List<BattleLogs.CustomUnit> userUnit = new ArrayList<>();
+    private final List<BattleLogs.CustomUnit> userUnit = new ArrayList<>();
 
     /** 戦闘ログ */
     private Map<IUnit, List<SimpleBattleLog>> logMap;
 
     /** 詳細(フィルタ前) */
-    private ObservableList<BattleLogDetail> detailsSource = FXCollections.observableArrayList();
+    private final ObservableList<BattleLogDetail> detailsSource = FXCollections.observableArrayList();
 
     /** 詳細(フィルタ済み) */
-    private FilteredList<BattleLogDetail> filteredDetails = new FilteredList<>(this.detailsSource);
+    private final FilteredList<BattleLogDetail> filteredDetails = new FilteredList<>(this.detailsSource);
 
     /** 集計用Map */
-    private Map<String, Function<BattleLogDetail, ?>> aggregateTypeMap = new HashMap<>();
+    private final Map<String, Function<BattleLogDetail, ?>> aggregateTypeMap = new HashMap<>();
 
     /** 海域短縮名のパターン（1-2など） */
     private static final Pattern AREA_SHORTNAME_PATTERN = Pattern.compile("^([0-9]+)-([0-9]+)$");
@@ -247,8 +224,8 @@ public class BattleLogController extends WindowController {
     @FXML
     void initialize() {
         try {
-            TableTool.setVisible(this.detail, this.getClass().toString() + "#" + "detail");
-            TableTool.setVisible(this.aggregate, this.getClass().toString() + "#" + "aggregate");
+            TableTool.setVisible(this.detail, this.getClass() + "#" + "detail");
+            TableTool.setVisible(this.aggregate, this.getClass() + "#" + "aggregate");
             // SplitPaneの分割サイズ
             Timeline x = new Timeline();
             x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {
@@ -283,9 +260,7 @@ public class BattleLogController extends WindowController {
                         if (log != null) {
                             try {
                                 InternalFXMLLoader.showWindow("logbook/gui/battle_detail.fxml", this.getWindow(),
-                                        "戦闘ログ", c -> {
-                                            ((BattleDetail) c).setData(log);
-                                        }, null);
+                                        "戦闘ログ", c -> ((BattleDetail) c).setData(log), null);
                             } catch (Exception ex) {
                                 LoggerHolder.get().error("詳細の表示に失敗しました", ex);
                             }
@@ -322,7 +297,7 @@ public class BattleLogController extends WindowController {
 
             // 統計
             // ルート要素(非表示)
-            TreeItem<BattleLogCollect> root = new TreeItem<BattleLogCollect>(new BattleLogCollect());
+            TreeItem<BattleLogCollect> root = new TreeItem<>(new BattleLogCollect());
             this.collect.setRoot(root);
             this.collect.setSortPolicy((param) -> {
                 // 最上位（root直下=集計単位）はいじらない
@@ -394,7 +369,7 @@ public class BattleLogController extends WindowController {
 
             loadConfig();
 
-            TreeTableTool.setVisible(this.collect, this.getClass().toString() + "#" + "collect");
+            TreeTableTool.setVisible(this.collect, this.getClass() + "#" + "collect");
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
         }
@@ -444,7 +419,7 @@ public class BattleLogController extends WindowController {
         unitRootValue.setUnit(unit.getName());
         unitRootValue.setCollectUnit(unit);
 
-        TreeItem<BattleLogCollect> unitRoot = new TreeItem<BattleLogCollect>(unitRootValue);
+        TreeItem<BattleLogCollect> unitRoot = new TreeItem<>(unitRootValue);
         unitRoot.setExpanded(true);
 
         // ボス
@@ -453,7 +428,7 @@ public class BattleLogController extends WindowController {
         bossValue.setCollectUnit(unit);
         bossValue.setBoss(true);
 
-        TreeItem<BattleLogCollect> boss = new TreeItem<BattleLogCollect>(bossValue);
+        TreeItem<BattleLogCollect> boss = new TreeItem<>(bossValue);
         unitRoot.getChildren().add(boss);
 
         // 海域の名前
@@ -462,7 +437,7 @@ public class BattleLogController extends WindowController {
                 .distinct()
                 .map(tuple -> Tuple.of(tuple.getKey(), tuple.getValue(), getSortOrder(tuple.getValue())))
                 .sorted(Comparator.comparing(Triplet::get3))
-                .collect(Collectors.toList());
+                .toList();
         for (Triplet<String, String, Integer> name : areaNames) {
             String area = name.get1();
             String text;
@@ -480,7 +455,7 @@ public class BattleLogController extends WindowController {
             areaValue.setAreaShortName(name.get2());
             areaValue.setAreaSortOrder(name.get3());
             
-            TreeItem<BattleLogCollect> areaRoot = new TreeItem<BattleLogCollect>(areaValue);
+            TreeItem<BattleLogCollect> areaRoot = new TreeItem<>(areaValue);
 
             // 海域ボス
             BattleLogCollect areaBossValue = BattleLogs.collect(list, name.get2(), true);
@@ -490,7 +465,7 @@ public class BattleLogController extends WindowController {
             areaBossValue.setAreaShortName(name.get2());
             areaBossValue.setBoss(true);
 
-            TreeItem<BattleLogCollect> areaBoss = new TreeItem<BattleLogCollect>(areaBossValue);
+            TreeItem<BattleLogCollect> areaBoss = new TreeItem<>(areaBossValue);
             areaRoot.getChildren().add(areaBoss);
 
             unitRoot.getChildren().add(areaRoot);
@@ -498,7 +473,7 @@ public class BattleLogController extends WindowController {
         if (unit instanceof Unit) {
             this.collect.getRoot().getChildren().add(unitRoot);
         } else {
-            this.collect.getRoot().getChildren().add(0, unitRoot);
+            this.collect.getRoot().getChildren().addFirst(unitRoot);
         }
     }
 
@@ -535,14 +510,14 @@ public class BattleLogController extends WindowController {
      * ビューの状態を復元
      */
     private void loadConfig() {
-        Optional.ofNullable(AppViewConfig.get().getBattleLogConfig()).ifPresent(config -> {
-            Optional.ofNullable(config.getCustomUnits()).ifPresent(units -> units.stream().forEach(u -> {
-                BattleLogs.CustomUnit unit = new BattleLogs.CustomUnit(LocalDate.ofEpochDay(u.getFrom()), LocalDate.ofEpochDay(u.getTo()));
-                this.logMap.put(unit, BattleLogs.readSimpleLog(unit));
-                this.addTree(unit);
-                this.userUnit.add(unit);
-            }));
-        });
+        Optional.ofNullable(AppViewConfig.get().getBattleLogConfig())
+                .flatMap(config -> Optional.ofNullable(config.getCustomUnits()))
+                .ifPresent(units -> units.forEach(u -> {
+                    BattleLogs.CustomUnit unit = new BattleLogs.CustomUnit(LocalDate.ofEpochDay(u.getFrom()), LocalDate.ofEpochDay(u.getTo()));
+                    this.logMap.put(unit, BattleLogs.readSimpleLog(unit));
+                    this.addTree(unit);
+                    this.userUnit.add(unit);
+                }));
     }
 
     /**
@@ -610,7 +585,7 @@ public class BattleLogController extends WindowController {
     @FXML
     void columnVisibleDetail() {
         try {
-            TableTool.showVisibleSetting(this.detail, this.getClass().toString() + "#" + "detail", this.getWindow());
+            TableTool.showVisibleSetting(this.detail, this.getClass() + "#" + "detail", this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
         }
@@ -638,7 +613,7 @@ public class BattleLogController extends WindowController {
     @FXML
     void columnVisibleAggregate() {
         try {
-            TableTool.showVisibleSetting(this.aggregate, this.getClass().toString() + "#" + "aggregate",
+            TableTool.showVisibleSetting(this.aggregate, this.getClass() + "#" + "aggregate",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
@@ -652,9 +627,7 @@ public class BattleLogController extends WindowController {
     void script() {
         try {
             InternalFXMLLoader.showWindow("logbook/gui/battlelog_script.fxml", this.getWindow(),
-                    "高度な集計", c -> {
-                        ((BattleLogScriptController) c).setData(this.filteredDetails);
-                    }, null);
+                    "高度な集計", c -> ((BattleLogScriptController) c).setData(this.filteredDetails), null);
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
         }
@@ -679,7 +652,7 @@ public class BattleLogController extends WindowController {
             // 海域フィルタ
             Predicate<BattleLogDetail> areaFilter = areaShortName != null ? e -> areaShortName.equals(e.getAreaShortName()) : anyFilter;
             // ボスフィルタ
-            Predicate<BattleLogDetail> bossFilter = boss ? e -> e.getBoss().indexOf("ボス") != -1 : anyFilter;
+            Predicate<BattleLogDetail> bossFilter = boss ? e -> e.getBoss().contains("ボス") : anyFilter;
 
             List<BattleLogDetail> values = this.logMap.get(collect.getCollectUnit())
                     .stream()
@@ -687,7 +660,7 @@ public class BattleLogController extends WindowController {
                     .filter(areaFilter)
                     .filter(bossFilter)
                     .sorted(Comparator.comparing(BattleLogDetail::getDate).reversed())
-                    .collect(Collectors.toList());
+                    .toList();
             this.detailsSource.addAll(values);
             boolean userUnitRootSelected = this.userUnit.contains(collect.getCollectUnit()) && this.collect.getRoot().getChildren().contains(value);
             this.removeUnitButton.setDisable(!userUnitRootSelected);
@@ -752,18 +725,15 @@ public class BattleLogController extends WindowController {
                         .filter(Objects::nonNull)
                         .distinct()
                         .sorted()
-                        .collect(Collectors.toList()));
+                        .toList());
         box.getChildren().add(comboBox);
         this.filterPane.getChildren().add(box);
 
         comboBox.getCheckModel()
                 .getCheckedItems()
                 .addListener(listener);
-        Predicate<S> filter = o -> {
-            return comboBox.getCheckModel().getCheckedItems().isEmpty()
-                    || comboBox.getCheckModel().getCheckedItems().contains(getter.apply(o));
-        };
-        return filter;
+        return o -> comboBox.getCheckModel().getCheckedItems().isEmpty()
+                || comboBox.getCheckModel().getCheckedItems().contains(getter.apply(o));
     }
 
     /**
@@ -843,7 +813,7 @@ public class BattleLogController extends WindowController {
         this.chart.setData(value);
     }
 
-    private class UnitDialog extends DialogPane {
+    private static class UnitDialog extends DialogPane {
 
         @FXML
         private DatePicker from;
@@ -877,8 +847,8 @@ public class BattleLogController extends WindowController {
                     if (from != null && to != null) {
                         if (item.equals(from) || item.equals(to)) {
                             this.getStyleClass().add("selected");
-                        } else if ((from.compareTo(to) < 0 && item.compareTo(from) > 0 && item.compareTo(to) < 0)
-                                || (from.compareTo(to) > 0 && item.compareTo(from) < 0 && item.compareTo(to) > 0)) {
+                        } else if ((from.isBefore(to) && item.isAfter(from) && item.isBefore(to))
+                                || (from.isAfter(to) && item.isBefore(from) && item.isAfter(to))) {
                             this.getStyleClass().add("contains");
                         }
                     }
@@ -894,7 +864,7 @@ public class BattleLogController extends WindowController {
             LocalDate from = this.from.getValue();
             LocalDate to = this.to.getValue();
             if (from != null && to != null) {
-                if (from.compareTo(to) <= 0) {
+                if (!from.isAfter(to)) {
                     return new BattleLogs.CustomUnit(from, to);
                 } else {
                     return new BattleLogs.CustomUnit(to, from);

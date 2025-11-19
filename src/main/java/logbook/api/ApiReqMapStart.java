@@ -118,7 +118,7 @@ public class ApiReqMapStart implements APIListenerSpi {
             List<ShipMst> shipMsts = badlyShips.stream()
                     .map(ship -> Ships.shipMst(ship).orElse(null))
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+                    .toList();
 
             String hiragana = shipMsts.stream()
                     .map(ShipMst::getYomi)

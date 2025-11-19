@@ -200,8 +200,8 @@ public class Ships {
             try (is) {
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.enable(Feature.ALLOW_COMMENTS);
-                Map<String, List<ShipSupplementalInfo>> json = mapper.readValue(is, new TypeReference<Map<String, List<ShipSupplementalInfo>>>() {});
-                map = Optional.ofNullable(json.get("ships")).map(list -> list.stream().collect(Collectors.toMap(ship -> ship.getId(), ship -> ship)));
+                Map<String, List<ShipSupplementalInfo>> json = mapper.readValue(is, new TypeReference<>() {});
+                map = Optional.ofNullable(json.get("ships")).map(list -> list.stream().collect(Collectors.toMap(ShipSupplementalInfo::getId, ship -> ship)));
             } catch (Exception e) {
                 LoggerHolder.get().error("艦娘付加情報の初期化に失敗しました", e);
             }
@@ -507,14 +507,12 @@ public class Ships {
      * @return 砲撃戦火力
      */
     public static int hPower(Ship ship) {
-        List<SlotitemMst> items = getSlotitemMst(ship).collect(Collectors.toList());
+        List<SlotitemMst> items = getSlotitemMst(ship).toList();
         // 艦攻艦爆搭載艦
         boolean isPasedoCarrier = items.stream()
-                .filter(i -> i.is(SlotItemType.艦上攻撃機, SlotItemType.艦上爆撃機))
-                .findAny()
-                .isPresent();
+                .anyMatch(i -> i.is(SlotItemType.艦上攻撃機, SlotItemType.艦上爆撃機));
         // 火力
-        int karyoku = ship.getKaryoku().get(0);
+        int karyoku = ship.getKaryoku().getFirst();
 
         if (isPasedoCarrier || ship.is(ShipType.軽空母, ShipType.正規空母, ShipType.装甲空母)) {
             // 空母(または空母扱い)の場合
@@ -538,7 +536,7 @@ public class Ships {
      * @return 雷撃戦火力
      */
     public static int rPower(Ship ship) {
-        return ship.getRaisou().get(0) + 5;
+        return ship.getRaisou().getFirst() + 5;
     }
 
     /**
@@ -552,7 +550,7 @@ public class Ships {
         int tais = getSlotitemMst(ship)
                 .mapToInt(SlotitemMst::getTais)
                 .sum();
-        return (int) Math.round(Math.floor((ship.getTaisen().get(0) - tais) / 5D) + (tais * 2) + 25);
+        return (int) Math.round(Math.floor((ship.getTaisen().getFirst() - tais) / 5D) + (tais * 2) + 25);
     }
 
     /**
@@ -562,7 +560,7 @@ public class Ships {
      * @return 夜戦火力
      */
     public static int yPower(Ship ship) {
-        return ship.getKaryoku().get(0) + ship.getRaisou().get(0);
+        return ship.getKaryoku().getFirst() + ship.getRaisou().getFirst();
     }
 
     /**
@@ -635,11 +633,7 @@ public class Ships {
      */
     private static boolean supportsAirSuperiorityMpa(SlotitemMst itemMst) {
         // 対空値を持つ対潜哨戒機は制空状態に関係する
-        if (itemMst.is(SlotItemType.対潜哨戒機) && itemMst.getTyku() > 0) {
-            return true;
-        }
-
-        return false;
+        return itemMst.is(SlotItemType.対潜哨戒機) && itemMst.getTyku() > 0;
     }
 
     /**
@@ -710,7 +704,7 @@ public class Ships {
             if (mst == null)
                 return 0D;
 
-            boolean isGun = Optional.ofNullable(mst)
+            boolean isGun = Optional.of(mst)
                     .map(type -> type.is(SlotItemType.小口径主砲, SlotItemType.副砲))
                     .orElse(false);
             if (mst.getType().get(3) != 16 && isGun)
@@ -741,7 +735,7 @@ public class Ships {
 
         int itemTyku = getSlotitemMst(ship).mapToInt(SlotitemMst::getTyku).sum();
 
-        int shipAA = ship.getTaiku().get(0) - itemTyku;
+        int shipAA = ship.getTaiku().getFirst() - itemTyku;
         return itemWeightAA + shipAA;
     }
 
@@ -752,7 +746,7 @@ public class Ships {
      * @return 噴進弾幕発動率
      */
     public static double rocketBarrageActivationRate(Ship ship) {
-        List<SlotitemMst> items = getSlotitemMst(ship).collect(Collectors.toList());
+        List<SlotitemMst> items = getSlotitemMst(ship).toList();
         long rocketCount = items.stream()
                 .filter(e -> e.getId() == 274) // 噴進砲改二
                 .count();
@@ -784,7 +778,7 @@ public class Ships {
         if (antiAircraft % 2 != 0)
             antiAircraft -= 1;
 
-        double baseActivationRate = (antiAircraft + ship.getLucky().get(0)) / 282D;
+        double baseActivationRate = (antiAircraft + ship.getLucky().getFirst()) / 282D;
         double activationRate = Math.floor(baseActivationRate * 1000) / 10;
 
         return activationRate + bonus;
@@ -805,11 +799,9 @@ public class Ships {
         Map<Integer, SlotItem> itemMap = SlotItemCollection.get()
                 .getSlotitemMap();
         // 艦娘から装備を取り出すFunction
-        Function<Ship, Stream<SlotItem>> toSlotItem = ship -> {
-            return Stream.concat(ship.getSlot().stream(), Stream.of(ship.getSlotEx()))
-                    .map(itemMap::get)
-                    .filter(Objects::nonNull);
-        };
+        Function<Ship, Stream<SlotItem>> toSlotItem = ship -> Stream.concat(ship.getSlot().stream(), Stream.of(ship.getSlotEx()))
+                .map(itemMap::get)
+                .filter(Objects::nonNull);
 
         //  索敵スコア＝(装備倍率×装備索敵値)の和＋√(各艦娘の素索敵)の和－[0.4×司令部レベル(端数切り上げ)]＋2×(6－出撃艦数)
 
@@ -832,7 +824,7 @@ public class Ships {
                 .sum();
         // √(各艦娘の素索敵)の和
         double shipView = ships.stream()
-                .mapToDouble(e -> e.getSakuteki().get(0) - getSlotitemMst(e)
+                .mapToDouble(e -> e.getSakuteki().getFirst() - getSlotitemMst(e)
                         .mapToInt(SlotitemMst::getSaku)
                         .sum())
                 .map(Math::sqrt)
@@ -899,15 +891,11 @@ public class Ships {
         if (item != null) {
             Integer houm = item.getHoum();
             if (houm != null) {
-                switch (houm) {
-                case 0:
-                case 1:
-                    return 1.12D;
-                case 2:
-                    return 1.17D;
-                default:
-                    return 1.2D;
-                }
+                return switch (houm) {
+                    case 0, 1 -> 1.12D;
+                    case 2 -> 1.17D;
+                    default -> 1.2D;
+                };
             }
         }
         return 0;
@@ -984,43 +972,36 @@ public class Ships {
      * @return 速力
      */
     public static String sokuText(Integer soku) {
-        if (soku == null)
+        if (soku == null) {
             return "";
-        switch (soku) {
-        case 0:
-            return "基地";
-        case 5:
-            return "低速";
-        case 10:
-            return "高速";
-        case 15:
-            return "高速+";
-        case 20:
-            return "最速";
         }
-        return "";
+        return switch (soku) {
+            case 0 -> "基地";
+            case 5 -> "低速";
+            case 10 -> "高速";
+            case 15 -> "高速+";
+            case 20 -> "最速";
+            default -> "";
+        };
     }
 
     /**
      * 射程のテキスト表記
      *
      * @param leng leng
-     * @return
+     * @return 射程のテキスト表記
      */
     public static String lengText(Integer leng) {
-        if (leng == null)
+        if (leng == null) {
             return "";
-        switch (leng) {
-        case 1:
-            return "短";
-        case 2:
-            return "中";
-        case 3:
-            return "長";
-        case 4:
-            return "超長";
         }
-        return "";
+        return switch (leng) {
+            case 1 -> "短";
+            case 2 -> "中";
+            case 3 -> "長";
+            case 4 -> "超長";
+            default -> "";
+        };
     }
 
     /**
@@ -1030,23 +1011,16 @@ public class Ships {
      * @return 内部熟練度
      */
     private static int skillLevel(int level) {
-        switch (level) {
-        case 1:
-            return 10;
-        case 2:
-            return 25;
-        case 3:
-            return 40;
-        case 4:
-            return 55;
-        case 5:
-            return 70;
-        case 6:
-            return 85;
-        case 7:
-            return 100;
-        }
-        return 0;
+        return switch (level) {
+            case 1 -> 10;
+            case 2 -> 25;
+            case 3 -> 40;
+            case 4 -> 55;
+            case 5 -> 70;
+            case 6 -> 85;
+            case 7 -> 100;
+            default -> 0;
+        };
     }
 
     /**
@@ -1056,21 +1030,14 @@ public class Ships {
      * @return 熟練度ボーナス
      */
     private static int skillBonus1(int skill) {
-        switch (skill) {
-        case 2:
-            return 2;
-        case 3:
-            return 5;
-        case 4:
-            return 9;
-        case 5:
-            return 14;
-        case 6:
-            return 14;
-        case 7:
-            return 22;
-        }
-        return 0;
+        return switch (skill) {
+            case 2 -> 2;
+            case 3 -> 5;
+            case 4 -> 9;
+            case 5, 6 -> 14;
+            case 7 -> 22;
+            default -> 0;
+        };
     }
 
     /**
@@ -1080,21 +1047,12 @@ public class Ships {
      * @return 熟練度ボーナス
      */
     private static int skillBonus2(int skill) {
-        switch (skill) {
-        case 2:
-            return 1;
-        case 3:
-            return 1;
-        case 4:
-            return 1;
-        case 5:
-            return 3;
-        case 6:
-            return 3;
-        case 7:
-            return 6;
-        }
-        return 0;
+        return switch (skill) {
+            case 2, 3, 4 -> 1;
+            case 5, 6 -> 3;
+            case 7 -> 6;
+            default -> 0;
+        };
     }
 
     /**
@@ -1159,7 +1117,7 @@ public class Ships {
      * 装備のパラメータを合計する
      * @param ship 艦娘
      * @param mapper 合計するパラメータを返す mapper
-     * @return
+     * @return 装備パラメータの合計値
      */
     public static int sumItemParam(Ship ship, Function<SlotitemMst, Integer> mapper) {
         return sumItemParam(ship, mapper, false);
@@ -1170,7 +1128,7 @@ public class Ships {
      * @param ship 艦娘
      * @param mapper 合計するパラメータを返す mapper
      * @param excludeEmptyAircraft 搭載数が0のスロットを除外するかどうか
-     * @return
+     * @return 装備パラメータの合計値
      */
     public static int sumItemParam(Ship ship, Function<SlotitemMst, Integer> mapper, boolean excludeEmptyAircraft) {
         Map<Integer, SlotItem> items = SlotItemCollection.get().getSlotitemMap();
@@ -1181,8 +1139,8 @@ public class Ships {
                 .filter(item -> {
                     if (Items.isAircraft(item) && excludeEmptyAircraft) {
                         // 航空機なら搭載数が1以上のときのみ加算する
-                        Integer onSlot = (index < ship.getOnslot().size()) ? ship.getOnslot().get(index) : -1;
-                        return onSlot.intValue() > 0;
+                        int onSlot = (index < ship.getOnslot().size()) ? ship.getOnslot().get(index) : -1;
+                        return onSlot > 0;
                     } else {
                         // それ以外は常に加算
                         return true;
@@ -1195,7 +1153,7 @@ public class Ships {
         
         return list.stream()
                 .map(mapper)
-                .mapToInt(i -> i.intValue())
+                .mapToInt(i -> i)
                 .sum();
     }
 

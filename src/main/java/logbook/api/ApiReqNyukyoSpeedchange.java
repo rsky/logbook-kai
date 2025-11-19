@@ -50,9 +50,8 @@ public class ApiReqNyukyoSpeedchange implements APIListenerSpi {
 
         // 入渠中の艦娘
         NdockCollection.get()
-                .setNdockSet(ndockMap.entrySet()
+                .setNdockSet(ndockMap.values()
                         .stream()
-                        .map(Map.Entry::getValue)
                         .map(Ndock::getShipId)
                         .collect(Collectors.toCollection(LinkedHashSet::new)));
     }

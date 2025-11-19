@@ -70,9 +70,7 @@ public class CaptureSaveController extends WindowController {
     void initialize() {
         // SplitPaneの分割サイズ
         Timeline x = new Timeline();
-        x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {
-            Tools.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
-        }));
+        x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> Tools.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane")));
         x.play();
         this.image.fitWidthProperty().bind(this.imageParent.widthProperty());
         this.image.fitHeightProperty().bind(this.imageParent.heightProperty());
@@ -95,13 +93,10 @@ public class CaptureSaveController extends WindowController {
             DirectoryChooser dc = new DirectoryChooser();
             dc.setTitle("キャプチャの保存先");
             // 覚えた保存先をセット
-            File initDir = Optional.ofNullable(AppConfig.get().getCaptureDir())
+            Optional.ofNullable(AppConfig.get().getCaptureDir())
                     .map(File::new)
                     .filter(File::isDirectory)
-                    .orElse(null);
-            if (initDir != null) {
-                dc.setInitialDirectory(initDir);
-            }
+                    .ifPresent(dc::setInitialDirectory);
             File file = dc.showDialog(this.getWindow());
             if (file != null) {
                 // 保存先を覚える
@@ -109,7 +104,7 @@ public class CaptureSaveController extends WindowController {
 
                 Path path = file.toPath();
 
-                Task<Void> task = new Task<Void>() {
+                Task<Void> task = new Task<>() {
                     @Override
                     protected Void call() throws Exception {
                         CaptureSaveController.this.saveJpeg(selections, path);
@@ -154,7 +149,7 @@ public class CaptureSaveController extends WindowController {
         if (this.tile.isSelected()) {
             // 並べる場合
             int column = Math.max(Integer.parseInt(this.tileCount.getText()), 1);
-            ImageData top = selections.get(0);
+            ImageData top = selections.getFirst();
             Path to = dir.resolve(DATE_FORMAT.format(top.getDateTime()) + "." + top.getFormat());
             List<byte[]> bytes = selections.stream()
                     .map(ImageData::getImage)

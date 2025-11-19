@@ -92,9 +92,9 @@ class ScreenCapture {
         /** 改装一覧の範囲 */
         UNIT(new Rectangle(490, 154, 690, 547));
 
-        private Rectangle angle;
+        private final Rectangle angle;
 
-        private CutType(Rectangle angle) {
+        CutType(Rectangle angle) {
             this.angle = angle;
         }
 
@@ -126,7 +126,7 @@ class ScreenCapture {
         this.size = size;
     }
 
-    void capture() throws IOException {
+    void capture() {
         ThreadManager.getExecutorService()
                 .execute(this::execute);
     }
@@ -154,7 +154,7 @@ class ScreenCapture {
                 this.current.set(image);
                 this.list.add(image);
                 while (this.list.size() > this.size) {
-                    this.list.remove(0);
+                    this.list.removeFirst();
                 }
             });
         } catch (IOException e) {
@@ -184,9 +184,7 @@ class ScreenCapture {
                 }
             }
 
-            Platform.runLater(() -> {
-                this.current.set(image);
-            });
+            Platform.runLater(() -> this.current.set(image));
         } catch (IOException e) {
             LoggerHolder.get().warn("キャプチャ処理で例外", e);
         }
@@ -384,7 +382,7 @@ class ScreenCapture {
         if (bytes.isEmpty()) {
             return null;
         }
-        BufferedImage base = ImageIO.read(new ByteArrayInputStream(bytes.get(0)));
+        BufferedImage base = ImageIO.read(new ByteArrayInputStream(bytes.getFirst()));
 
         int baseWidth = base.getWidth();
         int baseHeight = base.getHeight();

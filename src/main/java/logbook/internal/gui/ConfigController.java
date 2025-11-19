@@ -412,6 +412,12 @@ public class ConfigController extends WindowController {
     @FXML
     private TextField seaAreaName12;
 
+    @FXML
+    private TextField seaAreaName13;
+
+    @FXML
+    private TextField seaAreaName14;
+
     private ObservableList<DetailPlugin> plugins = FXCollections.observableArrayList();
 
     private EnumMap<BouyomiChanUtils.Type, Supplier<Boolean>> enableBouyomiTextMap = new EnumMap<>(

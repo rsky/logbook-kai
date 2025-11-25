@@ -5,11 +5,9 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -117,10 +115,10 @@ public class CalcExpController extends WindowController {
     private TableColumn<ShortageShipItem, Integer> afterLv;
 
     /** 艦娘のコンボボックスに表示する */
-    private ObservableList<ShipWrapper> ships = FXCollections.observableArrayList();
+    private final ObservableList<ShipWrapper> ships = FXCollections.observableArrayList();
 
     /** 改装レベル不足の艦娘 */
-    private ObservableList<ShortageShipItem> item = FXCollections.observableArrayList();
+    private final ObservableList<ShortageShipItem> item = FXCollections.observableArrayList();
 
     /** 今の経験値 */
     private int nowExpValue;
@@ -132,9 +130,7 @@ public class CalcExpController extends WindowController {
     void initialize() {
         // SplitPaneの分割サイズ
         Timeline x = new Timeline();
-        x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {
-            Tools.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
-        }));
+        x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> Tools.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane")));
         x.play();
         // Spinnerに最小値最大値現在値を設定
         this.nowLv.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, ExpTable.maxLv(), 1, 1));
@@ -162,29 +158,29 @@ public class CalcExpController extends WindowController {
         // イベントリスナー
         this.shipList.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((ChangeListener<ShipWrapper>) this::changeShip);
+                .addListener(this::changeShip);
         this.nowLv.getValueFactory()
                 .valueProperty()
-                .addListener((ChangeListener<Integer>) this::changeNowLv);
+                .addListener(this::changeNowLv);
         this.goalLv.getValueFactory()
                 .valueProperty()
-                .addListener((ChangeListener<Integer>) this::changeGoalLv);
+                .addListener(this::changeGoalLv);
         this.sea.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((ChangeListener<AppSeaAreaExp>) (ov, o, n) -> this.changeSeaArea());
+                .addListener((ov, o, n) -> this.changeSeaArea());
         this.rank.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((ChangeListener<Rank>) (ov, o, n) -> this.update());
+                .addListener((ov, o, n) -> this.update());
         this.shortageShip.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((ChangeListener<ShortageShipItem>) this::changeShip);
+                .addListener(this::changeShip);
 
         // 旗艦ID
         Integer flagShipId = DeckPortCollection.get()
                 .getDeckPortMap()
                 .get(1)
                 .getShip()
-                .get(0);
+                .getFirst();
         // 旗艦
         ShipWrapper flagShip = this.ships.stream()
                 .filter(w -> w.getShip().getId().equals(flagShipId))
@@ -210,7 +206,7 @@ public class CalcExpController extends WindowController {
         ShipWrapper select = this.ships.stream()
                 .filter(w -> w.getShip().getId().equals(selectId))
                 .findAny()
-                .orElse(this.ships.get(0));
+                .orElse(this.ships.getFirst());
         this.shipList.getSelectionModel().select(select);
         this.update();
     }
@@ -260,7 +256,7 @@ public class CalcExpController extends WindowController {
         }
         this.nowLv.getValueFactory().setValue(newShip.getLv());
 
-        this.nowExpValue = newShip.getExp().get(0);
+        this.nowExpValue = newShip.getExp().getFirst();
         this.nowExp.setText(Integer.toString(this.nowExpValue));
 
         int afterLv = Ships.shipMst(newShip)
@@ -399,7 +395,7 @@ public class CalcExpController extends WindowController {
                 .stream()
                 .sorted(Comparator.comparing(Ship::getLv).reversed())
                 .map(ShipWrapper::new)
-                .collect(Collectors.toList()));
+                .toList());
 
     }
 
@@ -414,7 +410,7 @@ public class CalcExpController extends WindowController {
                 .map(ShortageShipItem::toShipItem)
                 .filter(item -> item.getAfterLv() > item.getLv())
                 .sorted(Comparator.comparing(ShortageShipItem::getLv).reversed())
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     /**
@@ -434,30 +430,30 @@ public class CalcExpController extends WindowController {
                     .stream()
                     .filter(e -> e.getKey() < 100)
                     .map(e -> new XYChart.Data<Number, Number>(e.getKey(), e.getValue()))
-                    .collect(Collectors.toList()));
+                    .toList());
         } else {
             total.getData().addAll(ExpTable.get().entrySet()
                     .stream()
                     .map(e -> new XYChart.Data<Number, Number>(e.getKey(), e.getValue()))
-                    .collect(Collectors.toList()));
+                    .toList());
         }
         goal.getData().addAll(ExpTable.get().entrySet()
                 .stream()
                 .filter(e -> e.getKey() <= goalLvValue)
                 .map(e -> new XYChart.Data<Number, Number>(e.getKey(), e.getValue()))
-                .collect(Collectors.toList()));
+                .toList());
         now.getData().addAll(ExpTable.get().entrySet()
                 .stream()
                 .filter(e -> e.getKey() <= nowLvValue)
                 .map(e -> new XYChart.Data<Number, Number>(e.getKey(), e.getValue()))
-                .collect(Collectors.toList()));
+                .toList());
 
         if (ExpTable.get().containsKey(nowLvValue + 1)
                 && !ExpTable.get().get(nowLvValue).equals(ExpTable.get().get(nowLvValue + 1))) {
             double per = ((double) nowExpValue - ExpTable.get().get(nowLvValue))
                     / ((double) ExpTable.get().get(nowLvValue + 1) - ExpTable.get().get(nowLvValue));
 
-            now.getData().add(new XYChart.Data<Number, Number>(nowLvValue + per, nowExpValue));
+            now.getData().add(new XYChart.Data<>(nowLvValue + per, nowExpValue));
         }
 
         this.expChart.getData().clear();
@@ -489,7 +485,7 @@ public class CalcExpController extends WindowController {
      *
      * @param needexp 必要経験値
      * @param exp 1回あたりの経験値
-     * @return
+     * @return 必要回数
      */
     private static int getCount(int needexp, int exp) {
         return BigDecimal.valueOf(needexp).divide(BigDecimal.valueOf(exp), RoundingMode.CEILING)
@@ -524,7 +520,7 @@ public class CalcExpController extends WindowController {
     private static class ShipWrapper {
 
         /** 艦娘 */
-        private Ship ship;
+        private final Ship ship;
 
         public ShipWrapper(Ship ship) {
             this.ship = ship;

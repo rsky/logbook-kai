@@ -23,7 +23,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 import logbook.bean.BattleLog;
@@ -187,7 +186,7 @@ public class BattleDetail extends WindowController {
     private boolean isPractice;
 
     /** 周期タイマー */
-    private Timeline timeline = new Timeline();
+    private final Timeline timeline = new Timeline();
 
     /** ハッシュ・コード */
     private int hashCode;
@@ -214,7 +213,7 @@ public class BattleDetail extends WindowController {
             this.log = log;
         }
         if (this.log != null) {
-            MapStartNext last = this.log.getNext().size() > 0 ? this.log.getNext().get(this.log.getNext().size() - 1) : null;
+            MapStartNext last = !this.log.getNext().isEmpty() ? this.log.getNext().getLast() : null;
             CombinedType combinedType = this.log.getCombinedType();
             Map<Integer, List<Ship>> deckMap = this.log.getDeckMap();
             Map<Integer, SlotItem> itemMap = this.log.getItemMap();
@@ -500,7 +499,7 @@ public class BattleDetail extends WindowController {
 
         // 評価判定
         judge.setAfter(ps, this.battle);
-        this.judge.setText(String.valueOf(judge.getRank())
+        this.judge.setText(judge.getRank()
                 + "(味方損害率:" + BigDecimal.valueOf(judge.getFriendDamageRatio()).setScale(3, RoundingMode.FLOOR)
                 + "/敵損害率:" + BigDecimal.valueOf(judge.getEnemyDamageRatio()).setScale(3, RoundingMode.FLOOR) + ")");
 
@@ -555,7 +554,7 @@ public class BattleDetail extends WindowController {
             }
         }
 
-        ((BattleDetailPhase) phases.get(phases.size() - 1)).setExpanded(true);
+        ((BattleDetailPhase) phases.getLast()).setExpanded(true);
     }
 
     /**
@@ -612,8 +611,7 @@ public class BattleDetail extends WindowController {
                     Stage2 stage2 = kouku.getStage2();
                     stage.add(new BattleDetailPhaseStage2(stage2, "僚艦"));
                 }
-                BattleDetailPhase phasePane = new BattleDetailPhase(ps, stage);
-                phasePane = new BattleDetailPhase(ps);
+                BattleDetailPhase phasePane = new BattleDetailPhase(ps);
                 phasePane.setText("航空戦フェイズ(噴式強襲)");
                 phasePane.setExpanded(false);
                 phases.add(phasePane);

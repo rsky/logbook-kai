@@ -49,7 +49,7 @@ public class ApiReqHenseiChange implements APIListenerSpi {
             ships.remove(shipIdx);
             ships.add(-1);
         } else if (shipId == -2) {
-            Integer first = ships.get(0);
+            Integer first = ships.getFirst();
             ships.replaceAll(ship -> first.equals(ship) ? ship : -1);
         } else {
             Integer from = ships.get(shipIdx);
@@ -79,8 +79,8 @@ public class ApiReqHenseiChange implements APIListenerSpi {
         if (shipId != -2) {
             for (Integer port : changed) {
                 List<Integer> changedShips = deckMap.get(port).getShip();
-                if (changedShips.size() > 0) {
-                    Integer shipid = changedShips.get(0);
+                if (!changedShips.isEmpty()) {
+                    Integer shipid = changedShips.getFirst();
                     Ship ship = ShipCollection.get().getShipMap().get(shipid);
                     if (ship != null) {
                         String type = Ships.stype(ship).map(Stype::getName).orElse("");

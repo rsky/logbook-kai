@@ -89,8 +89,8 @@ public class BattleResultLogFormat extends LogFormatBase<BattleLog> {
         }
 
         Function<BattleLog, String> bossText = l -> {
-            MapStartNext first = l.getNext().get(0);
-            MapStartNext last = l.getNext().get(l.getNext().size() - 1);
+            MapStartNext first = l.getNext().getFirst();
+            MapStartNext last = l.getNext().getLast();
 
             boolean start = Objects.nonNull(first.getFromNo());
             boolean boss = last.getNo().equals(last.getBosscellNo()) || last.getEventId() == 5;
@@ -108,13 +108,13 @@ public class BattleResultLogFormat extends LogFormatBase<BattleLog> {
         Format format = new Format();
         format.日付 = log.getTime();
         format.海域 = new StringBuilder(32)
-                .append(log.getNext().get(0).getMapareaId())
+                .append(log.getNext().getFirst().getMapareaId())
                 .append("-")
-                .append(log.getNext().get(0).getMapinfoNo())
+                .append(log.getNext().getFirst().getMapinfoNo())
                 .append(" ")
                 .append(result.getQuestName())
                 .toString();
-        format.マス = String.valueOf(log.getNext().get(log.getNext().size() - 1).getNo());
+        format.マス = String.valueOf(log.getNext().getLast().getNo());
         format.ボス = bossText.apply(log);
         format.ランク = result.getWinRank();
         format.艦隊行動 = BattleTypes.Intercept.toIntercept(battle.getFormation().get(2)).toString();

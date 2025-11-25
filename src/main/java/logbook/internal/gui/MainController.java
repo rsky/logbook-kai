@@ -59,10 +59,10 @@ public class MainController extends WindowController {
     private long achievementHashCode;
 
     /** 遠征通知のタイムスタンプ */
-    private Map<Integer, Long> timeStampMission = new HashMap<>();
+    private final Map<Integer, Long> timeStampMission = new HashMap<>();
 
     /** 入渠通知のタイムスタンプ */
-    private Map<Integer, Long> timeStampNdock = new HashMap<>();
+    private final Map<Integer, Long> timeStampNdock = new HashMap<>();
 
     @FXML
     private MainMenuController mainMenuController;
@@ -191,7 +191,7 @@ public class MainController extends WindowController {
     /**
      * 画面の更新
      *
-     * @param e
+     * @param e ActionEvent
      */
     void update(ActionEvent e) {
         try {
@@ -422,7 +422,7 @@ public class MainController extends WindowController {
             if (nodes.isEmpty()) {
                 nodes.add(new AkashiTimerPane());
             } else {
-                ((AkashiTimerPane) nodes.get(0)).update();
+                ((AkashiTimerPane) nodes.getFirst()).update();
             }
         }
     }
@@ -599,9 +599,7 @@ public class MainController extends WindowController {
             // リマインド間隔
             Duration interval = Duration.ofSeconds(AppConfig.get().getRemind());
             if (course.compareTo(interval) >= 0) {
-                if (timeStamp == 0L || remind) {
-                    return true;
-                }
+                return timeStamp == 0L || remind;
             }
         }
         return false;
@@ -667,10 +665,9 @@ public class MainController extends WindowController {
 
     private static long hashCode(Map<?, ?> map, boolean show) {
         long h = 59;
-        Iterator<?> i = map.entrySet().iterator();
-        while (i.hasNext()) {
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
             h *= 63;
-            h += i.next().hashCode();
+            h += entry.hashCode();
         }
         h *= 63;
         h += Boolean.hashCode(show);

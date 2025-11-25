@@ -412,6 +412,12 @@ public class ConfigController extends WindowController {
     @FXML
     private TextField seaAreaName12;
 
+    @FXML
+    private TextField seaAreaName13;
+
+    @FXML
+    private TextField seaAreaName14;
+
     private ObservableList<DetailPlugin> plugins = FXCollections.observableArrayList();
 
     private EnumMap<BouyomiChanUtils.Type, Supplier<Boolean>> enableBouyomiTextMap = new EnumMap<>(
@@ -898,6 +904,8 @@ public class ConfigController extends WindowController {
         this.seaAreaName10.setText(config.getArea10());
         this.seaAreaName11.setText(config.getArea11());
         this.seaAreaName12.setText(config.getArea12());
+        this.seaAreaName13.setText(config.getArea13());
+        this.seaAreaName14.setText(config.getArea14());
     }
 
     private void seaAreaNameStore() {
@@ -914,6 +922,8 @@ public class ConfigController extends WindowController {
         config.setArea10(this.seaAreaName10.getText());
         config.setArea11(this.seaAreaName11.getText());
         config.setArea12(this.seaAreaName12.getText());
+        config.setArea13(this.seaAreaName13.getText());
+        config.setArea14(this.seaAreaName14.getText());
     }
 
     private int toInt(String v) {

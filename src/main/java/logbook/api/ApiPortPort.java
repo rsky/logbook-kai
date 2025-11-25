@@ -127,7 +127,7 @@ public class ApiPortPort implements APIListenerSpi {
         DeckPortCollection.get()
                 .setMissionShips(deckMap.values()
                         .stream()
-                        .filter(d -> d.getMission().get(0) != 0)
+                        .filter(d -> d.getMission().getFirst() != 0)
                         .map(DeckPort::getShip)
                         .flatMap(List::stream)
                         .collect(Collectors.toCollection(LinkedHashSet::new)));
@@ -145,9 +145,8 @@ public class ApiPortPort implements APIListenerSpi {
                 .setNdockMap(map);
         // 入渠中の艦娘
         NdockCollection.get()
-                .setNdockSet(map.entrySet()
+                .setNdockSet(map.values()
                         .stream()
-                        .map(Map.Entry::getValue)
                         .map(Ndock::getShipId)
                         .collect(Collectors.toCollection(LinkedHashSet::new)));
     }

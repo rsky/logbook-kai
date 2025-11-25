@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -34,97 +33,97 @@ import logbook.internal.Ships;
 public class ShipItem {
 
     /** ID */
-    private IntegerProperty id = new SimpleIntegerProperty();
+    private final IntegerProperty id = new SimpleIntegerProperty();
 
     /** 艦隊 */
-    private StringProperty fleet = new SimpleStringProperty();
+    private final StringProperty fleet = new SimpleStringProperty();
 
     /** 艦娘 */
-    private ObjectProperty<Ship> ship = new SimpleObjectProperty<>();
+    private final ObjectProperty<Ship> ship = new SimpleObjectProperty<>();
 
     /** 艦種 */
-    private StringProperty type = new SimpleStringProperty();
+    private final StringProperty type = new SimpleStringProperty();
 
     /** Lv */
-    private IntegerProperty lv = new SimpleIntegerProperty();
+    private final IntegerProperty lv = new SimpleIntegerProperty();
 
     /** 経験値 */
-    private IntegerProperty exp = new SimpleIntegerProperty();
+    private final IntegerProperty exp = new SimpleIntegerProperty();
 
     /** Next */
-    private IntegerProperty next = new SimpleIntegerProperty();
+    private final IntegerProperty next = new SimpleIntegerProperty();
 
     /** cond */
-    private IntegerProperty cond = new SimpleIntegerProperty();
+    private final IntegerProperty cond = new SimpleIntegerProperty();
 
     /** ラベル */
-    private ObjectProperty<Set<String>> label = new SimpleObjectProperty<>();
+    private final ObjectProperty<Set<String>> label = new SimpleObjectProperty<>();
 
     /** 制空 */
-    private IntegerProperty seiku = new SimpleIntegerProperty();
+    private final IntegerProperty seiku = new SimpleIntegerProperty();
 
     /** 砲戦火力 */
-    private IntegerProperty hPower = new SimpleIntegerProperty();
+    private final IntegerProperty hPower = new SimpleIntegerProperty();
 
     /** 雷戦火力 */
-    private IntegerProperty rPower = new SimpleIntegerProperty();
+    private final IntegerProperty rPower = new SimpleIntegerProperty();
 
     /** 夜戦火力 */
-    private IntegerProperty yPower = new SimpleIntegerProperty();
+    private final IntegerProperty yPower = new SimpleIntegerProperty();
 
     /** 対潜火力 */
-    private IntegerProperty tPower = new SimpleIntegerProperty();
+    private final IntegerProperty tPower = new SimpleIntegerProperty();
 
     /** 火力 */
-    private IntegerProperty karyoku = new SimpleIntegerProperty();
+    private final IntegerProperty karyoku = new SimpleIntegerProperty();
 
     /** 雷装 */
-    private IntegerProperty raisou = new SimpleIntegerProperty();
+    private final IntegerProperty raisou = new SimpleIntegerProperty();
 
     /** 対空 */
-    private IntegerProperty taiku = new SimpleIntegerProperty();
+    private final IntegerProperty taiku = new SimpleIntegerProperty();
 
     /** 対潜 */
-    private IntegerProperty tais = new SimpleIntegerProperty();
+    private final IntegerProperty tais = new SimpleIntegerProperty();
 
     /** 索敵 */
-    private IntegerProperty sakuteki = new SimpleIntegerProperty();
+    private final IntegerProperty sakuteki = new SimpleIntegerProperty();
 
     /** 運 */
-    private IntegerProperty lucky = new SimpleIntegerProperty();
+    private final IntegerProperty lucky = new SimpleIntegerProperty();
 
     /** 耐久 */
-    private IntegerProperty maxhp = new SimpleIntegerProperty();
+    private final IntegerProperty maxhp = new SimpleIntegerProperty();
 
     /** 装甲 */
-    private IntegerProperty soukou = new SimpleIntegerProperty();
+    private final IntegerProperty soukou = new SimpleIntegerProperty();
 
     /** 回避 */
-    private IntegerProperty kaihi = new SimpleIntegerProperty();
+    private final IntegerProperty kaihi = new SimpleIntegerProperty();
 
     /** 速力 */
-    private IntegerProperty soku = new SimpleIntegerProperty();
+    private final IntegerProperty soku = new SimpleIntegerProperty();
 
     /** 射程 */
-    private IntegerProperty leng = new SimpleIntegerProperty();
+    private final IntegerProperty leng = new SimpleIntegerProperty();
 
     /** 装備1 */
-    private IntegerProperty slot1 = new SimpleIntegerProperty();
+    private final IntegerProperty slot1 = new SimpleIntegerProperty();
 
     /** 装備2 */
-    private IntegerProperty slot2 = new SimpleIntegerProperty();
+    private final IntegerProperty slot2 = new SimpleIntegerProperty();
 
     /** 装備3 */
-    private IntegerProperty slot3 = new SimpleIntegerProperty();
+    private final IntegerProperty slot3 = new SimpleIntegerProperty();
 
     /** 装備4 */
-    private IntegerProperty slot4 = new SimpleIntegerProperty();
+    private final IntegerProperty slot4 = new SimpleIntegerProperty();
 
     /** 装備5 */
-    private IntegerProperty slot5 = new SimpleIntegerProperty();
+    private final IntegerProperty slot5 = new SimpleIntegerProperty();
 
     /** 補強 */
-    private IntegerProperty slotEx = new SimpleIntegerProperty();
+    private final IntegerProperty slotEx = new SimpleIntegerProperty();
 
     /**
      * IDを取得します。
@@ -876,9 +875,7 @@ public class ShipItem {
                 .getSlotitemMap();
 
         // 装備の名前
-        Function<Integer, String> slotItemName = itemId -> {
-            return Items.name(itemMap.get(itemId));
-        };
+        Function<Integer, String> slotItemName = itemId -> Items.name(itemMap.get(itemId));
 
         return new StringJoiner("\t")
                 .add(Integer.toString(this.id.get()))
@@ -891,7 +888,7 @@ public class ShipItem {
                 .add(Integer.toString(this.exp.get()))
                 .add(Integer.toString(this.next.get()))
                 .add(Integer.toString(this.cond.get()))
-                .add(this.label.get().stream().collect(Collectors.joining(" ")))
+                .add(String.join(" ", this.label.get()))
                 .add(Integer.toString(this.seiku.get()))
                 .add(Integer.toString(this.hPower.get()))
                 .add(Integer.toString(this.rPower.get()))
@@ -955,19 +952,19 @@ public class ShipItem {
         shipItem.setYPower(Ships.yPower(ship));
         shipItem.setTPower(Ships.tPower(ship));
 
-        shipItem.setKaryoku(ship.getKaryoku().get(0) - Ships.sumItemParam(ship, SlotitemMst::getHoug));
-        shipItem.setRaisou(ship.getRaisou().get(0) - Ships.sumItemParam(ship, SlotitemMst::getRaig));
-        shipItem.setTaiku(ship.getTaiku().get(0) - Ships.sumItemParam(ship, SlotitemMst::getTyku));
-        shipItem.setLucky(ship.getLucky().get(0) - Ships.sumItemParam(ship, SlotitemMst::getLuck));
+        shipItem.setKaryoku(ship.getKaryoku().getFirst() - Ships.sumItemParam(ship, SlotitemMst::getHoug));
+        shipItem.setRaisou(ship.getRaisou().getFirst() - Ships.sumItemParam(ship, SlotitemMst::getRaig));
+        shipItem.setTaiku(ship.getTaiku().getFirst() - Ships.sumItemParam(ship, SlotitemMst::getTyku));
+        shipItem.setLucky(ship.getLucky().getFirst() - Ships.sumItemParam(ship, SlotitemMst::getLuck));
         shipItem.setMaxhp(ship.getMaxhp());
-        shipItem.setSoukou(ship.getSoukou().get(0) - Ships.sumItemParam(ship, SlotitemMst::getSouk));
+        shipItem.setSoukou(ship.getSoukou().getFirst() - Ships.sumItemParam(ship, SlotitemMst::getSouk));
         // 装備からではなく定義から計算する（念のため従来の計算方法も上に残す）
         Ships.shipMst(ship).filter(s -> ship.getKyouka() != null && ship.getKyouka().size() >= 5).ifPresent((mst) -> {
-            Optional.ofNullable(mst.getHoug()).filter(list -> list != null && list.size() > 0).map(list -> list.get(0) + ship.getKyouka().get(0)).ifPresent(shipItem::setKaryoku);
-            Optional.ofNullable(mst.getRaig()).filter(list -> list != null && list.size() > 0).map(list -> list.get(0) + ship.getKyouka().get(1)).ifPresent(shipItem::setRaisou);
-            Optional.ofNullable(mst.getTyku()).filter(list -> list != null && list.size() > 0).map(list -> list.get(0) + ship.getKyouka().get(2)).ifPresent(shipItem::setTaiku);
-            Optional.ofNullable(mst.getSouk()).filter(list -> list != null && list.size() > 0).map(list -> list.get(0) + ship.getKyouka().get(3)).ifPresent(shipItem::setSoukou);
-            Optional.ofNullable(mst.getLuck()).filter(list -> list != null && list.size() > 0).map(list -> list.get(0) + ship.getKyouka().get(4)).ifPresent(shipItem::setLucky);
+            Optional.ofNullable(mst.getHoug()).filter(list -> !list.isEmpty()).map(list -> list.getFirst() + ship.getKyouka().getFirst()).ifPresent(shipItem::setKaryoku);
+            Optional.ofNullable(mst.getRaig()).filter(list -> !list.isEmpty()).map(list -> list.getFirst() + ship.getKyouka().get(1)).ifPresent(shipItem::setRaisou);
+            Optional.ofNullable(mst.getTyku()).filter(list -> !list.isEmpty()).map(list -> list.getFirst() + ship.getKyouka().get(2)).ifPresent(shipItem::setTaiku);
+            Optional.ofNullable(mst.getSouk()).filter(list -> !list.isEmpty()).map(list -> list.getFirst() + ship.getKyouka().get(3)).ifPresent(shipItem::setSoukou);
+            Optional.ofNullable(mst.getLuck()).filter(list -> !list.isEmpty()).map(list -> list.getFirst() + ship.getKyouka().get(4)).ifPresent(shipItem::setLucky);
         });
 
         // 以下の対潜・索敵・回避は定義からでは計算できない

@@ -9,12 +9,7 @@ import java.util.Set;
 
 import javax.json.JsonObject;
 
-import logbook.bean.AppCondition;
-import logbook.bean.DeckPort;
-import logbook.bean.DeckPortCollection;
-import logbook.bean.Ship;
-import logbook.bean.ShipCollection;
-import logbook.bean.Stype;
+import logbook.bean.*;
 import logbook.internal.Ships;
 import logbook.proxy.RequestMetaData;
 import logbook.proxy.ResponseMetaData;
@@ -75,8 +70,9 @@ public class ApiReqHenseiChange implements APIListenerSpi {
         }
         changed.add(portId);
 
-        // 随伴艦一括解除以外の場合に、変化した艦隊の旗艦に工作艦が存在する場合は泊地修理タイマーをセットする
+        // 随伴艦一括解除以外の場合
         if (shipId != -2) {
+            // 変化した艦隊の旗艦に工作艦が存在する場合は泊地修理タイマーをセットする
             for (Integer port : changed) {
                 List<Integer> changedShips = deckMap.get(port).getShip();
                 if (!changedShips.isEmpty()) {
@@ -88,6 +84,28 @@ public class ApiReqHenseiChange implements APIListenerSpi {
                             AppCondition.get().setAkashiTimer(System.currentTimeMillis());
                             break;
                         }
+                    }
+                }
+            }
+            // 変化した艦隊の旗艦または2番艦に給糧艦が存在する場合は給糧艦タイマーをセットする
+            for (Integer port : changed) {
+                List<Integer> changedShips = deckMap.get(port).getShip();
+                if (!changedShips.isEmpty()) {
+                    boolean timerHasChanged = false;
+                    for (int index = 0; index < Math.max(changedShips.size(), 2); index++) {
+                        Integer shipid = changedShips.get(index);
+                        Ship ship = ShipCollection.get().getShipMap().get(shipid);
+                        if (ship != null) {
+                            ShipMst shipMst = ShipMstCollection.get().getShipMap().get(ship.getShipId());
+                            if (shipMst.getName().startsWith("野埼")) {
+                                AppCondition.get().setNosakiTimer(System.currentTimeMillis());
+                                timerHasChanged = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (timerHasChanged) {
+                        break;
                     }
                 }
             }

@@ -17,7 +17,7 @@ import lombok.Data;
 @Data
 public class AppCondition implements Serializable {
 
-    private static final long serialVersionUID = -7213537629508340991L;
+    private static final long serialVersionUID = -5250922634308963292L;
 
     /** 連合艦隊 */
     private boolean combinedFlag;
@@ -51,6 +51,9 @@ public class AppCondition implements Serializable {
 
     /** 泊地修理タイマー */
     private long akashiTimer = 0;
+
+    /** 給糧艦タイマー */
+    private long nosakiTimer = 0;
 
     /** cond値更新時間(エポック秒) */
     private long condUpdateTime = 0;

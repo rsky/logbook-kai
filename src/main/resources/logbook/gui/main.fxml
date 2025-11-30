@@ -11,74 +11,64 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="455.0" prefWidth="300.0" styleClass="mainWindow" xmlns="http://javafx.com/javafx/8.0.162" xmlns:fx="http://javafx.com/fxml/1" fx:controller="logbook.internal.gui.MainController">
-   <children>
-      <fx:include fx:id="mainMenu" source="main_menu.fxml"/>
-      <HBox styleClass="buttons">
-         <children>
-            <Button fx:id="item" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#items" styleClass="itemButton" text="所有装備({0}/{1})" HBox.hgrow="ALWAYS" />
-            <Button fx:id="ship" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ships" styleClass="shipButton" text="所有艦娘({0}/{1})" HBox.hgrow="ALWAYS" />
-         </children>
-      </HBox>
-      <TabPane fx:id="fleetTab" VBox.vgrow="ALWAYS">
-         <tabs>
-            <Tab closable="false" text="母港">
-               <content>
-                  <ScrollPane fitToWidth="true">
-                     <content>
-                        <VBox fx:id="infobox">
-                           <children>
-                              <TitledPane fx:id="achievementPane" animated="false" text="戦果">
-                                 <content>
-                                    <HBox style="-fx-padding:0;" spacing="10">
-                                       <children>
-                                          <AnchorPane HBox.hgrow="always" styleClass="achievement" prefHeight="40.0" minWidth="130.0">
-                                             <children>
-                                                <Label fx:id="achievementLabel1" maxWidth="130.0" prefWidth="130.0" styleClass="name" AnchorPane.leftAnchor="1.0" AnchorPane.topAnchor="1.0" text=""/>
-                                                <Label fx:id="achievementValue1" styleClass="achievement" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0" text=""/>
-                                             </children>
-                                          </AnchorPane>
-                                          <AnchorPane HBox.hgrow="always" styleClass="achievement" prefHeight="40.0" minWidth="130.0">
-                                             <children>
-                                                <Label fx:id="achievementLabel2" maxWidth="130.0" prefWidth="130.0" styleClass="name" AnchorPane.leftAnchor="1.0" AnchorPane.topAnchor="1.0" text=""/>
-                                                <Label fx:id="achievementValue2" styleClass="achievement" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0" text=""/>
-                                             </children>
-                                          </AnchorPane>
-                                       </children>
-                                    </HBox>
-                                 </content>
-                              </TitledPane>
-                              <TitledPane fx:id="missionPane" animated="false" text="遠征">
-                                 <content>
-                                    <VBox fx:id="missionbox" />
-                                 </content>
-                              </TitledPane>
-                              <TitledPane fx:id="ndockPane" animated="false" text="入渠">
-                                 <content>
-                                    <VBox>
-                                       <children>
-                                          <VBox fx:id="akashiTimer" />
-                                          <VBox fx:id="ndockbox" />
-                                       </children>
-                                    </VBox>
-                                 </content>
-                              </TitledPane>
-                              <TitledPane fx:id="questPane" animated="false" text="任務">
-                                 <content>
-                                    <VBox fx:id="questbox" />
-                                 </content>
-                              </TitledPane>
-                           </children>
+<VBox prefHeight="455.0" prefWidth="300.0" styleClass="mainWindow" xmlns="http://javafx.com/javafx/8.0.162"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="logbook.internal.gui.MainController">
+    <stylesheets>
+        <URL value="@application.css" />
+        <URL value="@main.css" />
+    </stylesheets>
+    <fx:include fx:id="mainMenu" source="main_menu.fxml" />
+    <HBox styleClass="buttons">
+        <Button fx:id="item" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#items"
+                styleClass="itemButton" text="所有装備({0}/{1})" HBox.hgrow="ALWAYS" />
+        <Button fx:id="ship" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ships"
+                styleClass="shipButton" text="所有艦娘({0}/{1})" HBox.hgrow="ALWAYS" />
+    </HBox>
+    <TabPane fx:id="fleetTab" VBox.vgrow="ALWAYS">
+        <Tab closable="false" text="母港">
+            <ScrollPane fitToWidth="true">
+                <VBox fx:id="infobox">
+                    <TitledPane fx:id="achievementPane" animated="false" text="戦果">
+                        <HBox style="-fx-padding:0;" spacing="10">
+                            <AnchorPane HBox.hgrow="always" styleClass="achievement"
+                                        prefHeight="40.0"
+                                        minWidth="130.0">
+                                <Label fx:id="achievementLabel1" maxWidth="130.0"
+                                       prefWidth="130.0"
+                                       styleClass="name" AnchorPane.leftAnchor="1.0"
+                                       AnchorPane.topAnchor="1.0" text="" />
+                                <Label fx:id="achievementValue1" styleClass="achievement"
+                                       AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0"
+                                       text="" />
+                            </AnchorPane>
+                            <AnchorPane HBox.hgrow="always" styleClass="achievement"
+                                        prefHeight="40.0"
+                                        minWidth="130.0">
+                                <Label fx:id="achievementLabel2" maxWidth="130.0"
+                                       prefWidth="130.0"
+                                       styleClass="name" AnchorPane.leftAnchor="1.0"
+                                       AnchorPane.topAnchor="1.0" text="" />
+                                <Label fx:id="achievementValue2" styleClass="achievement"
+                                       AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0"
+                                       text="" />
+                            </AnchorPane>
+                        </HBox>
+                    </TitledPane>
+                    <TitledPane fx:id="missionPane" animated="false" text="遠征">
+                        <VBox fx:id="missionbox" />
+                    </TitledPane>
+                    <TitledPane fx:id="ndockPane" animated="false" text="入渠">
+                        <VBox>
+                            <VBox fx:id="akashiTimer" />
+                            <VBox fx:id="nosakiTimer" />
+                            <VBox fx:id="ndockbox" />
                         </VBox>
-                     </content>
-                  </ScrollPane>
-               </content>
-            </Tab>
-         </tabs>
-      </TabPane>
-   </children>
-   <stylesheets>
-      <URL value="@application.css" />
-      <URL value="@main.css" />
-   </stylesheets>
+                    </TitledPane>
+                    <TitledPane fx:id="questPane" animated="false" text="任務">
+                        <VBox fx:id="questbox" />
+                    </TitledPane>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+    </TabPane>
 </VBox>

@@ -1,6 +1,6 @@
 group = "logbook"
 description = "logbook-kai"
-version = "25.11.3"
+version = "26.1.1"
 
 // UpgradeCode (GUID) for Windows Installer
 val windowsUpgradeUUID = "880e4493-20fc-4c89-8c5b-01e4b2479b77"

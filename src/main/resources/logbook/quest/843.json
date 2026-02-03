@@ -8,7 +8,7 @@
             "operator": "AND",
             "conditions": [
                 {"stype": ["重巡洋艦"], "order": 1},
-                {"stype": ["重巡洋艦"], "count": 2, "operator": "GE"},
+                {"stype": ["重巡洋艦"], "count": 1, "operator": "GE"},
                 {"stype": ["軽空母"], "count": 1, "operator": "GE"}
             ]
         }

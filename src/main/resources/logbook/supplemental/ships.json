@@ -831,6 +831,10 @@
     { "id": 1025, "name": "Wasp", "min_taisen": 0, "min_kaihi": 39, "min_sakuteki": 51 },
     { "id": 1027, "name": "Glorious", "min_taisen": 0, "min_kaihi": 24, "min_sakuteki": 37 },
     { "id": 1030, "name": "Wasp改", "min_taisen": 0, "min_kaihi": 43, "min_sakuteki": 53 },
+    { "id": 1031, "name": "飛龍改三", "min_taisen": 0, "min_kaihi": 41, "min_sakuteki": 53 },
+    { "id": 1033, "name": "玉波改二", "min_taisen": 29, "min_kaihi": 43, "min_sakuteki": 11 },
+    { "id": 1035, "name": "吹雪改三", "min_taisen": 46, "min_kaihi": 53, "min_sakuteki": 15 },
+    { "id": 1040, "name": "吹雪改三護(六式)", "min_taisen": 52, "min_kaihi": 56, "min_sakuteki": 20 },
     { "id": 1496, "name": "Colorado改", "min_taisen": 0, "min_kaihi": 22, "min_sakuteki": 16 }
   ]
 }

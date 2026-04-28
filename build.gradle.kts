@@ -48,7 +48,7 @@ tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
 
-val jar by tasks.getting(Jar::class) {
+val jar by tasks.getting(type = Jar::class) {
     manifest {
         attributes["Main-Class"] = "logbook.internal.Launcher"
         attributes["Implementation-Version"] = version
@@ -57,7 +57,8 @@ val jar by tasks.getting(Jar::class) {
 
 fun archName() = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentArchitecture().name
 
-tasks.register("prePackage", Copy::class) {
+tasks.register(name = "prePackage", type = Copy::class) {
+    description = "ZIPアーカイブを作成する準備を行う"
     dependsOn("shadowJar")
     mkdir("build/tmp/pkg-input")
     from("build/libs/logbook-kai-${version}-all.jar")
@@ -65,13 +66,15 @@ tasks.register("prePackage", Copy::class) {
     rename("logbook-kai-${version}-all.jar", "logbook-kai.jar")
 }
 
-tasks.register("package", Zip::class) {
+tasks.register(name = "package", type = Zip::class) {
+    description = "Fat JARを含む配布用のZIPアーカイブを作成する"
     dependsOn("prePackage")
     from("dist-includes").exclude("*/.gitkeep")
     from("build/tmp/pkg-input/logbook-kai.jar")
 }
 
-tasks.register("macApp", Exec::class) {
+tasks.register(name = "macApp", type = Exec::class) {
+    description = "macOSアプリケーションを作成する"
     dependsOn("clean", "prePackage")
     workingDir(".")
     commandLine(
@@ -83,7 +86,8 @@ tasks.register("macApp", Exec::class) {
     )
 }
 
-tasks.register("macDmg", Exec::class) {
+tasks.register(name = "macDmg", type = Exec::class) {
+    description = "macOSアプリケーションを含む配布用のディスクイメージを作成する"
     dependsOn("prePackage")
     workingDir(".")
     commandLine(
@@ -104,7 +108,8 @@ tasks.register("macDmg", Exec::class) {
     }
 }
 
-tasks.register("winApp", Exec::class) {
+tasks.register(name = "winApp", type = Exec::class) {
+    description = "Windowsアプリケーションを作成する"
     dependsOn("clean", "prePackage")
     workingDir(".")
     commandLine(
@@ -116,14 +121,16 @@ tasks.register("winApp", Exec::class) {
     )
 }
 
-tasks.register("winZip", Zip::class) {
+tasks.register(name = "winZip", type = Zip::class) {
+    description = "Windowsアプリケーションを含む配布用のZIPアーカイブを作成する"
     dependsOn("winApp")
     archiveFileName.set("logbook-kai-${version}-windows-${archName()}.zip")
     from("build/distributions/logbook-kai")
     from("dist-includes/README.url")
 }
 
-tasks.register("winMsi", Exec::class) {
+tasks.register(name = "winMsi", type = Exec::class) {
+    description = "Windowsアプリケーションのインストーラを作成する"
     // "major.minor.small" でWindows Installerの挙動が変わるので
     // "year.month.day" 形式のバージョニングは不適切かもしれない
     dependsOn("prePackage")

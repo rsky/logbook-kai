@@ -79,11 +79,11 @@ XDG Base Directory Specificationに従って設定ファイルは `~/.config/log
 
 #### jarファイルを直接実行する場合
 
-Java21がインストールされたWindows,LinuxまたはmacOSが必要です。
+Java25がインストールされたWindows,LinuxまたはmacOSが必要です。
 
 **次のJavaVMで動作確認されています。**
 
-- **[Liberica JDK version 21](https://bell-sw.com/pages/downloads/#jdk-21-lts)**
+- **[Liberica JDK version 25](https://bell-sw.com/pages/downloads/#jdk-25-lts)**
   - こちらを推奨します。JavaFXを利用しているため必ず**StandardではなくFullをダウンロード**してください。
 
 こちらもXDG Base Directory Specificationに従いますが、zipアーカイブに同梱されている `launch.bat` または `launch.sh` を使って起動する場合は以前の挙動と同じく、カレントディレクトリ以下に各種データを保存します。

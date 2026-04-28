@@ -24,7 +24,6 @@ dependencies {
     api(libs.org.openjfx.javafx.media)
     api(libs.org.openjfx.javafx.swing)
     api(libs.org.controlsfx.controlsfx)
-    api(libs.org.openjdk.nashorn.nashorn.core)
     api(libs.com.fasterxml.jackson.core.jackson.databind)
     api(libs.org.slf4j.slf4j.api)
     api(libs.ch.qos.logback.logback.classic)

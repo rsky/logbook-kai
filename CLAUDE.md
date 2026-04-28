@@ -52,8 +52,8 @@ Logbook-kai is a JavaFX-based desktop application for KanColle (Kantai Collectio
 - Supports lifecycle hooks, GUI extensions, and data processing plugins
 
 ### Key Dependencies
-- **JavaFX 21** - GUI framework (controls, FXML, media, swing, web)
-- **Jetty 11** - Embedded HTTP server/proxy
+- **JavaFX 25** - GUI framework (controls, FXML, media, swing)
+- **Jetty 12** - Embedded HTTP server/proxy
 - **Jackson 2** - JSON processing
 - **ControlsFX** - Additional JavaFX controls
 - **Lombok** - Code generation (annotations)

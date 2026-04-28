@@ -16,7 +16,6 @@ org-openjfx-javafx-controls = "25.0.3"
 org-openjfx-javafx-fxml = "25.0.3"
 org-openjfx-javafx-media = "25.0.3"
 org-openjfx-javafx-swing = "25.0.3"
-org-openjfx-javafx-web = "25.0.3"
 org-projectlombok-lombok = "1.18.46"
 org-slf4j-slf4j-api = "2.0.17"
 org-slf4j-slf4j-simple = "2.0.17"
@@ -38,7 +37,6 @@ org-openjfx-javafx-controls = { module = "org.openjfx:javafx-controls", version.
 org-openjfx-javafx-fxml = { module = "org.openjfx:javafx-fxml", version.ref = "org-openjfx-javafx-fxml" }
 org-openjfx-javafx-media = { module = "org.openjfx:javafx-media", version.ref = "org-openjfx-javafx-media" }
 org-openjfx-javafx-swing = { module = "org.openjfx:javafx-swing", version.ref = "org-openjfx-javafx-swing" }
-org-openjfx-javafx-web = { module = "org.openjfx:javafx-web", version.ref = "org-openjfx-javafx-web" }
 org-projectlombok-lombok = { module = "org.projectlombok:lombok", version.ref = "org-projectlombok-lombok" }
 org-slf4j-slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "org-slf4j-slf4j-api" }
 org-slf4j-slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "org-slf4j-slf4j-simple" }

@@ -23,7 +23,6 @@ dependencies {
     api(libs.org.openjfx.javafx.fxml)
     api(libs.org.openjfx.javafx.media)
     api(libs.org.openjfx.javafx.swing)
-    api(libs.org.openjfx.javafx.web)
     api(libs.org.controlsfx.controlsfx)
     api(libs.org.openjdk.nashorn.nashorn.core)
     api(libs.com.fasterxml.jackson.core.jackson.databind)

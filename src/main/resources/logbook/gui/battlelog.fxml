@@ -18,7 +18,6 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.232-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="logbook.internal.gui.BattleLogController">
@@ -106,8 +105,6 @@
                                  <children>
                                     <Label text="集計の種類" />
                                     <ChoiceBox fx:id="aggregateType" prefWidth="150.0" />
-                                    <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                                    <Button mnemonicParsing="false" onAction="#script" text="高度な集計" />
                                  </children>
                               </HBox>
                               <HBox>

@@ -1,3 +1,5 @@
+import kotlin.text.Regex.Companion.escape
+
 group = "logbook"
 description = "logbook-kai"
 version = "26.5.1"
@@ -63,7 +65,7 @@ tasks.register(name = "prePackage", type = Copy::class) {
     mkdir("build/tmp/pkg-input")
     from("build/libs/logbook-kai-${version}-all.jar")
     into("build/tmp/pkg-input")
-    rename("logbook-kai-${version}-all.jar", "logbook-kai.jar")
+    rename(escape("logbook-kai-${version}-all.jar"), "logbook-kai.jar")
 }
 
 tasks.register(name = "package", type = Zip::class) {
@@ -102,7 +104,7 @@ tasks.register(name = "macDmg", type = Exec::class) {
             from("build/distributions")
             into("build/distributions")
             include("Logbook-Kai-${version}.dmg")
-            rename("Logbook-Kai-${version}.dmg", "logbook-kai-${version}-macos-${archName()}.dmg")
+            rename(escape("Logbook-Kai-${version}.dmg"), "logbook-kai-${version}-macos-${archName()}.dmg")
         }
         delete("build/distributions/Logbook-Kai-${version}.dmg")
     }
@@ -151,7 +153,7 @@ tasks.register(name = "winMsi", type = Exec::class) {
             from("build/distributions")
             into("build/distributions")
             include("logbook-kai-${version}.msi")
-            rename("logbook-kai-${version}.msi", "logbook-kai-${version}-windows-${archName()}.msi")
+            rename(escape("logbook-kai-${version}.msi"), "logbook-kai-${version}-windows-${archName()}.msi")
         }
         delete("build/distributions/logbook-kai-${version}.msi")
     }

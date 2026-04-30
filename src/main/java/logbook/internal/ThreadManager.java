@@ -1,5 +1,6 @@
 package logbook.internal;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -12,6 +13,9 @@ public final class ThreadManager {
     /** Executor */
     private static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(4);
 
+    /** Virtual Thread Executor */
+    private static final ExecutorService VIRTUAL_EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
+
     /**
      * アプリケーションで共有するExecutorService
      * <p>
@@ -20,7 +24,16 @@ public final class ThreadManager {
      *
      * @return ExecutorService
      */
-    public static ScheduledExecutorService getExecutorService() {
+    public static ExecutorService getExecutorService() {
+        return VIRTUAL_EXECUTOR;
+    }
+
+    /**
+     * スケジューリングが必要な場合に使用するExecutorService
+     *
+     * @return ScheduledExecutorService
+     */
+    public static ScheduledExecutorService getScheduledExecutorService() {
         return EXECUTOR;
     }
 }

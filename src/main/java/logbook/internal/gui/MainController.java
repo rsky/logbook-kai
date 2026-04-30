@@ -516,7 +516,7 @@ public class MainController extends WindowController {
                 .getDeckPortMap();
         for (DeckPort port : ports.values()) {
             // 0=未出撃, 1=遠征中, 2=遠征帰還, 3=遠征中止
-            int state = port.getMission().get(0).intValue();
+            int state = port.getMission().getFirst().intValue();
             // 帰還時間
             long time = port.getMission().get(2);
 

@@ -413,7 +413,7 @@ class ShipImage {
         double w = canvas.getWidth() - 7;
         double h = canvas.getHeight();
         double gaugeHeight = 6;
-        double exp = ship.getExp().get(0);
+        double exp = ship.getExp().getFirst();
         double next = ship.getExp().get(1);
         double expPer;
         if (next > 0) {

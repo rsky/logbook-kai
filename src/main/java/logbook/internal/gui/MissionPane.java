@@ -104,7 +104,7 @@ public class MissionPane extends AnchorPane {
      */
     public void update() {
         // 0=未出撃, 1=遠征中, 2=遠征帰還, 3=遠征中止
-        int state = this.port.getMission().get(0).intValue();
+        int state = this.port.getMission().getFirst().intValue();
         // 遠征先ID
         int target = this.port.getMission().get(1).intValue();
         // 帰還時間

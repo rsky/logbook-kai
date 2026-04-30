@@ -930,7 +930,7 @@ public class ShipItem {
         shipItem.setShip(ship);
         shipItem.setType(type);
         shipItem.setLv(ship.getLv());
-        shipItem.setExp(ship.getExp().get(0));
+        shipItem.setExp(ship.getExp().getFirst());
         shipItem.setNext(ship.getExp().get(1));
         shipItem.setCond(ship.getCond());
         Set<String> label = new LinkedHashSet<>();
@@ -978,7 +978,7 @@ public class ShipItem {
         shipItem.setLeng(ship.getLeng());
 
         int slotNum = ship.getSlotnum();
-        shipItem.setSlot1(ship.getSlot().get(0) == -1 && slotNum <= 0 ? 0 : ship.getSlot().get(0));
+        shipItem.setSlot1(ship.getSlot().getFirst() == -1 && slotNum <= 0 ? 0 : ship.getSlot().getFirst());
         shipItem.setSlot2(ship.getSlot().get(1) == -1 && slotNum <= 1 ? 0 : ship.getSlot().get(1));
         shipItem.setSlot3(ship.getSlot().get(2) == -1 && slotNum <= 2 ? 0 : ship.getSlot().get(2));
         shipItem.setSlot4(ship.getSlot().get(3) == -1 && slotNum <= 3 ? 0 : ship.getSlot().get(3));

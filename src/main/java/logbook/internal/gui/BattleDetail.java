@@ -319,7 +319,7 @@ public class BattleDetail extends WindowController {
         // 艦隊行動
         this.intercept.setText(BattleTypes.Intercept.toIntercept(this.battle.getFormation().get(2)).toString());
         // 味方陣形
-        this.fFormation.setText(BattleTypes.Formation.toFormation(this.battle.getFormation().get(0)).toString());
+        this.fFormation.setText(BattleTypes.Formation.toFormation(this.battle.getFormation().getFirst()).toString());
         // 敵陣形
         this.eFormation.setText(BattleTypes.Formation.toFormation(this.battle.getFormation().get(1)).toString());
         // 制空値計
@@ -377,7 +377,7 @@ public class BattleDetail extends WindowController {
                     this.dispSeiku.setText(BattleTypes.DispSeiku.toDispSeiku(stage1.getDispSeiku()).toString());
                     this.dispSeiku.getStyleClass().add("dispseiku" + stage1.getDispSeiku());
                     // 味方触接
-                    SlotitemMst fTouchPlaneItem = slotitemMst.get(stage1.getTouchPlane().get(0));
+                    SlotitemMst fTouchPlaneItem = slotitemMst.get(stage1.getTouchPlane().getFirst());
                     if (fTouchPlaneItem != null) {
                         Image image = Items.itemImage(fTouchPlaneItem);
                         if (image != null) {
@@ -963,12 +963,12 @@ public class BattleDetail extends WindowController {
                         return Rank.A勝利;
                     }
                 }
-                if (Ships.isLost(ps.getAfterEnemy().get(0))
+                if (Ships.isLost(ps.getAfterEnemy().getFirst())
                         && (this.beforeFriendAliveCount - this.afterFriendAliveCount) < (this.beforeEnemyAliveCount
                                 - this.afterEnemyAliveCount)) {
                     return Rank.B戦術的勝利;
                 }
-                if (this.beforeFriendAliveCount == 1 && Ships.isBadlyDamage(ps.getAfterFriend().get(0))) {
+                if (this.beforeFriendAliveCount == 1 && Ships.isBadlyDamage(ps.getAfterFriend().getFirst())) {
                     return Rank.D敗北;
                 }
                 if (Math.floor(this.enemyDamageRatio) > 2.5 * Math.floor(this.friendDamageRatio)) {

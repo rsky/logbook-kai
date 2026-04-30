@@ -420,7 +420,7 @@ public class Item implements Comparable<Item> {
 
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof Item) && this.id.get() == ((Item) obj).id.get();
+        return (obj instanceof Item item) && this.id.get() == item.id.get();
     }
 
     @Override

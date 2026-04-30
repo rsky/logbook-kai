@@ -111,7 +111,7 @@ public class UseitemItem {
         ret.setName(item.getName());
         if (!item.getDescription().isEmpty()) {
             StringBuilder sb = new StringBuilder(256);
-            sb.append(item.getDescription().get(0).replaceAll("<br>", ""));
+            sb.append(item.getDescription().getFirst().replaceAll("<br>", ""));
             if (item.getDescription().size() > 1 && !item.getDescription().get(1).trim().isEmpty()) {
                 sb.append(" (").append(item.getDescription().get(1)).append(")");
             }

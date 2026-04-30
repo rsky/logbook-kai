@@ -6,21 +6,21 @@ import java.util.Objects;
  * Tuple
  *
  */
-public interface Tuple {
+public sealed interface Tuple permits Tuple.Unit, Tuple.Pair, Tuple.Triplet {
 
-    static <A, B> Unit<A> of(A _1) {
-        return new Unit<A>(_1);
+    static <A> Unit<A> of(A _1) {
+        return new Unit<>(_1);
     }
 
     static <A, B> Pair<A, B> of(A _1, B _2) {
-        return new Pair<A, B>(_1, _2);
+        return new Pair<>(_1, _2);
     }
 
     static <A, B, C> Triplet<A, B, C> of(A _1, B _2, C _3) {
-        return new Triplet<A, B, C>(_1, _2, _3);
+        return new Triplet<>(_1, _2, _3);
     }
 
-    public static class Unit<A> implements Tuple {
+    public static final class Unit<A> implements Tuple {
 
         private final A _1;
 
@@ -37,11 +37,11 @@ public interface Tuple {
         }
 
         public <B> Pair<A, B> asPair() {
-            return new Pair<A, B>(this._1, null);
+            return new Pair<>(this._1, null);
         }
 
         public <B, C> Triplet<A, B, C> asTriplet() {
-            return new Triplet<A, B, C>(this._1, null, null);
+            return new Triplet<>(this._1, null, null);
         }
 
         @Override
@@ -51,18 +51,21 @@ public interface Tuple {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null)
-                return false;
             if (this == obj)
                 return true;
-            if (!(obj instanceof Unit))
-                return false;
-            Unit<?> unit = (Unit<?>) obj;
-            return Objects.equals(this._1, unit._1);
+            if (obj instanceof Unit<?> unit) {
+                return Objects.equals(this._1, unit._1);
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "Unit[_1=" + this._1 + "]";
         }
     }
 
-    public static class Pair<A, B> implements Tuple {
+    public static non-sealed class Pair<A, B> implements Tuple {
 
         private final A _1;
         private final B _2;
@@ -89,7 +92,7 @@ public interface Tuple {
         }
 
         public Unit<A> asUnit() {
-            return new Unit<A>(this._1);
+            return new Unit<>(this._1);
         }
 
         public Pair<A, B> asPair() {
@@ -97,7 +100,7 @@ public interface Tuple {
         }
 
         public <C> Triplet<A, B, C> asTriplet() {
-            return new Triplet<A, B, C>(this._1, this._2, null);
+            return new Triplet<>(this._1, this._2, null);
         }
 
         @Override
@@ -107,19 +110,22 @@ public interface Tuple {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null)
-                return false;
             if (this == obj)
                 return true;
-            if (!(obj instanceof Pair))
-                return false;
-            Pair<?, ?> unit = (Pair<?, ?>) obj;
-            return Objects.equals(this._1, unit._1)
-                    && Objects.equals(this._2, unit._2);
+            if (obj instanceof Pair<?, ?> unit) {
+                return Objects.equals(this._1, unit._1)
+                        && Objects.equals(this._2, unit._2);
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "Pair[_1=" + this._1 + ", _2=" + this._2 + "]";
         }
     }
 
-    public static class Triplet<A, B, C> implements Tuple {
+    public static final class Triplet<A, B, C> implements Tuple {
 
         private final A _1;
         private final B _2;
@@ -144,11 +150,11 @@ public interface Tuple {
         }
 
         public Unit<A> asUnit() {
-            return new Unit<A>(this._1);
+            return new Unit<>(this._1);
         }
 
         public Pair<A, B> asPair() {
-            return new Pair<A, B>(this._1, this._2);
+            return new Pair<>(this._1, this._2);
         }
 
         public Triplet<A, B, C> asTriplet() {
@@ -162,16 +168,19 @@ public interface Tuple {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null)
-                return false;
             if (this == obj)
                 return true;
-            if (!(obj instanceof Triplet))
-                return false;
-            Triplet<?, ?, ?> unit = (Triplet<?, ?, ?>) obj;
-            return Objects.equals(this._1, unit._1)
-                    && Objects.equals(this._2, unit._2)
-                    && Objects.equals(this._3, unit._3);
+            if (obj instanceof Triplet<?, ?, ?> unit) {
+                return Objects.equals(this._1, unit._1)
+                        && Objects.equals(this._2, unit._2)
+                        && Objects.equals(this._3, unit._3);
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "Triplet[_1=" + this._1 + ", _2=" + this._2 + ", _3=" + this._3 + "]";
         }
     }
 }

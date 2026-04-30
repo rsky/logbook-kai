@@ -118,7 +118,7 @@ public class BattleResultLogFormat extends LogFormatBase<BattleLog> {
         format.ボス = bossText.apply(log);
         format.ランク = result.getWinRank();
         format.艦隊行動 = BattleTypes.Intercept.toIntercept(battle.getFormation().get(2)).toString();
-        format.味方陣形 = BattleTypes.Formation.toFormation(battle.getFormation().get(0)).toString();
+        format.味方陣形 = BattleTypes.Formation.toFormation(battle.getFormation().getFirst()).toString();
         format.敵陣形 = BattleTypes.Formation.toFormation(battle.getFormation().get(1)).toString();
 
         if (battle.isIKouku()) {
@@ -129,7 +129,7 @@ public class BattleResultLogFormat extends LogFormatBase<BattleLog> {
                 Map<Integer, SlotitemMst> slotitemMst = SlotitemMstCollection.get()
                         .getSlotitemMap();
                 format.制空権 = BattleTypes.DispSeiku.toDispSeiku(stage1.getDispSeiku()).toString();
-                format.味方触接 = Optional.ofNullable(slotitemMst.get(stage1.getTouchPlane().get(0)))
+                format.味方触接 = Optional.ofNullable(slotitemMst.get(stage1.getTouchPlane().getFirst()))
                         .map(SlotitemMst::getName)
                         .orElse("");
                 format.敵触接 = Optional.ofNullable(slotitemMst.get(stage1.getTouchPlane().get(1)))

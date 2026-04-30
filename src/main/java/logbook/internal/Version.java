@@ -115,7 +115,7 @@ public final class Version implements Comparable<Version>, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof Version) && (this.compareTo((Version) o) == 0);
+        return (o instanceof Version v) && (this.compareTo(v) == 0);
     }
 
     @Override

@@ -1,0 +1,22 @@
+/* [1046] 【期間限定任務】提督、菖蒲の湯は如何ですか? */
+{
+    "type": "出撃",
+    "resetType" : "単発",
+    "filter" : {
+        "area": ["1-2","1-3","1-4","1-5"],
+        "fleet": {
+            "operator": "AND",
+            "conditions": [
+                {"name": ["山汐丸", "第四号海防艦", "第三〇号海防艦"], "order": 1},
+                {"stype": ["海防艦"], "count": 2, "operator": "GE"},
+                {"stype": ["駆逐艦"], "count": 1, "operator": "GE"}
+            ]
+        }
+    },
+    "conditions" : [
+        {"boss": true, "area": ["1-2"], "rank": ["S", "A"], "count": 2},
+        {"boss": true, "area": ["1-3"], "rank": ["S", "A"], "count": 2},
+        {"boss": true, "area": ["1-4"], "rank": ["S", "A"], "count": 2},
+        {"boss": true, "area": ["1-5"], "rank": ["S", "A"], "count": 2}
+    ]
+}

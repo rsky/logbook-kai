@@ -1,15 +1,17 @@
+import kotlin.text.Regex.Companion.escape
+
 group = "logbook"
 description = "logbook-kai"
-version = "26.4.1"
+version = "26.5.1"
 
 // UpgradeCode (GUID) for Windows Installer
 val windowsUpgradeUUID = "880e4493-20fc-4c89-8c5b-01e4b2479b77"
 
-java.sourceCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_25
 
 plugins {
     `java-library`
-    id("com.gradleup.shadow") version "9.3.1"
+    id("com.gradleup.shadow") version "9.4.1"
 }
 
 repositories {
@@ -23,9 +25,7 @@ dependencies {
     api(libs.org.openjfx.javafx.fxml)
     api(libs.org.openjfx.javafx.media)
     api(libs.org.openjfx.javafx.swing)
-    api(libs.org.openjfx.javafx.web)
     api(libs.org.controlsfx.controlsfx)
-    api(libs.org.openjdk.nashorn.nashorn.core)
     api(libs.com.fasterxml.jackson.core.jackson.databind)
     api(libs.org.slf4j.slf4j.api)
     api(libs.ch.qos.logback.logback.classic)
@@ -50,7 +50,7 @@ tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
 
-val jar by tasks.getting(Jar::class) {
+val jar by tasks.getting(type = Jar::class) {
     manifest {
         attributes["Main-Class"] = "logbook.internal.Launcher"
         attributes["Implementation-Version"] = version
@@ -59,21 +59,24 @@ val jar by tasks.getting(Jar::class) {
 
 fun archName() = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentArchitecture().name
 
-tasks.register("prePackage", Copy::class) {
+tasks.register(name = "prePackage", type = Copy::class) {
+    description = "ZIPアーカイブを作成する準備を行う"
     dependsOn("shadowJar")
     mkdir("build/tmp/pkg-input")
     from("build/libs/logbook-kai-${version}-all.jar")
     into("build/tmp/pkg-input")
-    rename("logbook-kai-${version}-all.jar", "logbook-kai.jar")
+    rename(escape("logbook-kai-${version}-all.jar"), "logbook-kai.jar")
 }
 
-tasks.register("package", Zip::class) {
+tasks.register(name = "package", type = Zip::class) {
+    description = "Fat JARを含む配布用のZIPアーカイブを作成する"
     dependsOn("prePackage")
     from("dist-includes").exclude("*/.gitkeep")
     from("build/tmp/pkg-input/logbook-kai.jar")
 }
 
-tasks.register("macApp", Exec::class) {
+tasks.register(name = "macApp", type = Exec::class) {
+    description = "macOSアプリケーションを作成する"
     dependsOn("clean", "prePackage")
     workingDir(".")
     commandLine(
@@ -85,7 +88,8 @@ tasks.register("macApp", Exec::class) {
     )
 }
 
-tasks.register("macDmg", Exec::class) {
+tasks.register(name = "macDmg", type = Exec::class) {
+    description = "macOSアプリケーションを含む配布用のディスクイメージを作成する"
     dependsOn("prePackage")
     workingDir(".")
     commandLine(
@@ -100,13 +104,14 @@ tasks.register("macDmg", Exec::class) {
             from("build/distributions")
             into("build/distributions")
             include("Logbook-Kai-${version}.dmg")
-            rename("Logbook-Kai-${version}.dmg", "logbook-kai-${version}-macos-${archName()}.dmg")
+            rename(escape("Logbook-Kai-${version}.dmg"), "logbook-kai-${version}-macos-${archName()}.dmg")
         }
         delete("build/distributions/Logbook-Kai-${version}.dmg")
     }
 }
 
-tasks.register("winApp", Exec::class) {
+tasks.register(name = "winApp", type = Exec::class) {
+    description = "Windowsアプリケーションを作成する"
     dependsOn("clean", "prePackage")
     workingDir(".")
     commandLine(
@@ -118,14 +123,16 @@ tasks.register("winApp", Exec::class) {
     )
 }
 
-tasks.register("winZip", Zip::class) {
+tasks.register(name = "winZip", type = Zip::class) {
+    description = "Windowsアプリケーションを含む配布用のZIPアーカイブを作成する"
     dependsOn("winApp")
     archiveFileName.set("logbook-kai-${version}-windows-${archName()}.zip")
     from("build/distributions/logbook-kai")
     from("dist-includes/README.url")
 }
 
-tasks.register("winMsi", Exec::class) {
+tasks.register(name = "winMsi", type = Exec::class) {
+    description = "Windowsアプリケーションのインストーラを作成する"
     // "major.minor.small" でWindows Installerの挙動が変わるので
     // "year.month.day" 形式のバージョニングは不適切かもしれない
     dependsOn("prePackage")
@@ -146,7 +153,7 @@ tasks.register("winMsi", Exec::class) {
             from("build/distributions")
             into("build/distributions")
             include("logbook-kai-${version}.msi")
-            rename("logbook-kai-${version}.msi", "logbook-kai-${version}-windows-${archName()}.msi")
+            rename(escape("logbook-kai-${version}.msi"), "logbook-kai-${version}-windows-${archName()}.msi")
         }
         delete("build/distributions/logbook-kai-${version}.msi")
     }

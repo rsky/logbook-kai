@@ -252,7 +252,7 @@ public class RequireNdock {
         this.setLv(ship.getLv());
         this.setTime(d);
         this.setEnd(endText(d));
-        this.setFuel(ship.getNdockItem().get(0));
+        this.setFuel(ship.getNdockItem().getFirst());
         this.setMetal(ship.getNdockItem().get(1));
     }
 

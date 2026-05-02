@@ -1169,7 +1169,7 @@ public class Ships {
             return (ship.getTaisen().get(1) - supp.getMinTaisen()) * ship.getLv() / 99 + supp.getMinTaisen() + ship.getKyouka().get(6);
         }
         // 付加情報なし、現在値 - 装備増分
-        return ship.getTaisen().get(0) - sumItemParam(ship, SlotitemMst::getTais);
+        return ship.getTaisen().getFirst() - sumItemParam(ship, SlotitemMst::getTais);
     }
 
     /**
@@ -1184,7 +1184,7 @@ public class Ships {
             return (ship.getSakuteki().get(1) - supp.getMinSakuteki()) * ship.getLv() / 99 + supp.getMinSakuteki();
         }
         // 付加情報なし、現在値 - 装備増分
-        return ship.getSakuteki().get(0) - Ships.sumItemParam(ship, SlotitemMst::getSaku);
+        return ship.getSakuteki().getFirst() - Ships.sumItemParam(ship, SlotitemMst::getSaku);
     }
 
     /**
@@ -1199,7 +1199,7 @@ public class Ships {
             return (ship.getKaihi().get(1) - supp.getMinKaihi()) * ship.getLv() / 99 + supp.getMinKaihi();
         }
         // 付加情報なし、現在値 - 装備増分
-        return ship.getKaihi().get(0) - Ships.sumItemParam(ship, SlotitemMst::getHouk);
+        return ship.getKaihi().getFirst() - Ships.sumItemParam(ship, SlotitemMst::getHouk);
     }
 
     /**

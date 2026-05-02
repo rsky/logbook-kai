@@ -151,9 +151,10 @@ public class CheckUpdate {
     }
 
     private static void openInfo(Version o, Version n, String tag, boolean isStartUp, Stage stage) {
-        String message = "新しいバージョンがあります。ダウンロードサイトを開きますか？\n"
-                + "現在のバージョン:" + o + "\n"
-                + "新しいバージョン:" + n;
+        String message = """
+                新しいバージョンがあります。ダウンロードサイトを開きますか？
+                現在のバージョン:%s
+                新しいバージョン:%s""".formatted(o, n);
         if (isStartUp) {
             message += "\n※自動アップデートチェックは[その他]-[設定]から無効に出来ます";
         }

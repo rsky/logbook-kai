@@ -269,13 +269,13 @@ public class DeckShipPane extends VBox {
         this.installItemLevel(this.itemLvList6, this.itemLv6);
 
         Map<Integer, SlotitemMst> itemMstMap = SlotitemMstCollection.get().getSlotitemMap();
-        this.itemList1.getSelectionModel().select(itemMstMap.get(this.ship.getItems().get(0)));
+        this.itemList1.getSelectionModel().select(itemMstMap.get(this.ship.getItems().getFirst()));
         this.itemList2.getSelectionModel().select(itemMstMap.get(this.ship.getItems().get(1)));
         this.itemList3.getSelectionModel().select(itemMstMap.get(this.ship.getItems().get(2)));
         this.itemList4.getSelectionModel().select(itemMstMap.get(this.ship.getItems().get(3)));
         this.itemList5.getSelectionModel().select(itemMstMap.get(this.ship.getItems().get(4)));
         this.itemList6.getSelectionModel().select(itemMstMap.get(this.ship.getItems().get(5)));
-        this.itemLvList1.getSelectionModel().select(this.ship.getItemLvs().get(0));
+        this.itemLvList1.getSelectionModel().select(this.ship.getItemLvs().getFirst());
         this.itemLvList2.getSelectionModel().select(this.ship.getItemLvs().get(1));
         this.itemLvList3.getSelectionModel().select(this.ship.getItemLvs().get(2));
         this.itemLvList4.getSelectionModel().select(this.ship.getItemLvs().get(3));
@@ -373,7 +373,7 @@ public class DeckShipPane extends VBox {
             this.shipLv.setText("Lv" + ship.getLv());
             if (this.initialized) {
                 Map<Integer, SlotItem> itemMap = SlotItemCollection.get().getSlotitemMap();
-                this.presetItem(itemMap.get(ship.getSlot().get(0)), this.itemList1, this.itemLvList1);
+                this.presetItem(itemMap.get(ship.getSlot().getFirst()), this.itemList1, this.itemLvList1);
                 this.presetItem(itemMap.get(ship.getSlot().get(1)), this.itemList2, this.itemLvList2);
                 this.presetItem(itemMap.get(ship.getSlot().get(2)), this.itemList3, this.itemLvList3);
                 this.presetItem(itemMap.get(ship.getSlot().get(3)), this.itemList4, this.itemLvList4);

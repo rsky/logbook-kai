@@ -1,10 +1,9 @@
 --vendor "@rsky"
 --main-class logbook.internal.Launcher
 --main-jar logbook-kai.jar
---add-modules java.base,java.management,java.naming,java.scripting,java.security.jgss,java.sql
---add-modules javafx.fxml,javafx.media,javafx.swing,javafx.web
---add-modules jdk.dynalink,jdk.jsobject,jdk.unsupported
---add-modules jdk.charsets,jdk.crypto.ec
+--add-modules java.base,java.management,java.naming,java.security.jgss,java.sql
+--add-modules javafx.controls,javafx.fxml,javafx.media,javafx.swing
+--add-modules jdk.charsets,jdk.crypto.ec,jdk.dynalink,jdk.unsupported
 --java-options "-XX:MaxMetaspaceSize=256M"
 --java-options "--add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED"
---java-options "-Djavafx.allowjs=true"
+--java-options "--enable-native-access=javafx.graphics,ALL-UNNAMED"

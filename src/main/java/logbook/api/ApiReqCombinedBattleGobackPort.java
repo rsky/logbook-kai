@@ -60,7 +60,7 @@ public class ApiReqCombinedBattleGobackPort implements APIListenerSpi {
         decks.sort(Integer::compareTo);
 
         Ship ship;
-        if ((index - 1) < Math.max(deckMap.get(decks.get(0)).size(), 6)) {
+        if ((index - 1) < Math.max(deckMap.get(decks.getFirst()).size(), 6)) {
             ship = deckMap.get(decks.getFirst()).get(index - 1);
         } else {
             ship = deckMap.get(decks.get(1)).get(index - 6 - 1);

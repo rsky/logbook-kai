@@ -56,7 +56,7 @@ public class MissionResultLogFormat extends LogFormatBase<MissionResult> {
         // 遠征名
         joiner.add(result.getQuestName());
         // 燃料
-        joiner.add(result.getGetMaterial().get(0).toString());
+        joiner.add(result.getGetMaterial().getFirst().toString());
         // 弾薬
         joiner.add(result.getGetMaterial().get(1).toString());
         // 鋼材

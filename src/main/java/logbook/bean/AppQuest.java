@@ -65,28 +65,19 @@ public class AppQuest implements Serializable {
         if (condition != null) {
             String resetType = condition.getResetType();
             if (resetType != null) {
-                switch (resetType) {
-                case "デイリー":
-                    type = DAILY;
-                    break;
-                case "ウィークリー":
-                    type = WEEKLY;
-                    break;
-                case "マンスリー":
-                    type = MONTHLY;
-                    break;
-                case "単発":
-                    type = ONECE;
-                    break;
-                case "クオータリー":
-                case "クォータリー":
-                    type = QUARTRELY;
-                    break;
-                case "イヤリー":
-                    type = YEARLY;
-                    yearlyResetMonth = condition.getYearlyResetMonth();
-                    break;
-                }
+                type = switch (resetType) {
+                    case "デイリー" -> DAILY;
+                    case "ウィークリー" -> WEEKLY;
+                    case "マンスリー" -> MONTHLY;
+                    case "単発" -> ONECE;
+                    case "クオータリー",
+                         "クォータリー" -> QUARTRELY;
+                    case "イヤリー" -> {
+                        yearlyResetMonth = condition.getYearlyResetMonth();
+                        yield YEARLY;
+                    }
+                    default -> type;
+                };
             }
         }
 

@@ -90,6 +90,6 @@ public class Mapping {
                 .values()
                 .stream()
                 .collect(Collectors.toMap(MapinfoMst::getName,
-                        m -> m.getMapareaId() + "-" + m.getNo(), (a, b) -> a));
+                        m -> m.getMapareaId() + "-" + m.getNo(), (a, _) -> a));
     }
 }

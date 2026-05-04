@@ -1,4 +1,4 @@
-/* [1012]鵜来型海防艦、静かな海を防衛せよ！ */
+/* [1012] 鵜来型海防艦、静かな海を防衛せよ！ */
 {
     "type" : "出撃",
     "resetType" : "イヤリー",
@@ -11,7 +11,8 @@
             "conditions": [
                 {"name": ["鵜来", "稲木"], "order": 1},
                 {"stype": ["海防艦"], "count": 2, "operator": "GE"}
-            ]        }
+            ]
+        }
     },
     "conditions" : [
         {"boss": true, "area": ["1-1"], "rank": ["S"], "count": 3},

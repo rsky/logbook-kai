@@ -116,6 +116,12 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
         /** 艦種 */
         private LinkedHashSet<String> stype;
 
+        /** 艦級ID */
+        private LinkedHashSet<Integer> ctype;
+
+        /** 艦級名 */
+        private LinkedHashSet<String> ctypeName;
+
         /** 艦名 */
         private LinkedHashSet<String> name;
 
@@ -200,6 +206,9 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
                         .orElse(null);
                 return this.stype.contains(stype) || this.stype.size() > 0 && this.stype.contains("*");
             }
+            if (this.ctype != null) {
+                return this.ctype.contains(ship.getCtype());
+            }
             if (this.name != null) {
                 for (String name : this.name) {
                     if (ship.getName().startsWith(name)) {
@@ -237,6 +246,13 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
             StringBuilder sb = new StringBuilder();
             if (this.stype != null) {
                 sb.append(this.stype.stream().map(s -> s.equals("*") ? "任意の艦種" : s).collect(Collectors.joining("または")));
+            }
+            if (this.ctype != null) {
+                if (this.ctypeName != null) {
+                    sb.append(this.ctypeName.stream().collect(Collectors.joining("または")));
+                } else {
+                    sb.append(this.ctype.stream().map(Object::toString).collect(Collectors.joining(",")));
+                }
             }
             if (this.name != null) {
                 sb.append(this.name.stream().collect(Collectors.joining("または")));

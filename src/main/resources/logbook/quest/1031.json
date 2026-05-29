@@ -1,0 +1,20 @@
+/* [1031] 【初夏限定任務】北方海域 戦闘哨戒作戦2026 */
+{
+  "type": "出撃",
+  "resetType" : "単発",
+  "filter" : {
+    "area": ["3-1", "3-2", "3-5"],
+    "fleet": {
+      "operator": "AND",
+      "conditions": [
+        {"name": ["Thonburi", "Tuscaloosa", "Gambier Bay", "榛名", "宗谷", "夕張", "早波", "浜波", "薄雲", "朧", "大井"], "order": 1},
+        {"name": ["Thonburi", "Tuscaloosa", "Gambier Bay", "榛名", "宗谷", "夕張", "早波", "浜波", "薄雲", "朧", "大井"], "count": 2, "operator":  "GE"}
+      ]
+    }
+  },
+  "conditions" : [
+    {"boss": true, "area": ["3-1"], "rank": ["S"], "count": 2},
+    {"boss": true, "area": ["3-2"], "rank": ["S"], "count": 2},
+    {"boss": true, "area": ["3-5"], "rank": ["S"], "count": 2}
+  ]
+}

@@ -8,8 +8,13 @@
       "operator": "AND",
       "conditions": [
         {"stype": ["戦艦"], "count": 1, "operator":  "GE"},
-        {"stype": ["重巡洋艦", "航空巡洋艦"], "count": 2, "operator":  "GE"},
-        {"ctype": [38], "ctypeName": ["夕雲型"], "count": 2, "operator": "GE"}
+        {
+          "operator": "OR",
+          "conditions": [
+            {"stype": ["重巡洋艦", "航空巡洋艦"], "count": 2, "operator":  "GE"},
+            {"ctype": [38], "ctypeName": ["夕雲型"], "count": 2, "operator": "GE"}
+          ]
+        }
       ]
     }
   },

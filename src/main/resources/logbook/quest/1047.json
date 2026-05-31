@@ -8,7 +8,7 @@
       "operator": "AND",
       "conditions": [
         {"name": ["涼波改二"], "order": 1},
-        {"stype": ["鳥海", "鈴谷", "最上", "能代", "玉波", "藤波", "早波"], "count": 2, "operator": "GE"}
+        {"name": ["鳥海", "鈴谷", "最上", "能代", "玉波", "藤波", "早波"], "count": 2, "operator": "GE"}
       ]
     }
   },

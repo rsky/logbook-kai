@@ -711,6 +711,9 @@
     { "id": 740, "name": "Glorious改", "min_taisen": 0, "min_kaihi": 35, "min_sakuteki": 14 },
     { "id": 741, "name": "Glorious改", "min_taisen": 0, "min_kaihi": 37, "min_sakuteki": 42 },
     { "id": 742, "name": "樫改", "min_taisen": 32, "min_kaihi": 36, "min_sakuteki": 16 },
+    { "id": 743, "name": "長波改二補", "min_taisen": 30, "min_kaihi": 48, "min_sakuteki": 12 },
+    { "id": 744, "name": "朝霜改二補", "min_taisen": 29, "min_kaihi": 47, "min_sakuteki": 11 },
+    { "id": 745, "name": "涼波改二補", "min_taisen": 28, "min_kaihi": 43, "min_sakuteki": 10 },
     { "id": 877, "name": "Conte di Cavour", "min_taisen": 0, "min_kaihi": 21, "min_sakuteki": 6 },
     { "id": 878, "name": "Conte di Cavour改", "min_taisen": 0, "min_kaihi": 29, "min_sakuteki": 11 },
     { "id": 879, "name": "Conte di Cavour nuovo", "min_taisen": 0, "min_kaihi": 31, "min_sakuteki": 18 },
@@ -833,6 +836,7 @@
     { "id": 1030, "name": "Wasp改", "min_taisen": 0, "min_kaihi": 43, "min_sakuteki": 53 },
     { "id": 1031, "name": "飛龍改三", "min_taisen": 0, "min_kaihi": 41, "min_sakuteki": 53 },
     { "id": 1033, "name": "玉波改二", "min_taisen": 29, "min_kaihi": 43, "min_sakuteki": 11 },
+    { "id": 1034, "name": "涼波改二", "min_taisen": 28, "min_kaihi": 42, "min_sakuteki": 10 },
     { "id": 1035, "name": "吹雪改三", "min_taisen": 46, "min_kaihi": 53, "min_sakuteki": 15 },
     { "id": 1040, "name": "吹雪改三護(六式)", "min_taisen": 52, "min_kaihi": 56, "min_sakuteki": 20 },
     { "id": 1496, "name": "Colorado改", "min_taisen": 0, "min_kaihi": 22, "min_sakuteki": 16 }

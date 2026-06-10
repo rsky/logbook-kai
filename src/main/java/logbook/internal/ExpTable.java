@@ -14,6 +14,11 @@ public class ExpTable {
      */
     private static final Map<Integer, Integer> EXP_TABLE;
 
+    /**
+     * 最大レベル
+     */
+    private static final int MAX_LV;
+
     static {
         EXP_TABLE = new LinkedHashMap<>();
         EXP_TABLE.put(1, 0);
@@ -201,6 +206,11 @@ public class ExpTable {
         EXP_TABLE.put(183, 14200000);
         EXP_TABLE.put(184, 15000000);
         EXP_TABLE.put(185, 16000000);
+        EXP_TABLE.put(186, 17200000);
+        EXP_TABLE.put(187, 18600000);
+        EXP_TABLE.put(188, 20200000);
+
+        MAX_LV = 188;
     }
 
     /**
@@ -218,6 +228,6 @@ public class ExpTable {
      * @return 最大Lv
      */
     public static int maxLv() {
-        return 185;
+        return MAX_LV;
     }
 }

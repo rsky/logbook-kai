@@ -2,7 +2,7 @@ import kotlin.text.Regex.Companion.escape
 
 group = "logbook"
 description = "logbook-kai"
-version = "26.6.2"
+version = "26.7.1"
 
 // UpgradeCode (GUID) for Windows Installer
 val windowsUpgradeUUID = "880e4493-20fc-4c89-8c5b-01e4b2479b77"

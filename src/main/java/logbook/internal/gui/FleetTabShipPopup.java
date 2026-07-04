@@ -195,11 +195,16 @@ public class FleetTabShipPopup extends VBox {
 
                 SlotItem item = this.itemMap.get(itemId);
 
-                Integer slotEq = Ships.shipMst(this.chara)
-                        .map(ShipMst::getMaxeq)
-                        .map(eq -> eq.size() > this.slotIndex ? eq.get(this.slotIndex) : 0)
-                        .orElse(0);
-                if (slotEq != null && slotEq > 0) {
+                Integer slotEq;
+                if (ship.getOnslotMax() != null) {
+                    slotEq = ship.getOnslotMax().size() > this.slotIndex ? ship.getOnslotMax().get(this.slotIndex) : 0;
+                } else {
+                    slotEq = Ships.shipMst(this.chara)
+                            .map(ShipMst::getMaxeq)
+                            .map(eq -> eq.size() > this.slotIndex ? eq.get(this.slotIndex) : 0)
+                            .orElse(0);
+                }
+                if (slotEq > 0) {
                     Integer onslot = ship.getOnslot().get(this.slotIndex);
 
                     this.onslot.setText(String.valueOf(onslot));

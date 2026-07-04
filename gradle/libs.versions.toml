@@ -2,7 +2,7 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-ch-qos-logback-logback = "1.5.34"
+ch-qos-logback-logback = "1.5.37"
 com-fasterxml-jackson-core-jackson-databind = "2.22.0"
 junit-junit = "4.13.2"
 commons-io-commons-io = "2.22.0" # Apache Commonsのライブラリを直接利用していないが、zt-process-killerが

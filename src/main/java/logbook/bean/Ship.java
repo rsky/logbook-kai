@@ -19,7 +19,7 @@ import lombok.Data;
 @Data
 public class Ship implements Chara, Serializable, Cloneable {
 
-    private static final long serialVersionUID = 8831803354999776670L;
+    private static final long serialVersionUID = 9009786652227423727L;
 
     /** ID */
     private Integer id;
@@ -53,6 +53,9 @@ public class Ship implements Chara, Serializable, Cloneable {
 
     /** 機数 */
     private List<Integer> onslot;
+
+    /** 最大機数（格納庫造設されている場合のみ存在する） */
+    private List<Integer> onslotMax;
 
     /** 補強増設 */
     private Integer slotEx;
@@ -202,6 +205,7 @@ public class Ship implements Chara, Serializable, Cloneable {
                 .setInteger("api_leng", bean::setLeng)
                 .setIntegerList("api_slot", bean::setSlot)
                 .setIntegerList("api_onslot", bean::setOnslot)
+                .setIntegerList("api_onslot_max", bean::setOnslotMax)
                 .setInteger("api_slot_ex", bean::setSlotEx)
                 .setIntegerList("api_kyouka", bean::setKyouka)
                 .setInteger("api_backs", bean::setBacks)

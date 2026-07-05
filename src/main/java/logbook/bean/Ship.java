@@ -54,7 +54,7 @@ public class Ship implements Chara, Serializable, Cloneable {
     /** 機数 */
     private List<Integer> onslot;
 
-    /** 最大機数（格納庫造設されている場合のみ存在する） */
+    /** 最大機数（格納庫増設されている場合のみ存在する） */
     private List<Integer> onslotMax;
 
     /** 補強増設 */

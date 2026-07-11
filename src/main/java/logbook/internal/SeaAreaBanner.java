@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 final class SeaAreaBanner {
     private static final String COMMON_EVENT = "common_event";
 
-    private static final int IMAGE_NUMBER_BASE_OFFSET = 12;
+    private static final int IMAGE_NUMBER_BASE_OFFSET = 2;
     private static final int IMAGE_NUMBER_MULTIPLIER = 2;
     private static final int MAX_SEA_AREA_NUMBER = 14;
 
@@ -24,6 +24,8 @@ final class SeaAreaBanner {
             return null;
         }
 
+        final int imageNumber =  IMAGE_NUMBER_BASE_OFFSET + area * IMAGE_NUMBER_MULTIPLIER;
+        /*
         // 2025年秋イベント後段作戦バージョン
         // 不規則な番号に対しては定数化も行わない
         final int imageNumber = switch (area) {
@@ -36,6 +38,7 @@ final class SeaAreaBanner {
             // 札2~9 -> 16, 18, ..., 28, 30
             default -> IMAGE_NUMBER_BASE_OFFSET + area * IMAGE_NUMBER_MULTIPLIER;
         };
+         */
 
         return Paths.get("common", COMMON_EVENT, String.format("%s_%d.png", COMMON_EVENT, imageNumber));
     }

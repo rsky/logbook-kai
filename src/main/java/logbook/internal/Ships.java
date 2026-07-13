@@ -617,7 +617,7 @@ public class Ships {
     private static boolean supportsAirSuperiority(SlotitemMst itemMst) {
         // 制空状態に関係するのは対空値を持つ艦戦、艦攻、艦爆、水爆、水戦、噴式機のみ
         if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.艦上攻撃機, SlotItemType.艦上爆撃機, SlotItemType.水上爆撃機,
-                SlotItemType.水上戦闘機, SlotItemType.噴式戦闘爆撃機, SlotItemType.噴式戦闘爆撃機II)) {
+                SlotItemType.水上戦闘機, SlotItemType.噴式戦闘機, SlotItemType.噴式戦闘爆撃機, SlotItemType.噴式戦闘爆撃機II)) {
             return true;
         }
 
@@ -645,7 +645,7 @@ public class Ships {
      */
     public static double airSuperiorityTykuAdditional(SlotitemMst itemMst, SlotItem item) {
         // TODO: 対潜哨戒機仕様の隼の改修が反映されるかどうか
-        if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.水上戦闘機, SlotItemType.局地戦闘機)) {
+        if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.水上戦闘機, SlotItemType.局地戦闘機, SlotItemType.噴式戦闘機)) {
             return Optional.ofNullable(item.getLevel())
                     .map(level -> 0.2D * level)
                     .orElse(0D);
@@ -673,7 +673,7 @@ public class Ships {
             // 熟練ボーナス
             double bonus = Math.sqrt(skillLevel(item.getAlv()) / 10D);
             // 制空ボーナス
-            if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.水上戦闘機, SlotItemType.局地戦闘機)
+            if (itemMst.is(SlotItemType.艦上戦闘機, SlotItemType.水上戦闘機, SlotItemType.局地戦闘機, SlotItemType.噴式戦闘機)
                     || supportsAirSuperiorityMpa(itemMst)) {
                 bonus += skillBonus1(item.getAlv());
             } else if (itemMst.is(SlotItemType.水上爆撃機)) {

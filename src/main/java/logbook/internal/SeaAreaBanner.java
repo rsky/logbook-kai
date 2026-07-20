@@ -24,21 +24,25 @@ final class SeaAreaBanner {
             return null;
         }
 
-        final int imageNumber =  IMAGE_NUMBER_BASE_OFFSET + area * IMAGE_NUMBER_MULTIPLIER;
-        /*
-        // 2025年秋イベント後段作戦バージョン
+        //final int imageNumber =  IMAGE_NUMBER_BASE_OFFSET + area * IMAGE_NUMBER_MULTIPLIER;
+        // 2026年夏イベント後段作戦バージョン
         // 不規則な番号に対しては定数化も行わない
         final int imageNumber = switch (area) {
-            case 1 -> 4;    // 改R4計画艦隊
-            case 10 -> 5;   // 礼号作戦部隊
-            case 11 -> 7;   // 横須賀防備戦隊
-            case 12 -> 9;   // 連合艦隊
-            case 13 -> 11;  // 第百四戦隊
-            case 14 -> 13;  // 決戦艦隊
-            // 札2~9 -> 16, 18, ..., 28, 30
+            case 1 -> 4;    // 第三十一戦隊
+            case 2 -> 14;   // 増強第三十一戦隊
+            case 3 -> 16;   // 多号作戦部隊
+            case 4 -> 18;   // 連合艦隊
+            case 5 -> 20;   // ウルシー攻撃部隊
+            case 6 -> 22;   // 第六艦隊
+            case 7 -> 24;   // 仏第3艦隊
+            case 8 -> 26;   // 仏第地中海艦隊
+            case 9 -> 28;   // 2-eme Escadre Leoele
+            case 10 -> 5;   // イギリス救援艦隊
+            case 11 -> 7;   // Force de Raid
+            case 12 -> 9;   // Force H
+            case 13 -> 11;  // 欧州連合艦隊
             default -> IMAGE_NUMBER_BASE_OFFSET + area * IMAGE_NUMBER_MULTIPLIER;
         };
-         */
 
         return Paths.get("common", COMMON_EVENT, String.format("%s_%d.png", COMMON_EVENT, imageNumber));
     }

@@ -54,7 +54,7 @@ tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
 
-val jar by tasks.getting(type = Jar::class) {
+tasks.named<Jar>("jar") {
     manifest {
         attributes["Main-Class"] = "logbook.internal.Launcher"
         attributes["Implementation-Version"] = version

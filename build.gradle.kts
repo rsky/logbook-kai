@@ -18,6 +18,13 @@ repositories {
     mavenCentral()
 }
 
+fun DependencyHandlerScope.lombok(dependency: Any) {
+    compileOnly(dependency)
+    annotationProcessor(dependency)
+    testCompileOnly(dependency)
+    testAnnotationProcessor(dependency)
+}
+
 dependencies {
     api(libs.org.glassfish.javax.json)
     api(libs.org.eclipse.jetty.jetty.server)
@@ -35,10 +42,7 @@ dependencies {
     implementation(libs.org.zeroturnaround.zt.exec)
     implementation(libs.org.zeroturnaround.zt.process.killer)
     testImplementation(libs.junit.junit)
-    compileOnly(libs.org.projectlombok.lombok)
-    annotationProcessor(libs.org.projectlombok.lombok)
-    testCompileOnly(libs.org.projectlombok.lombok)
-    testAnnotationProcessor(libs.org.projectlombok.lombok)
+    lombok(libs.org.projectlombok.lombok)
 }
 
 tasks.withType<JavaCompile> {

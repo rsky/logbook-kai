@@ -1,8 +1,9 @@
-/*潜水艦通商破壊作戦*/
 {
-    "operator": "AND",
-    "conditions": [
-        {"type": "艦娘", "ship_type" :["潜水艦", "潜水空母"]},
-        {"type": "艦娘", "ship_type" :["潜水艦", "潜水空母"]}
-    ]
+  "disp_no": "27",
+  "name": "潜水艦通商破壊作戦",
+  "operator": "AND",
+  "conditions": [
+    { "type": "艦娘", "ship_type": ["潜水艦", "潜水空母"] },
+    { "type": "艦娘", "ship_type": ["潜水艦", "潜水空母"] }
+  ]
 }

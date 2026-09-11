@@ -1,21 +1,17 @@
-/*ボーキサイト輸送任務*/
 {
-    "operator": "AND",
-    "conditions": [
-        {
-            "operator": "AND",
-            "conditions": [
-                {"type": "艦娘", "level": 6, "order": 1}
-            ]
-        },
-        {
-            "operator": "AND",
-            "conditions": [
-                {"type": "艦娘", "ship_type" :["駆逐艦", "海防艦"]},
-                {"type": "艦娘", "ship_type" :["駆逐艦", "海防艦"]},
-                {"type": "艦娘"},
-                {"type": "艦娘"}
-            ]
-        }
-    ]
+  "disp_no": "11",
+  "name": "ボーキサイト輸送任務",
+  "operator": "AND",
+  "conditions": [
+    { "operator": "AND", "conditions": [{ "type": "艦娘", "level": 6, "order": 1 }] },
+    {
+      "operator": "AND",
+      "conditions": [
+        { "type": "艦娘", "ship_type": ["駆逐艦", "海防艦"] },
+        { "type": "艦娘", "ship_type": ["駆逐艦", "海防艦"] },
+        { "type": "艦娘" },
+        { "type": "艦娘" }
+      ]
+    }
+  ]
 }

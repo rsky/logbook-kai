@@ -1,25 +1,26 @@
-/*水上機前線輸送*/
 {
+  "disp_no": "40",
+  "name": "水上機前線輸送",
+  "operator": "AND",
+  "greatSuccessCondition": {
     "operator": "AND",
-    "greatSuccessCondition": {
-        "operator": "AND",
-        "conditions": [
-            {"type": "艦隊", "count_type": "キラキラ",  "value": 4},
-            {"type": "艦隊", "count_type": "装備", "item": "ドラム缶(輸送用)", "value": 4}
-        ]
-    },
     "conditions": [
-        {"type": "艦隊", "count_type": "レベル", "value": 150},
-        {
-            "operator": "AND",
-            "conditions": [
-                {"type": "艦娘", "ship_type" :["軽巡洋艦"], "level": 25, "order": 1},
-                {"type": "艦娘", "ship_type" :["水上機母艦"]},
-                {"type": "艦娘", "ship_type" :["水上機母艦"]},
-                {"type": "艦娘", "ship_type" :["駆逐艦"]},
-                {"type": "艦娘", "ship_type" :["駆逐艦"]},
-                {"type": "艦娘"}
-            ]
-        }
+      { "type": "艦隊", "count_type": "キラキラ", "value": 4 },
+      { "type": "艦隊", "count_type": "装備", "item": "ドラム缶(輸送用)", "value": 4 }
     ]
+  },
+  "conditions": [
+    { "type": "艦隊", "count_type": "レベル", "value": 150 },
+    {
+      "operator": "AND",
+      "conditions": [
+        { "type": "艦娘", "ship_type": ["軽巡洋艦"], "level": 25, "order": 1 },
+        { "type": "艦娘", "ship_type": ["水上機母艦"] },
+        { "type": "艦娘", "ship_type": ["水上機母艦"] },
+        { "type": "艦娘", "ship_type": ["駆逐艦"] },
+        { "type": "艦娘", "ship_type": ["駆逐艦"] },
+        { "type": "艦娘" }
+      ]
+    }
+  ]
 }

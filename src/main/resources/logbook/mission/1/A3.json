@@ -1,72 +1,66 @@
-/*長時間対潜警戒*/
 {
-    "operator": "AND",
-        "greatSuccessCondition": {
-         "type": "艦隊", "count_type": "旗艦レベル＋キラキラ"
-    },
-    "conditions": [
-        {"type": "艦隊", "count_type": "レベル", "value": 185},
-        {"type": "艦隊", "count_type": "対潜", "value": 280},
+  "disp_no": "A3",
+  "name": "長時間対潜警戒",
+  "operator": "AND",
+  "greatSuccessCondition": { "type": "艦隊", "count_type": "旗艦レベル＋キラキラ" },
+  "conditions": [
+    { "type": "艦隊", "count_type": "レベル", "value": 185 },
+    { "type": "艦隊", "count_type": "対潜", "value": 280 },
+    { "operator": "AND", "conditions": [{ "type": "艦娘", "level": 35, "order": 1 }] },
+    {
+      "operator": "OR",
+      "conditions": [
         {
-            "operator": "AND",
-            "conditions": [
-                {"type": "艦娘", "level": 35, "order": 1}
-            ]
+          "operator": "AND",
+          "conditions": [
+            { "type": "艦娘", "ship_type": ["軽巡洋艦"] },
+            { "type": "艦娘", "ship_type": ["海防艦", "駆逐艦"] },
+            { "type": "艦娘", "ship_type": ["海防艦", "駆逐艦"] },
+            { "type": "艦娘", "ship_type": ["海防艦", "駆逐艦"] },
+            { "type": "艦娘" }
+          ]
         },
         {
-            "operator": "OR",
-            "conditions": [
-                {
-                    "operator": "AND",
-                    "conditions": [
-                        {"type": "艦娘", "ship_type" :["軽巡洋艦"]},
-                        {"type": "艦娘", "ship_type" :["海防艦", "駆逐艦"]},
-                        {"type": "艦娘", "ship_type" :["海防艦", "駆逐艦"]},
-                        {"type": "艦娘", "ship_type" :["海防艦", "駆逐艦"]},
-                        {"type": "艦娘"}
-                    ]
-                },
-                {
-                    "operator": "AND",
-                    "conditions": [
-                        {"type": "艦娘", "ship_type" :["練習巡洋艦"]},
-                        {"type": "艦娘", "ship_type" :["海防艦"]},
-                        {"type": "艦娘", "ship_type" :["海防艦"]},
-                        {"type": "艦娘"},
-                        {"type": "艦娘"}
-                    ]
-                },
-                {
-                    "operator": "AND",
-                    "conditions": [
-                        {"type": "艦娘", "ship_type" :["駆逐艦"]},
-                        {"type": "艦娘", "ship_type" :["海防艦"]},
-                        {"type": "艦娘", "ship_type" :["海防艦"]},
-                        {"type": "艦娘", "ship_type" :["海防艦"]},
-                        {"type": "艦娘"}
-                    ]
-                },
-                {
-                    "operator": "AND",
-                    "conditions": [
-                        {"type": "艦娘", "ship_type" :["護衛空母"]},
-                        {"type": "艦娘", "ship_type" :["海防艦"]},
-                        {"type": "艦娘", "ship_type" :["海防艦"]},
-                        {"type": "艦娘"},
-                        {"type": "艦娘"}
-                    ]
-                },
-                {
-                    "operator": "AND",
-                    "conditions": [
-                        {"type": "艦娘", "ship_type" :["護衛空母"]},
-                        {"type": "艦娘", "ship_type" :["駆逐艦"]},
-                        {"type": "艦娘", "ship_type" :["駆逐艦"]},
-                        {"type": "艦娘"},
-                        {"type": "艦娘"}
-                    ]
-                }
-            ]
+          "operator": "AND",
+          "conditions": [
+            { "type": "艦娘", "ship_type": ["練習巡洋艦"] },
+            { "type": "艦娘", "ship_type": ["海防艦"] },
+            { "type": "艦娘", "ship_type": ["海防艦"] },
+            { "type": "艦娘" },
+            { "type": "艦娘" }
+          ]
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            { "type": "艦娘", "ship_type": ["駆逐艦"] },
+            { "type": "艦娘", "ship_type": ["海防艦"] },
+            { "type": "艦娘", "ship_type": ["海防艦"] },
+            { "type": "艦娘", "ship_type": ["海防艦"] },
+            { "type": "艦娘" }
+          ]
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            { "type": "艦娘", "ship_type": ["護衛空母"] },
+            { "type": "艦娘", "ship_type": ["海防艦"] },
+            { "type": "艦娘", "ship_type": ["海防艦"] },
+            { "type": "艦娘" },
+            { "type": "艦娘" }
+          ]
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            { "type": "艦娘", "ship_type": ["護衛空母"] },
+            { "type": "艦娘", "ship_type": ["駆逐艦"] },
+            { "type": "艦娘", "ship_type": ["駆逐艦"] },
+            { "type": "艦娘" },
+            { "type": "艦娘" }
+          ]
         }
-    ]
+      ]
+    }
+  ]
 }

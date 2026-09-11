@@ -1,7 +1,6 @@
-/* [218]敵輸送船団を叩け！ */
 {
-    "resetType" : "デイリー",
-    "conditions" : [
-        {"stype": ["補給艦"], "count": 3}
-    ]
+  "no": 218,
+  "title": "敵輸送船団を叩け！",
+  "resetType": "デイリー",
+  "conditions": [{ "stype": ["補給艦"], "count": 3 }]
 }

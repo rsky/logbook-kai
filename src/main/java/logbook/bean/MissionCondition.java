@@ -18,6 +18,12 @@ import lombok.Data;
 @Data
 public class MissionCondition implements TestAllPredicate<List<Ship>> {
 
+    @JsonProperty("disp_no")
+    private String dispNo;
+
+    @JsonProperty("name")
+    private String name;
+
     @JsonProperty("description")
     private String description;
 

@@ -1,0 +1,24 @@
+{
+  "no": 1050,
+  "title": "「第九戦隊」抜錨！前線展開せよッ！",
+  "type": "出撃",
+  "resetType": "イヤリー",
+  "yearlyResetMonth": 9,
+  "filter": {
+    "area": ["1-4", "2-1", "2-2", "2-3"],
+    "fleet": {
+      "operator": "AND",
+      "conditions": [
+        { "name": ["北上改二", "北上改三", "大井改二", "大井改三"], "order": 1 },
+        { "name": ["北上改二", "北上改三", "大井改二", "大井改三"], "count": 1, "operator": "EQ" },
+        { "stype": ["駆逐艦"], "count": 2, "operator": "GE" }
+      ]
+    }
+  },
+  "conditions": [
+    { "boss": true, "area": ["1-4"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["2-1"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["2-2"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["2-3"], "rank": ["S"], "count": 1 }
+  ]
+}

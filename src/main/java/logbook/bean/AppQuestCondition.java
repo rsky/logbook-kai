@@ -26,6 +26,11 @@ import lombok.Data;
  */
 @Data
 public class AppQuestCondition implements Predicate<QuestCollect> {
+    /** 任務番号 */
+    private Integer no;
+
+    /** 任務タイトル */
+    private String title;
 
     /** 任務のタイプ(enum: 出撃, 遠征) */
     private Type type;

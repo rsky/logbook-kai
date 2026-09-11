@@ -1,20 +1,21 @@
-/* [1047] 「涼波改二」ラバウルより抜錨せよ！ */
 {
+  "no": 1047,
+  "title": "「涼波改二」ラバウルより抜錨せよ！",
   "type": "出撃",
-  "resetType" : "単発",
-  "filter" : {
+  "resetType": "単発",
+  "filter": {
     "area": ["5-4", "5-5", "5-6"],
     "fleet": {
       "operator": "AND",
       "conditions": [
-        {"name": ["涼波改二"], "order": 1},
-        {"name": ["鳥海", "鈴谷", "最上", "能代", "玉波", "藤波", "早波"], "count": 2, "operator": "GE"}
+        { "name": ["涼波改二"], "order": 1 },
+        { "name": ["鳥海", "鈴谷", "最上", "能代", "玉波", "藤波", "早波"], "count": 2, "operator": "GE" }
       ]
     }
   },
-  "conditions" : [
-    {"boss": true, "area": ["5-4"], "rank": ["S"], "count": 2},
-    {"boss": true, "area": ["5-5"], "rank": ["S"], "count": 2},
-    {"boss": true, "area": ["5-6"], "rank": ["S"], "cell": "Z", "count": 2}
+  "conditions": [
+    { "boss": true, "area": ["5-4"], "rank": ["S"], "count": 2 },
+    { "boss": true, "area": ["5-5"], "rank": ["S"], "count": 2 },
+    { "boss": true, "area": ["5-6"], "rank": ["S"], "cell": "Z", "count": 2 }
   ]
 }

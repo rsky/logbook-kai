@@ -1,10 +1,11 @@
-/* [893]泊地周辺海域の安全確保を徹底せよ！ */
 {
-    "resetType" : "クオータリー",
-    "conditions" : [
-        {"boss": true, "area": ["1-5"], "rank": ["S"], "count": 3},
-        {"boss": true, "area": ["7-1"], "rank": ["S"], "count": 3},
-        {"boss": true, "area": ["7-2"], "cell": "G", "rank": ["S"], "count": 3},
-        {"boss": true, "area": ["7-2"], "cell": "M", "rank": ["S"], "count": 3}
-    ]
+  "no": 893,
+  "title": "泊地周辺海域の安全確保を徹底せよ！",
+  "resetType": "クオータリー",
+  "conditions": [
+    { "boss": true, "area": ["1-5"], "rank": ["S"], "count": 3 },
+    { "boss": true, "area": ["7-1"], "rank": ["S"], "count": 3 },
+    { "boss": true, "area": ["7-2"], "cell": "G", "rank": ["S"], "count": 3 },
+    { "boss": true, "area": ["7-2"], "cell": "M", "rank": ["S"], "count": 3 }
+  ]
 }

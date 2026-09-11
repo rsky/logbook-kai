@@ -2,7 +2,7 @@ import kotlin.text.Regex.Companion.escape
 
 group = "logbook"
 description = "logbook-kai"
-version = "26.7.4"
+version = "26.9.1"
 
 // UpgradeCode (GUID) for Windows Installer
 val windowsUpgradeUUID = "880e4493-20fc-4c89-8c5b-01e4b2479b77"
@@ -11,11 +11,18 @@ java.sourceCompatibility = JavaVersion.VERSION_25
 
 plugins {
     `java-library`
-    id("com.gradleup.shadow") version "9.4.3"
+    id("com.gradleup.shadow") version "9.6.1"
 }
 
 repositories {
     mavenCentral()
+}
+
+fun DependencyHandlerScope.lombok(dependency: Any) {
+    compileOnly(dependency)
+    annotationProcessor(dependency)
+    testCompileOnly(dependency)
+    testAnnotationProcessor(dependency)
 }
 
 dependencies {
@@ -35,10 +42,7 @@ dependencies {
     implementation(libs.org.zeroturnaround.zt.exec)
     implementation(libs.org.zeroturnaround.zt.process.killer)
     testImplementation(libs.junit.junit)
-    compileOnly(libs.org.projectlombok.lombok)
-    annotationProcessor(libs.org.projectlombok.lombok)
-    testCompileOnly(libs.org.projectlombok.lombok)
-    testAnnotationProcessor(libs.org.projectlombok.lombok)
+    lombok(libs.org.projectlombok.lombok)
 }
 
 tasks.withType<JavaCompile> {
@@ -50,7 +54,7 @@ tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
 
-val jar by tasks.getting(type = Jar::class) {
+tasks.named<Jar>("jar") {
     manifest {
         attributes["Main-Class"] = "logbook.internal.Launcher"
         attributes["Implementation-Version"] = version

@@ -1,8 +1,6 @@
-/*練習航海*/
 {
-    "operator": "AND",
-    "conditions": [
-        {"type": "艦娘", "level": 1, "order": 1},
-        {"type": "艦娘"}
-    ]
+  "disp_no": "01",
+  "name": "練習航海",
+  "operator": "AND",
+  "conditions": [{ "type": "艦娘", "level": 1, "order": 1 }, { "type": "艦娘" }]
 }

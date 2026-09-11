@@ -1,12 +1,13 @@
-/*観艦式予行*/
 {
-    "operator": "AND",
-    "conditions": [
-        {"type": "艦娘", "level": 5, "order": 1},
-        {"type": "艦娘"},
-        {"type": "艦娘"},
-        {"type": "艦娘"},
-        {"type": "艦娘"},
-        {"type": "艦娘"}
-    ]
+  "disp_no": "07",
+  "name": "観艦式予行",
+  "operator": "AND",
+  "conditions": [
+    { "type": "艦娘", "level": 5, "order": 1 },
+    { "type": "艦娘" },
+    { "type": "艦娘" },
+    { "type": "艦娘" },
+    { "type": "艦娘" },
+    { "type": "艦娘" }
+  ]
 }

@@ -1,20 +1,58 @@
-/* [987] 【週間拡張任務】秋の南瓜祭り! Buono! */
 {
-    "type": "出撃",
-    "resetType" : "ウィークリー",
-    "filter" : {
-        "area": ["4-2", "4-3", "4-4"],
-        "fleet": {
-            "operator": "AND",
-            "conditions": [
-                {"name": ["Roma", "Minneapolis", "村雨", "夕立", "朧", "曙", "Maestrale", "Grecale", "Libeccio", "Scirocco", "Jervis", "Luigi Torelli", "UIT-25", "伊504"], "order": 1},
-                {"name": ["Roma", "Minneapolis", "村雨", "夕立", "朧", "曙", "Maestrale", "Grecale", "Libeccio", "Scirocco", "Jervis", "Luigi Torelli", "UIT-25", "伊504"], "count": 2, "operator": "GE"}
-            ]
+  "no": 987,
+  "title": "【週間拡張任務】秋の南瓜祭り! Buono!",
+  "type": "出撃",
+  "resetType": "ウィークリー",
+  "filter": {
+    "area": ["4-2", "4-3", "4-4"],
+    "fleet": {
+      "operator": "AND",
+      "conditions": [
+        {
+          "name": [
+            "Roma",
+            "Minneapolis",
+            "村雨",
+            "夕立",
+            "朧",
+            "曙",
+            "Maestrale",
+            "Grecale",
+            "Libeccio",
+            "Scirocco",
+            "Jervis",
+            "Luigi Torelli",
+            "UIT-25",
+            "伊504"
+          ],
+          "order": 1
+        },
+        {
+          "name": [
+            "Roma",
+            "Minneapolis",
+            "村雨",
+            "夕立",
+            "朧",
+            "曙",
+            "Maestrale",
+            "Grecale",
+            "Libeccio",
+            "Scirocco",
+            "Jervis",
+            "Luigi Torelli",
+            "UIT-25",
+            "伊504"
+          ],
+          "count": 2,
+          "operator": "GE"
         }
-    },
-    "conditions" : [
-        {"boss": true, "area": ["4-2"], "rank": ["S"], "count": 1},
-        {"boss": true, "area": ["4-3"], "rank": ["S"], "count": 1},
-        {"boss": true, "area": ["4-4"], "rank": ["S"], "count": 1}
-    ]
+      ]
+    }
+  },
+  "conditions": [
+    { "boss": true, "area": ["4-2"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["4-3"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["4-4"], "rank": ["S"], "count": 1 }
+  ]
 }

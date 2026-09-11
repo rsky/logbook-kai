@@ -1,7 +1,1 @@
-/* [221]ろ号作戦 */
-{
-    "resetType" : "ウィークリー",
-    "conditions" : [
-        {"stype": ["補給艦"], "count": 50}
-    ]
-}
+{ "no": 221, "title": "ろ号作戦", "resetType": "ウィークリー", "conditions": [{ "stype": ["補給艦"], "count": 50 }] }

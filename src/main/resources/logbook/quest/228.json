@@ -1,7 +1,6 @@
-/* [228]海上護衛戦 */
 {
-    "resetType" : "ウィークリー",
-    "conditions" : [
-        {"stype": ["潜水艦"], "count": 15}
-    ]
+  "no": 228,
+  "title": "海上護衛戦",
+  "resetType": "ウィークリー",
+  "conditions": [{ "stype": ["潜水艦"], "count": 15 }]
 }

@@ -1,10 +1,11 @@
-/* [872]戦果拡張任務！「Z作戦」後段作戦 */
 {
-    "resetType" : "クオータリー",
-    "conditions" : [
-        {"boss": true, "area": ["7-2"], "cell": "M", "rank": ["S"], "count": 1},
-        {"boss": true, "area": ["5-5"], "rank": ["S"], "count": 1},
-        {"boss": true, "area": ["6-2"], "rank": ["S"], "count": 1},
-        {"boss": true, "area": ["6-5"], "rank": ["S"], "count": 1}
-    ]
+  "no": 872,
+  "title": "戦果拡張任務！「Z作戦」後段作戦",
+  "resetType": "クオータリー",
+  "conditions": [
+    { "boss": true, "area": ["7-2"], "cell": "M", "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["5-5"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["6-2"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["6-5"], "rank": ["S"], "count": 1 }
+  ]
 }

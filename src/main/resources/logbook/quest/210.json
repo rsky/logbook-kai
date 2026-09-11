@@ -1,7 +1,1 @@
-/* [210]敵艦隊を10回邀撃せよ！ */
-{
-    "resetType" : "デイリー",
-    "conditions" : [
-        {"count": 10}
-    ]
-}
+{ "no": 210, "title": "敵艦隊を10回邀撃せよ！", "resetType": "デイリー", "conditions": [{ "count": 10 }] }

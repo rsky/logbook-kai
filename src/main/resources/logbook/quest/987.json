@@ -1,8 +1,8 @@
 {
   "no": 987,
-  "title": "【週間拡張任務】秋の南瓜祭り! Buono!",
+  "title": "【期間限定任務】西方南瓜祭り!  Buono!",
   "type": "出撃",
-  "resetType": "ウィークリー",
+  "resetType": "マンスリー",
   "filter": {
     "area": ["4-2", "4-3", "4-4"],
     "fleet": {
@@ -11,38 +11,40 @@
         {
           "name": [
             "Roma",
-            "Minneapolis",
-            "村雨",
-            "夕立",
-            "朧",
-            "曙",
+            "Luigi Torelli",
+            "UIT-25",
+            "伊504",
             "Maestrale",
             "Grecale",
             "Libeccio",
             "Scirocco",
             "Jervis",
-            "Luigi Torelli",
-            "UIT-25",
-            "伊504"
+            "伊47",
+            "伊201",
+            "鈴谷",
+            "村雨",
+            "朧",
+            "曙"
           ],
           "order": 1
         },
         {
           "name": [
             "Roma",
-            "Minneapolis",
-            "村雨",
-            "夕立",
-            "朧",
-            "曙",
+            "Luigi Torelli",
+            "UIT-25",
+            "伊504",
             "Maestrale",
             "Grecale",
             "Libeccio",
             "Scirocco",
             "Jervis",
-            "Luigi Torelli",
-            "UIT-25",
-            "伊504"
+            "伊47",
+            "伊201",
+            "鈴谷",
+            "村雨",
+            "朧",
+            "曙"
           ],
           "count": 2,
           "operator": "GE"

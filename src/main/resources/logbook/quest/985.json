@@ -1,0 +1,25 @@
+{
+  "no": 985,
+  "title": "【期間限定任務】特務護衛戦隊、抜錨せよ！",
+  "type": "出撃",
+  "resetType": "ウィークリー",
+  "filter": {
+    "area": ["1-2", "1-5", "2-2", "2-3"],
+    "fleet": {
+      "operator": "AND",
+      "conditions": [
+        {
+          "name": ["対馬", "鵜来", "稲木", "大泊", "迅鯨", "長鯨", "朝日", "村雨", "巻波", "早波", "浜波", "樫"],
+          "count": 3,
+          "operator": "GE"
+        }
+      ]
+    }
+  },
+  "conditions": [
+    { "boss": true, "area": ["1-2"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["1-5"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["2-2"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["2-3"], "rank": ["S"], "count": 1 }
+  ]
+}

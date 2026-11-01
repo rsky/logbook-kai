@@ -1,0 +1,27 @@
+{
+  "no": 1038,
+  "title": "【限定拡張作戦】Halloween、おかわり開始！",
+  "type": "出撃",
+  "resetType": "単発",
+  "filter": {
+    "area": ["1-1", "1-3"],
+    "fleet": {
+      "operator": "AND",
+      "conditions": [
+        {
+          "name": ["鈴谷", "曙", "朧", "樫", "朝日", "迅鯨", "長鯨", "瑞穂", "Johnston", "Richard P.Leary"],
+          "order": 1
+        },
+        {
+          "name": ["鈴谷", "曙", "朧", "樫", "朝日", "迅鯨", "長鯨", "瑞穂", "Johnston", "Richard P.Leary"],
+          "count": 3,
+          "operator": "GE"
+        }
+      ]
+    }
+  },
+  "conditions": [
+    { "boss": true, "area": ["1-1"], "rank": ["S"], "count": 4 },
+    { "boss": true, "area": ["1-3"], "rank": ["S"], "count": 4 }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "no": 1002,
+  "title": "【限定拡張作戦】南瓜祭り2026、北方作戦！",
+  "type": "出撃",
+  "resetType": "単発",
+  "filter": {
+    "area": ["3-2", "3-4", "3-5"],
+    "fleet": {
+      "operator": "AND",
+      "conditions": [
+        {
+          "name": ["Minneapolis", "Tuscaloosa", "Gambier Bay", "Johnston", "鈴谷", "阿武隈", "曙", "朧", "清霜", "樫"],
+          "order": 1
+        },
+        {
+          "name": ["Minneapolis", "Tuscaloosa", "Gambier Bay", "Johnston", "鈴谷", "阿武隈", "曙", "朧", "清霜", "樫"],
+          "count": 2,
+          "operator": "GE"
+        }
+      ]
+    }
+  },
+  "conditions": [
+    { "boss": true, "area": ["3-2"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["3-4"], "rank": ["S"], "count": 1 },
+    { "boss": true, "area": ["3-5"], "rank": ["S"], "count": 1 }
+  ]
+}
